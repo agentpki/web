@@ -1,0 +1,902 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base>
+  <!-- ──────────── PAGE-LEVEL ANIMATED BACKGROUND ──────────── -->
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <!-- ──────────── NAV ──────────── -->
+  <header class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg)]/70 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 font-medium tracking-tight">
+        <img src="/favicon.svg" alt="" class="w-7 h-7" />
+        <span>AgentPKI</span>
+      </a>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/spec/v0.1" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Spec</a>
+        <a href="https://github.com/agentpki" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20waitlist"
+           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[color:var(--color-accent)]/40 text-[color:var(--color-accent-bright)] hover:bg-[color:var(--color-accent)]/10 transition">
+          Get access
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ──────────── HERO — single-column centered text ──────────── -->
+  <section class="aurora-glow relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-6 pt-24 pb-16 lg:pt-32 lg:pb-20 text-center">
+      <p class="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
+        <span class="relative flex w-1.5 h-1.5">
+          <span class="absolute inset-0 rounded-full bg-[color:var(--color-accent)] opacity-75 animate-ping"></span>
+          <span class="relative w-1.5 h-1.5 rounded-full bg-[color:var(--color-accent)]"></span>
+        </span>
+        v0.1 draft &middot; published 2026-05-21
+      </p>
+
+      <h1 class="text-5xl sm:text-6xl lg:text-[5rem] font-semibold tracking-[-0.025em] leading-[1.02] text-balance">
+        Cryptographic identity for<br />
+        <span class="hero-accent-text">AI agents.</span>
+      </h1>
+
+      <p class="mt-7 text-lg lg:text-xl text-[color:var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto text-balance">
+        An open protocol and edge-verified PKI for the agentic web. Stateless,
+        sub-50&nbsp;ms, vendor-neutral, chain-agnostic — built so legitimate
+        agents pass bot-defense and the rest stay blocked.
+      </p>
+
+      <div class="mt-9 flex flex-wrap gap-3 justify-center">
+        <a href="/spec/v0.1"
+           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+          Read the spec
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20waitlist&body=Role%3A%20%5Bagent%20platform%20%2F%20site%20%2F%20bot-defense%20vendor%20%2F%20other%5D%0AUse%20case%3A%20%0AWebsite%3A%20"
+           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+          Join the waitlist
+        </a>
+      </div>
+
+      <p class="mt-6 text-xs text-[color:var(--color-text-dim)] tracking-wide">
+        Apache 2.0 &middot; open spec &middot; interop with MCP, A2A, Kite, SPIFFE, OWASP ANS
+      </p>
+    </div>
+  </section>
+
+  <!-- ──────────── HERO DIAGRAM — full-width animated section under the hero ──────────── -->
+  <section class="relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 pb-24 lg:pb-32">
+      <!-- Section caption above the diagram -->
+      <div class="flex items-center justify-center gap-3 mb-8 text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-dim)]">
+        <span class="h-px w-12 bg-gradient-to-r from-transparent to-[color:var(--color-border-bright)]"></span>
+        <span>The trust flow &middot; live</span>
+        <span class="h-px w-12 bg-gradient-to-l from-transparent to-[color:var(--color-border-bright)]"></span>
+      </div>
+
+      <!-- Large, full-width diagram with ambient glow -->
+      <div class="relative">
+        <!-- Ambient glow behind the diagram -->
+        <div class="absolute inset-0 -m-10 lg:-m-16 bg-[color:var(--color-accent)]/10 blur-[120px] rounded-[3rem] pointer-events-none" aria-hidden="true"></div>
+
+        <!-- Diagram container with subtle border + backdrop -->
+        <div class="relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 backdrop-blur-sm p-4 sm:p-8 lg:p-10">
+
+          <svg viewBox="0 0 900 480" class="hero-diagram w-full h-auto" xmlns="http://www.w3.org/2000/svg" aria-label="AgentPKI trust flow: issuer mints, agent presents, verifier validates">
+            <defs>
+              <pattern id="diagGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="14" cy="14" r="0.8" fill="rgba(167,139,250,0.18)"/>
+              </pattern>
+              <linearGradient id="nodeFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.20)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.04)"/>
+              </linearGradient>
+              <linearGradient id="centerFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.36)"/>
+                <stop offset="100%" stop-color="rgba(124,58,237,0.12)"/>
+              </linearGradient>
+              <filter id="centerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <radialGradient id="ambient" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.22)"/>
+                <stop offset="60%" stop-color="rgba(167,139,250,0.05)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.00)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Background grid + central glow -->
+            <rect width="900" height="480" fill="url(#diagGrid)" />
+            <circle cx="450" cy="240" r="200" fill="url(#ambient)" />
+
+            <!-- Flow lines (animated dashes) -->
+            <line class="flow-line"       x1="225" y1="240" x2="370" y2="240" stroke="rgba(167,139,250,0.6)" stroke-width="1.8"/>
+            <line class="flow-line delay" x1="530" y1="240" x2="675" y2="240" stroke="rgba(167,139,250,0.6)" stroke-width="1.8"/>
+
+            <!-- Pulse dots traveling along flow lines -->
+            <circle r="5" fill="#c4b5fd" opacity="0.9">
+              <animateMotion dur="2.4s" repeatCount="indefinite" path="M 225 240 L 370 240" />
+              <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="5" fill="#c4b5fd" opacity="0.9">
+              <animateMotion dur="2.4s" repeatCount="indefinite" begin="0.9s" path="M 530 240 L 675 240" />
+              <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" repeatCount="indefinite" begin="0.9s"/>
+            </circle>
+
+            <!-- ── ISSUER node (left) ── -->
+            <g transform="translate(70, 195)">
+              <rect width="155" height="90" rx="12" fill="url(#nodeFill)" stroke="rgba(167,139,250,0.6)" stroke-width="1.2"/>
+              <text x="77" y="32" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">ISSUER</text>
+              <text x="77" y="54" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11">anthropic.com</text>
+              <text x="77" y="72" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="10">Ed25519 &middot; T2 KYB</text>
+            </g>
+
+            <!-- ── AGENT / Passport (center, glowing, much bigger) ── -->
+            <g transform="translate(370, 130)" filter="url(#centerGlow)">
+              <rect class="pulse-ring" x="-6" y="-6" width="172" height="222" rx="20" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.2"/>
+              <rect class="passport-glow" width="160" height="210" rx="16" fill="url(#centerFill)" stroke="rgba(167,139,250,0.95)" stroke-width="2"/>
+
+              <text x="80" y="30" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">PASSPORT</text>
+
+              <!-- Stylized passport card -->
+              <g transform="translate(20, 50)">
+                <rect width="120" height="80" rx="8" fill="rgba(8,8,11,0.7)" stroke="rgba(167,139,250,0.75)" stroke-width="1.2"/>
+                <!-- Avatar circle -->
+                <circle cx="20" cy="22" r="10" fill="none" stroke="rgba(196,181,253,0.9)" stroke-width="1.4"/>
+                <circle cx="20" cy="19" r="3.5" fill="rgba(196,181,253,0.4)"/>
+                <path d="M 12 28 Q 20 22 28 28" fill="none" stroke="rgba(196,181,253,0.4)" stroke-width="1"/>
+                <!-- Header lines -->
+                <line x1="38" y1="16" x2="106" y2="16" stroke="rgba(196,181,253,0.7)" stroke-width="1.2"/>
+                <line x1="38" y1="24" x2="92" y2="24" stroke="rgba(196,181,253,0.45)" stroke-width="1"/>
+                <!-- Separator -->
+                <line x1="10" y1="42" x2="110" y2="42" stroke="rgba(167,139,250,0.3)" stroke-width="0.7" stroke-dasharray="3 3"/>
+                <!-- Token preview -->
+                <text x="10" y="56" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">v4.public.eyJpc3MiOi</text>
+                <text x="10" y="68" fill="#7c7c8a" font-family="ui-monospace,monospace" font-size="8">JhbnRocm9waWMuY29t</text>
+              </g>
+
+              <!-- Scope chips inside passport node -->
+              <g transform="translate(15, 145)">
+                <rect width="62" height="20" rx="10" fill="rgba(167,139,250,0.14)" stroke="rgba(167,139,250,0.4)"/>
+                <text x="31" y="14" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="9">read:*</text>
+              </g>
+              <g transform="translate(83, 145)">
+                <rect width="62" height="20" rx="10" fill="rgba(167,139,250,0.14)" stroke="rgba(167,139,250,0.4)"/>
+                <text x="31" y="14" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="9">tier: 2</text>
+              </g>
+
+              <text x="80" y="190" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="10">Ed25519 &middot; 24h max</text>
+            </g>
+
+            <!-- ── VERIFIER node (right) ── -->
+            <g transform="translate(675, 195)">
+              <rect width="155" height="90" rx="12" fill="url(#nodeFill)" stroke="rgba(167,139,250,0.6)" stroke-width="1.2"/>
+              <text x="77" y="32" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">VERIFIER</text>
+              <text x="77" y="54" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11">verify.agentpki.dev</text>
+              <text x="77" y="72" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="10">&lt; 50ms p99 &middot; edge</text>
+            </g>
+
+            <!-- Flow labels -->
+            <text x="297" y="225" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="600">mint</text>
+            <text x="297" y="262" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">PASETO v4.public</text>
+
+            <text x="602" y="225" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="600">verify</text>
+            <text x="602" y="262" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">RFC 9421 Mode B</text>
+
+            <!-- Verdict callout (bottom right, under verifier) -->
+            <g transform="translate(675, 320)">
+              <rect width="155" height="80" rx="10" fill="rgba(34,197,94,0.08)" stroke="rgba(74,222,128,0.5)" stroke-width="1.2"/>
+              <circle cx="20" cy="20" r="6" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.9)" stroke-width="1.2"/>
+              <path d="M 17 20 l 2.5 2.5 L 24 17" fill="none" stroke="rgba(134,239,172,1)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="34" y="24" fill="#86efac" font-family="ui-monospace,monospace" font-size="11" font-weight="700">verdict: allow</text>
+              <line x1="12" y1="38" x2="143" y2="38" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+              <text x="12" y="54" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">tier: 2 &middot; abuse: 0.02</text>
+              <text x="12" y="68" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">cached_until: +60s</text>
+            </g>
+
+            <!-- Issuer key/cert callout (bottom left, under issuer) -->
+            <g transform="translate(70, 320)">
+              <rect width="155" height="80" rx="10" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.35)" stroke-width="1.2"/>
+              <g transform="translate(12, 14)">
+                <rect width="14" height="18" rx="2" fill="none" stroke="rgba(196,181,253,0.85)" stroke-width="1.2"/>
+                <circle cx="7" cy="9" r="3" fill="rgba(196,181,253,0.35)"/>
+                <line x1="7" y1="13" x2="7" y2="16" stroke="rgba(196,181,253,0.85)" stroke-width="1.2"/>
+              </g>
+              <text x="34" y="22" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700">issuer key</text>
+              <line x1="12" y1="36" x2="143" y2="36" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+              <text x="12" y="52" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">kid: anthropic-2026-q2</text>
+              <text x="12" y="66" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">HSM-resident · rotates 90d</text>
+            </g>
+
+          </svg>
+        </div>
+
+        <!-- Spec-quote caption underneath -->
+        <p class="mt-8 text-center text-sm text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
+          Issuer signs a passport. Agent presents it. Verifier validates it.
+          All in under 50 milliseconds — globally, at the edge.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── STATS STRIP (NEW) ──────────── -->
+  <section class="border-y border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="stat-card p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl sm:text-5xl font-semibold tracking-tight text-[color:var(--color-accent-bright)]">&lt;50</span>
+            <span class="text-base text-[color:var(--color-text-muted)]">ms</span>
+          </div>
+          <p class="mt-2 text-xs text-[color:var(--color-text-muted)] tracking-wide uppercase">p99 verify · edge global</p>
+        </div>
+        <div class="stat-card p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl sm:text-5xl font-semibold tracking-tight text-[color:var(--color-accent-bright)]">Ed25519</span>
+          </div>
+          <p class="mt-2 text-xs text-[color:var(--color-text-muted)] tracking-wide uppercase">RFC 8032 signing throughout</p>
+        </div>
+        <div class="stat-card p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl sm:text-5xl font-semibold tracking-tight text-[color:var(--color-accent-bright)]">24</span>
+            <span class="text-base text-[color:var(--color-text-muted)]">h max</span>
+          </div>
+          <p class="mt-2 text-xs text-[color:var(--color-text-muted)] tracking-wide uppercase">passport lifetime · short-lived</p>
+        </div>
+        <div class="stat-card p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl sm:text-5xl font-semibold tracking-tight text-[color:var(--color-accent-bright)]">3</span>
+            <span class="text-base text-[color:var(--color-text-muted)]">tiers</span>
+          </div>
+          <p class="mt-2 text-xs text-[color:var(--color-text-muted)] tracking-wide uppercase">DNS · KYB · hardware-attested</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── PROBLEM ──────────── -->
+  <section>
+    <div class="max-w-4xl mx-auto px-6 py-24">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
+        The agentic web needs an identity layer it doesn't have yet.
+      </h2>
+      <div class="mt-8 space-y-5 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
+        <p>
+          Bot-defense systems — Cloudflare, DataDome, hCaptcha, Arkose — cannot tell a
+          legitimate Anthropic, OpenAI, or Mistral agent apart from a scraper.
+          They either overblock (and frustrate human users whose agents are doing
+          benign work on their behalf) or underblock (and bleed data and revenue to
+          actual abuse).
+        </p>
+        <p>
+          Every major agent platform is solving identity inside its own ecosystem —
+          MCP authentication, A2A, AP2. None of them are building the cross-vendor
+          neutral layer that the rest of the web needs.
+        </p>
+        <p>
+          Blockchain-anchored approaches solve the commerce case at the cost of
+          1–12 second finality, gas fees, and an audit story that won't pass
+          SOC&nbsp;2 or the EU AI Act. The 90% of agent traffic that isn't
+          commerce — research, scheduling, automation, reading — needs a
+          classical-PKI answer.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── HOW IT WORKS ──────────── -->
+  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">How it works</h2>
+      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">Three participants, one verification path.</p>
+
+      <div class="relative mt-12">
+        <div class="step-connector hidden md:block left-[16%] right-[16%]" aria-hidden="true"></div>
+
+        <div class="grid md:grid-cols-3 gap-4 relative">
+          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+            <div class="flex items-center gap-3">
+              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="m18 5 3 3"/><path d="m15 8 3 3"/></svg>
+              </span>
+              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 01</span>
+            </div>
+            <h3 class="mt-5 font-semibold tracking-tight text-lg">Issuer mints</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              The agent platform signs a short-lived passport with Ed25519 — PASETO v4 envelope,
+              24h max lifetime, agent identity plus capability scope plus trust tier. Keys live
+              in a managed HSM or hardware-attested enclave.
+            </p>
+          </div>
+
+          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+            <div class="flex items-center gap-3">
+              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 02</span>
+            </div>
+            <h3 class="mt-5 font-semibold tracking-tight text-lg">Agent presents</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              The SDK attaches the passport to every outbound request — either as a bearer
+              header for simple flows, or via RFC&nbsp;9421 HTTP Message Signatures bound to
+              the request body. Two lines of integration.
+            </p>
+          </div>
+
+          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+            <div class="flex items-center gap-3">
+              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              </span>
+              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 03</span>
+            </div>
+            <h3 class="mt-5 font-semibold tracking-tight text-lg">Verifier validates</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              A Cloudflare Workers edge resolves the issuer public key, verifies the
+              signature, checks the revocation Bloom filter, applies site policy, and
+              returns a verdict — all in under 50 milliseconds, globally.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── BUILT ON OPEN STANDARDS (icons added) ──────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="flex items-end justify-between flex-wrap gap-4">
+        <div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Built on open standards.</h2>
+          <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">
+            No proprietary crypto. No bespoke tokens. Just the well-vetted primitives the rest of the internet runs on.
+          </p>
+        </div>
+        <a href="/spec/v0.1#20-references" class="text-sm text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">See all references &rarr;</a>
+      </div>
+
+      <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- PASETO v4 -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/>
+                <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">token</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">PASETO v4</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Platform-Agnostic Security Tokens. Modern alternative to JWT — no algorithm-confusion footgun.</p>
+        </div>
+
+        <!-- Ed25519 -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="m18 5 3 3"/><path d="m15 8 3 3"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 8032</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Ed25519</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">EdDSA curve. Fast, deterministic, side-channel resistant. The crypto every modern stack agrees on.</p>
+        </div>
+
+        <!-- HTTP Message Signatures -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>
+                <path d="M9 13c1.5 0 1.5 2 3 2s1.5-2 3-2"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 9421</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">HTTP Message Signatures</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Mode B binds the passport to method, URL, and body — kills replay attacks within the signature window.</p>
+        </div>
+
+        <!-- Ed25519 SPKI -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 8410</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Ed25519 SPKI</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Standard X.509 public-key envelope. Drop into existing PKI tooling without translation.</p>
+        </div>
+
+        <!-- Apache 2.0 / MIT -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">license</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Apache 2.0 / MIT</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Spec under Apache 2.0 (patent grant). SDKs and reference verifier under MIT. Forkable, embeddable, no rug-pull.</p>
+        </div>
+
+        <!-- W3C VC ready -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </span>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">planned</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">W3C VC ready</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Credential-envelope abstraction in the spec lets a Verifiable-Credential mode slot in backward-compatibly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── CODE ──────────── -->
+  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Two lines on each side.</h2>
+      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">
+        Agents sign with the SDK. Sites verify with a single POST.
+      </p>
+
+      <div class="mt-10 grid lg:grid-cols-2 gap-5">
+        <div>
+          <p class="mb-3 text-xs font-mono uppercase tracking-wider text-[color:var(--color-text-muted)]">Agent side &middot; TypeScript</p>
+          <pre class="astro-code"><code>{`import { AgentPKI } from '@agentpki/sdk';
+
+const agent = new AgentPKI({
+  issuer: 'anthropic.com',
+  agentId: 'agent:anthropic.com/research-bot-v3',
+  scope: ['read:articles', 'read:public-data'],
+});
+
+// Auto-signs every outbound request (RFC 9421 mode by default)
+const res = await agent.fetch('https://reuters.com/api/article/123');`}</code></pre>
+        </div>
+
+        <div>
+          <p class="mb-3 text-xs font-mono uppercase tracking-wider text-[color:var(--color-text-muted)]">Site side &middot; POST to verifier</p>
+          <pre class="astro-code"><code>{`POST https://verify.agentpki.dev/v1/verify
+Content-Type: application/json
+
+{
+  "token": "v4.public.eyJpc3MiOiJhbnRocm9waWMuY29tIi4uLg",
+  "mode": "B",
+  "request": { "method": "GET", "url": "https://reuters.com/..." }
+}
+
+→ HTTP 200  (4ms)
+{
+  "verdict": "allow",
+  "passport": { "issuer": "anthropic.com", "tier": 2,
+                "scopes": ["read:articles"] },
+  "abuse_score": 0.02
+}`}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── TRY IT LIVE ──────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="text-center mb-10">
+        <p class="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
+          <span class="relative flex w-1.5 h-1.5">
+            <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
+            <span class="relative w-1.5 h-1.5 rounded-full bg-green-400"></span>
+          </span>
+          live on production infrastructure
+        </p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Try it live.</h2>
+        <p class="mt-4 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
+          Run the mint &rarr; verify pipeline against the deployed Workers right now. No signup, no install &mdash; one click in your browser.
+        </p>
+      </div>
+
+      <div class="max-w-3xl mx-auto rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8">
+        <!-- Header row -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+          <div class="text-xs sm:text-sm text-[color:var(--color-text-muted)] font-mono">
+            <code>demo.agentpki.dev/mint</code>
+            <span class="mx-2 text-[color:var(--color-text-dim)]">&rarr;</span>
+            <code>verify.agentpki.dev/v1/verify</code>
+          </div>
+          <button id="try-run"
+                  class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0">
+            <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
+            <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+              <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
+                <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <span id="try-label">Run mint &rarr; verify</span>
+          </button>
+        </div>
+
+        <div id="try-results" class="mt-6 space-y-4 hidden">
+          <!-- Step 1: mint result -->
+          <div id="try-mint" class="hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/80 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">01</span>
+                <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)]">passport minted</span>
+              </div>
+              <span id="try-mint-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
+            </div>
+            <pre id="try-mint-output" class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+          </div>
+
+          <!-- Step 2: verify result -->
+          <div id="try-verify" class="hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/80 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">02</span>
+                <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)]">verifier response</span>
+              </div>
+              <span id="try-verify-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
+            </div>
+            <div id="try-verdict-badge" class="mb-3 hidden"></div>
+            <pre id="try-verify-output" class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+          </div>
+
+          <!-- Error state -->
+          <div id="try-error" class="hidden rounded-xl border border-red-500/40 bg-red-500/5 p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span class="font-mono text-xs uppercase tracking-widest text-red-400">demo error</span>
+            </div>
+            <pre id="try-error-output" class="text-xs font-mono text-red-300 overflow-x-auto"></pre>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center text-xs text-[color:var(--color-text-dim)] max-w-2xl mx-auto">
+        Runs entirely in your browser. CORS-enabled on both Workers &mdash; the page itself has no backend. The demo issuer uses a hardcoded keypair clearly labeled DEMO-ONLY in source; production issuers use HSM-resident keys per spec &sect;5.3.
+      </p>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const DEMO_ISSUER = 'https://demo.agentpki.dev';
+      const VERIFIER    = 'https://agentpki-verifier.agentpki-verifier.workers.dev';
+
+      const $ = (id) => document.getElementById(id);
+      const button       = $('try-run');
+      const label        = $('try-label');
+      const iconPlay     = $('try-icon-play');
+      const iconSpin     = $('try-icon-spin');
+      const results      = $('try-results');
+      const mintBlock    = $('try-mint');
+      const mintOutput   = $('try-mint-output');
+      const mintTime     = $('try-mint-time');
+      const verifyBlock  = $('try-verify');
+      const verifyOutput = $('try-verify-output');
+      const verifyTime   = $('try-verify-time');
+      const verdictBadge = $('try-verdict-badge');
+      const errorBlock   = $('try-error');
+      const errorOutput  = $('try-error-output');
+
+      if (!button) return;
+
+      const setLoading = (loading) => {
+        button.disabled = loading;
+        iconPlay.classList.toggle('hidden', loading);
+        iconSpin.classList.toggle('hidden', !loading);
+        label.textContent = loading ? 'Running…' : 'Run again';
+      };
+
+      button.addEventListener('click', async () => {
+        setLoading(true);
+        results.classList.remove('hidden');
+        mintBlock.classList.add('hidden');
+        verifyBlock.classList.add('hidden');
+        errorBlock.classList.add('hidden');
+        verdictBadge.classList.add('hidden');
+
+        try {
+          // ── Step 1: mint a passport
+          const t0 = performance.now();
+          const mintRes = await fetch(
+            DEMO_ISSUER + '/mint?sub=' +
+              encodeURIComponent('agent:browser-demo/visitor') +
+              '&scope=read:articles,read:public-data&lifetime=300'
+          );
+          if (!mintRes.ok) {
+            throw new Error('mint failed: HTTP ' + mintRes.status + ' ' + (await mintRes.text()));
+          }
+          const minted = await mintRes.json();
+          const t1 = performance.now();
+
+          mintTime.textContent = Math.round(t1 - t0) + 'ms';
+          mintOutput.textContent = JSON.stringify(
+            {
+              token: minted.token.slice(0, 64) + '…',
+              passport: {
+                iss: minted.passport.iss,
+                sub: minted.passport.sub,
+                scope: minted.passport.scope,
+                tier: minted.passport.tier,
+                kid: minted.passport.kid,
+                expires_in: minted.expires_in + 's',
+              },
+            },
+            null,
+            2
+          );
+          mintBlock.classList.remove('hidden');
+
+          // ── Step 2: verify the passport
+          const verifyRes = await fetch(VERIFIER + '/v1/verify', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ token: minted.token }),
+          });
+          const verdict = await verifyRes.json();
+          const t2 = performance.now();
+
+          verifyTime.textContent =
+            'worker ' + (verdict.elapsed_ms ?? '?') + 'ms · wall ' + Math.round(t2 - t1) + 'ms';
+
+          const isAllow = verdict.verdict === 'allow';
+          const badgeBase =
+            'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border ';
+          const badgeColor = isAllow
+            ? 'bg-green-500/10 text-green-400 border-green-500/40'
+            : 'bg-red-500/10 text-red-400 border-red-500/40';
+          verdictBadge.className = 'mb-3 ' + (verdict.verdict ? '' : 'hidden');
+          verdictBadge.innerHTML =
+            '<span class="' +
+            badgeBase +
+            badgeColor +
+            '">verdict: ' +
+            (verdict.verdict || 'unknown') +
+            '</span>';
+          verdictBadge.classList.remove('hidden');
+
+          verifyOutput.textContent = JSON.stringify(verdict, null, 2);
+          verifyBlock.classList.remove('hidden');
+        } catch (e) {
+          errorOutput.textContent = (e && e.message) || String(e);
+          errorBlock.classList.remove('hidden');
+        } finally {
+          setLoading(false);
+        }
+      });
+    })();
+  </script>
+
+  <!-- ──────────── WHO IT'S FOR ──────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Who it's for</h2>
+
+      <div class="mt-12 grid md:grid-cols-3 gap-4">
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <h3 class="font-semibold tracking-tight text-lg">Agent platforms</h3>
+          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Mint passports for your agent fleet. T1 DNS-verified is free.
+            T2 KYB-verified unlocks paid scopes and commerce flows.
+            T3 hardware-attested for high-stakes financial and healthcare use.
+          </p>
+        </div>
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <h3 class="font-semibold tracking-tight text-lg">Websites &amp; APIs</h3>
+          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Verify agents at the edge before serving. Set a policy (minimum tier,
+            required scopes, abuse threshold) and let the verifier decide.
+            Allow, throttle, or deny — your call.
+          </p>
+        </div>
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+          <h3 class="font-semibold tracking-tight text-lg">Bot-defense vendors</h3>
+          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Drop-in trust signal for your decision pipeline. Native modules
+            planned for Cloudflare, DataDome, hCaptcha, Arkose. Stops false
+            positives on real agent traffic without weakening anti-abuse.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── DESIGNED TO COMPOSE — now with hub diagram ──────────── -->
+  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-center">
+        <!-- LEFT: copy -->
+        <div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Designed to compose.</h2>
+          <p class="mt-6 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
+            AgentPKI is the cross-vendor edge identity layer. It plugs into the
+            protocols you already care about — and stays out of the way of the ones
+            you don't.
+          </p>
+          <p class="mt-5 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
+            Each adjacent protocol owns a piece. AgentPKI is the piece that lets
+            any system verify "this agent is who it says it is" without trusting
+            any single vendor — the same role TLS plays for service-to-service
+            trust on the rest of the web.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-2">
+            <a href="https://modelcontextprotocol.io" class="px-3 py-1 text-xs font-mono rounded-full border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition">MCP</a>
+            <a href="https://google.github.io/A2A/" class="px-3 py-1 text-xs font-mono rounded-full border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition">A2A</a>
+            <a href="https://kite.network" class="px-3 py-1 text-xs font-mono rounded-full border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition">Kite</a>
+            <a href="https://spiffe.io" class="px-3 py-1 text-xs font-mono rounded-full border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition">SPIFFE</a>
+            <span class="px-3 py-1 text-xs font-mono rounded-full border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)]">OWASP ANS</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: hub-and-spoke SVG diagram -->
+        <div class="relative">
+          <div class="absolute inset-0 -m-8 bg-[color:var(--color-accent)]/6 blur-3xl rounded-[3rem] pointer-events-none"></div>
+
+          <svg viewBox="0 0 600 500" class="compose-diagram relative w-full h-auto" xmlns="http://www.w3.org/2000/svg" aria-label="AgentPKI as a hub composing with MCP, A2A, Kite, SPIFFE, and OWASP ANS">
+            <defs>
+              <pattern id="composeGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="14" cy="14" r="0.6" fill="rgba(167,139,250,0.13)"/>
+              </pattern>
+              <radialGradient id="centerRadial" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.40)"/>
+                <stop offset="60%" stop-color="rgba(167,139,250,0.10)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.00)"/>
+              </radialGradient>
+              <linearGradient id="sat" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.16)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.03)"/>
+              </linearGradient>
+              <filter id="centerHubGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <rect width="600" height="500" fill="url(#composeGrid)"/>
+
+            <!-- Ambient glow behind center -->
+            <circle cx="300" cy="250" r="180" fill="url(#centerRadial)"/>
+
+            <!-- Spokes (drawn under satellite cards) -->
+            <line class="spoke d1" x1="300" y1="250" x2="300" y2="80"  stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+            <line class="spoke d2" x1="300" y1="250" x2="510" y2="170" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+            <line class="spoke d3" x1="300" y1="250" x2="450" y2="420" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+            <line class="spoke d4" x1="300" y1="250" x2="150" y2="420" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+            <line class="spoke d5" x1="300" y1="250" x2="90"  y2="170" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+
+            <!-- Pulse dots traveling along each spoke -->
+            <circle r="3" fill="#c4b5fd" opacity="0.9"><animateMotion dur="3.0s" repeatCount="indefinite" path="M 300 250 L 300 80"/><animate attributeName="opacity" values="0;1;1;0" dur="3.0s" repeatCount="indefinite"/></circle>
+            <circle r="3" fill="#c4b5fd" opacity="0.9"><animateMotion dur="3.0s" repeatCount="indefinite" begin="0.3s" path="M 300 250 L 510 170"/><animate attributeName="opacity" values="0;1;1;0" dur="3.0s" repeatCount="indefinite" begin="0.3s"/></circle>
+            <circle r="3" fill="#c4b5fd" opacity="0.9"><animateMotion dur="3.0s" repeatCount="indefinite" begin="0.6s" path="M 300 250 L 450 420"/><animate attributeName="opacity" values="0;1;1;0" dur="3.0s" repeatCount="indefinite" begin="0.6s"/></circle>
+            <circle r="3" fill="#c4b5fd" opacity="0.9"><animateMotion dur="3.0s" repeatCount="indefinite" begin="0.9s" path="M 300 250 L 150 420"/><animate attributeName="opacity" values="0;1;1;0" dur="3.0s" repeatCount="indefinite" begin="0.9s"/></circle>
+            <circle r="3" fill="#c4b5fd" opacity="0.9"><animateMotion dur="3.0s" repeatCount="indefinite" begin="1.2s" path="M 300 250 L 90 170"/><animate attributeName="opacity" values="0;1;1;0" dur="3.0s" repeatCount="indefinite" begin="1.2s"/></circle>
+
+            <!-- Satellite: MCP (top) -->
+            <g transform="translate(245, 50)">
+              <rect width="110" height="60" rx="10" fill="url(#sat)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+              <text x="55" y="26" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700" letter-spacing="1">MCP</text>
+              <text x="55" y="44" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">Anthropic</text>
+            </g>
+
+            <!-- Satellite: A2A (top-right) -->
+            <g transform="translate(455, 140)">
+              <rect width="110" height="60" rx="10" fill="url(#sat)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+              <text x="55" y="26" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700" letter-spacing="1">A2A</text>
+              <text x="55" y="44" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">Google</text>
+            </g>
+
+            <!-- Satellite: Kite (bottom-right) -->
+            <g transform="translate(395, 390)">
+              <rect width="110" height="60" rx="10" fill="url(#sat)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+              <text x="55" y="26" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700" letter-spacing="1">Kite</text>
+              <text x="55" y="44" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">commerce</text>
+            </g>
+
+            <!-- Satellite: SPIFFE (bottom-left) -->
+            <g transform="translate(95, 390)">
+              <rect width="110" height="60" rx="10" fill="url(#sat)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+              <text x="55" y="26" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700" letter-spacing="1">SPIFFE</text>
+              <text x="55" y="44" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">workloads</text>
+            </g>
+
+            <!-- Satellite: OWASP ANS (top-left) -->
+            <g transform="translate(35, 140)">
+              <rect width="110" height="60" rx="10" fill="url(#sat)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+              <text x="55" y="26" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700" letter-spacing="1">OWASP ANS</text>
+              <text x="55" y="44" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">discovery</text>
+            </g>
+
+            <!-- CENTER: AgentPKI hub -->
+            <g transform="translate(230, 200)" filter="url(#centerHubGlow)">
+              <rect class="pulse-ring" x="-4" y="-4" width="148" height="108" rx="16" fill="none" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+              <rect class="center-glow" width="140" height="100" rx="14" fill="rgba(167,139,250,0.18)" stroke="rgba(167,139,250,1.0)" stroke-width="2"/>
+              <text x="70" y="36" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">AgentPKI</text>
+              <text x="70" y="58" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">cross-vendor</text>
+              <text x="70" y="74" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">edge identity</text>
+              <line x1="20" y1="86" x2="120" y2="86" stroke="rgba(167,139,250,0.4)" stroke-width="0.7" stroke-dasharray="2 2"/>
+              <text x="70" y="96" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="8">PASETO &middot; Ed25519</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────── WAITLIST CTA ──────────── -->
+  <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
+    <div class="max-w-3xl mx-auto px-6 py-28 text-center relative">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Early access is open.</h2>
+      <p class="mt-4 text-lg lg:text-xl text-[color:var(--color-text-muted)]">
+        We're working with a small set of agent platforms, bot-defense vendors, and design partners on the
+        v0.1 spec and reference implementations. Tell us who you are.
+      </p>
+
+      <form action="mailto:hello@agentpki.dev"
+            method="POST"
+            enctype="text/plain"
+            class="mt-10 max-w-xl mx-auto grid sm:grid-cols-[1fr_auto] gap-3">
+        <input
+          name="email"
+          type="email"
+          required
+          placeholder="you@company.com"
+          class="px-4 py-3 rounded-lg bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border-bright)] focus:border-[color:var(--color-accent)] outline-none transition"
+        />
+        <select
+          name="role"
+          required
+          class="px-4 py-3 rounded-lg bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border-bright)] focus:border-[color:var(--color-accent)] outline-none transition"
+        >
+          <option value="">I am a/an…</option>
+          <option value="agent-platform">Agent platform</option>
+          <option value="site">Website or API operator</option>
+          <option value="bot-defense">Bot-defense vendor</option>
+          <option value="enterprise">Enterprise agent fleet</option>
+          <option value="other">Other</option>
+        </select>
+        <button
+          type="submit"
+          class="sm:col-span-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+          Request early access
+        </button>
+      </form>
+
+      <p class="mt-4 text-xs text-[color:var(--color-text-muted)]">
+        We'll respond personally within 48&nbsp;hours.
+      </p>
+    </div>
+  </section>
+
+  <!-- ──────────── FOOTER ──────────── -->
+  <footer class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 py-10 flex flex-wrap items-center justify-between gap-6 text-sm text-[color:var(--color-text-muted)]">
+      <div class="flex items-center gap-2">
+        <img src="/favicon.svg" alt="" class="w-5 h-5" />
+        <span>AgentPKI &middot; v0.1 draft &middot; Apache 2.0 &middot; 2026</span>
+      </div>
+      <div class="flex items-center gap-5">
+        <a href="/spec/v0.1" class="hover:text-[color:var(--color-text)] transition">Spec</a>
+        <a href="https://github.com/agentpki" class="hover:text-[color:var(--color-text)] transition">GitHub</a>
+        <a href="mailto:hello@agentpki.dev" class="hover:text-[color:var(--color-text)] transition">hello@agentpki.dev</a>
+      </div>
+    </div>
+  </footer>
+</Base>
