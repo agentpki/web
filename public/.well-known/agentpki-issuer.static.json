@@ -1,0 +1,21 @@
+{
+  "v": 1,
+  "issuer": "agentpki.dev",
+  "name": "AgentPKI",
+  "tier": 1,
+  "current_keys": [
+    {
+      "kid": "agentpki-dev-2026-q2-9b7f6691",
+      "alg": "Ed25519",
+      "pubkey": "MCowBQYDK2VwAyEAT+CqB6RVAi6Wh+1JPP3fM/tvxJtLR8Tf0dIA4LRDC3Q=",
+      "valid_from": 1779472997,
+      "valid_to": 1937152997
+    }
+  ],
+  "crl_url": "https://agentpki.dev/.well-known/agentpki-crl.json",
+  "abuse_report_url": "https://agentpki.dev/abuse",
+  "contact": {
+    "abuse": "mailto:abuse@agentpki.dev",
+    "security": "mailto:security@agentpki.dev"
+  }
+}
