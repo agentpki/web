@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Why AgentPKI — agent identity, the missing layer" description="The agentic web doesn't have a cross-vendor identity layer. MCP, A2A, Kite, SPIFFE, blockchain — each solves a piece. AgentPKI is the neutral PKI piece the rest of the web needs.">
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- ─────────── HEADER ─────────── -->
+  <section class="border-b border-[color:var(--color-border)]">
+    <div class="max-w-4xl mx-auto px-6 pt-16 pb-12 lg:pt-20 lg:pb-16">
+      <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">why this exists</span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">The agentic web is missing a piece, and no one is building it.</h1>
+      <p class="mt-6 text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
+        Every major agent platform — Anthropic, OpenAI, Mistral, Google — is solving identity inside its own walls. Every bot-defense vendor — Cloudflare, DataDome, hCaptcha, Arkose — is trying to classify the resulting agent traffic without any cryptographic signal to anchor on. The web needs a neutral layer that lets the second group verify what the first group signed. That layer is what AgentPKI is.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── 1. THE PROBLEM ─────────── -->
+  <section>
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="flex items-baseline gap-3 mb-8">
+        <span class="font-mono text-2xl text-[color:var(--color-accent-bright)]">01</span>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">The problem, concretely.</h2>
+      </div>
+
+      <div class="prose-custom space-y-6 text-[color:var(--color-text-muted)] leading-relaxed">
+        <p>
+          A real example. An enterprise customer of Reuters tells their Anthropic-built research agent: "summarize the headlines for me each morning." The agent fetches Reuters' API the way a browser would. Reuters' bot-defense vendor sees: <strong class="text-[color:var(--color-text)]">datacenter IP, no mouse movements, programmatic timing, no cookies.</strong> Verdict: bot. Blocked.
+        </p>
+        <p>
+          The human user is paying both Reuters and Anthropic. The agent was operating with their explicit consent. But the bot-defense vendor had no way to know any of that, because <strong class="text-[color:var(--color-text)]">there was no cryptographic signal saying "this is a legitimate AI agent acting on a paying user's behalf."</strong>
+        </p>
+        <p>This problem has three faces:</p>
+        <ul class="space-y-3 pl-5">
+          <li><strong class="text-[color:var(--color-text)]">For bot-defense vendors:</strong> their models have to bucket every request as "human" or "bot." AI-agent traffic is exploding and looks adversarial. Both buckets are wrong — humans get frustrated when their agents are blocked; sites bleed data when scrapers are allowed.</li>
+          <li><strong class="text-[color:var(--color-text)]">For agent platforms:</strong> their agents get blocked everywhere they don't have a direct partnership. The "Anthropic adds an allow-list to every major site" approach doesn't scale to thousands of sites.</li>
+          <li><strong class="text-[color:var(--color-text)]">For enterprises:</strong> they're under SOC&nbsp;2, HIPAA, EU AI Act pressure to prove which agents acted on which data — and there's no audit-grade identity layer to attest from.</li>
+        </ul>
+        <p>
+          Bot-defense vendors will tell you that <strong class="text-[color:var(--color-text)]">~15% of their false-positive rate is now agent-driven</strong> and rising fast. That's where the cost is.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 2. WHY EXISTING APPROACHES DON'T SOLVE IT ─────────── -->
+  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="flex items-baseline gap-3 mb-3">
+        <span class="font-mono text-2xl text-[color:var(--color-accent-bright)]">02</span>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Why the existing pieces don't add up.</h2>
+      </div>
+      <p class="mb-10 text-[color:var(--color-text-muted)] leading-relaxed">
+        Multiple groups are building agent-identity pieces. Each one solves something. None of them solve this.
+      </p>
+
+      <div class="space-y-4">
+        <!-- MCP -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">MCP</strong> &mdash; agent-to-tool authentication (Anthropic)</span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> letting agents call tools/APIs they've been granted access to inside their own ecosystem. Solves the "what can this agent do on my behalf" question. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> when an Anthropic-built agent talks to a random site that doesn't speak MCP, the receiving site has no way to verify the agent. MCP is great inside the Anthropic ecosystem; orthogonal to whether arbitrary websites trust the agent.
+          </p>
+        </details>
+
+        <!-- A2A -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">A2A / AP2</strong> &mdash; agent-to-agent protocols (Google et al.)</span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> agents from different ecosystems negotiating a task together. Strong on capabilities, intent-passing, contracts. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> a website doesn't speak A2A. A retail site can't run an A2A handshake on every HTTP request. The protocol layer is too high; we need something that fits inside a bearer token a CDN can verify in microseconds.
+          </p>
+        </details>
+
+        <!-- Kite -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">Kite / blockchain-anchored agent identity</strong></span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> the commerce case &mdash; agent-initiated transactions, programmable money, on-chain settlement, transparent dispute trails. Kite shipped real product in this space in April 2026 ($35M raise from PayPal Ventures + General Catalyst) and we think the commerce wedge is a real category. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> 1&ndash;12 second finality, gas costs, and an audit story that doesn't pass SOC&nbsp;2 or EU AI Act make blockchain unusable for the 90% of agent traffic that isn't commerce &mdash; research, scheduling, reading, automation. Bot-defense vendors verifying 100M+ requests/sec at the CDN edge cannot pay 1s of latency. <strong class="text-[color:var(--color-text)]">We integrate WITH Kite as a payment hook (the passport ID can be the principal for Kite-settled transactions), not against it.</strong>
+          </p>
+        </details>
+
+        <!-- SPIFFE -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">SPIFFE / SPIRE</strong> &mdash; workload identity (CNCF)</span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> service-to-service identity inside a cluster or trust domain. Mature, battle-tested, well-spec'd. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> SPIFFE is designed for closed trust domains (your services in your cluster). The agentic-web problem is the opposite &mdash; an agent from <em>their</em> trust domain talking to <em>your</em> website with no prior relationship. AgentPKI is the cross-trust-domain layer; SPIFFE is the inside-the-cluster layer. They compose.
+          </p>
+        </details>
+
+        <!-- Bot defense -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">Bot-defense vendors building their own agent allow-lists</strong></span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> a vendor's own decision pipeline. Their model gets smarter over time. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> an enterprise running DataDome on one property and Akamai on another needs both vendors to trust the same agent. Vendor-specific allow-lists don't compose. Worse, vendor lock-in <em>against</em> agent traffic creates an anti-trust footprint that hurts the whole web. The trust root needs to be neutral &mdash; same role TLS plays for service-to-service trust everywhere else.
+          </p>
+        </details>
+
+        <!-- IETF / W3C -->
+        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            <span><strong class="text-[color:var(--color-text)]">IETF AIP drafts / W3C Verifiable Credentials / OWASP ANS</strong></span>
+            <svg class="w-4 h-4 transition-transform group-open:rotate-180 shrink-0" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
+          </summary>
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">Good for:</strong> long-term standards alignment. Three IETF Internet-Drafts for "Agent Identity Protocol" were filed in 2026. W3C VCs are a strong credential envelope. OWASP ANS handles agent name service discovery. <br><br>
+            <strong class="text-[color:var(--color-text)]">Doesn't solve:</strong> none of these are shippable as a production wire format today. AgentPKI v0.1 picks the well-vetted primitives (PASETO v4, Ed25519, RFC 9421) that work in production right now, with a credential-envelope abstraction so a W3C VC mode slots in backward-compatibly later.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 3. HOW AGENTPKI IS DIFFERENT ─────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="flex items-baseline gap-3 mb-8">
+        <span class="font-mono text-2xl text-[color:var(--color-accent-bright)]">03</span>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">How AgentPKI is different.</h2>
+      </div>
+      <p class="mb-10 text-[color:var(--color-text-muted)] leading-relaxed">
+        Five deliberate design choices, each one a deliberate trade. None of them are accidents.
+      </p>
+
+      <div class="space-y-6">
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <h3 class="font-semibold text-lg tracking-tight mb-2">1. Open spec, Apache&nbsp;2.0</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            The protocol is published, licensed permissively, with a patent grant. Anyone can implement an issuer or verifier without asking us. We sell convenience (hosting, compliance, support); the protocol is the public good.
+          </p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <h3 class="font-semibold text-lg tracking-tight mb-2">2. Classical PKI primitives, not blockchain</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            PASETO v4 + Ed25519 + RFC 9421 HTTP Message Signatures. Verifiable in microseconds on existing edge infrastructure. No new VM to run. No gas fees. No chain finality. The math is the same math TLS already uses every day.
+          </p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <h3 class="font-semibold text-lg tracking-tight mb-2">3. Edge-verified, sub-50&nbsp;ms p99</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            The reference verifier runs on Cloudflare Workers. Issuer public keys cache in Workers KV. A passport gets verified globally, at the edge, in less time than a TCP handshake to the origin. Sites can adopt without an extra round-trip in their critical path.
+          </p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <h3 class="font-semibold text-lg tracking-tight mb-2">4. Vendor-neutral, multi-CDN</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            A passport signed by <code class="text-xs">anthropic.com</code> verifies the same way on Cloudflare, Akamai, Fastly, or your own NGINX. There's no AgentPKI middleman in the trust path. Bot-defense vendors integrate AgentPKI as a signal; their decision logic stays theirs.
+          </p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <h3 class="font-semibold text-lg tracking-tight mb-2">5. Chain-agnostic, but composable with chains</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            The protocol doesn't depend on a blockchain. But the passport's <code class="text-xs">sub</code> field can be a Kite agent identity, a DID, an Ethereum address. AgentPKI handles <em>identity verification at the edge</em>; chain-anchored systems handle <em>settlement and transparency</em>. They compose cleanly.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 4. TRADE-OFFS WE ACCEPTED ─────────── -->
+  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="flex items-baseline gap-3 mb-8">
+        <span class="font-mono text-2xl text-[color:var(--color-accent-bright)]">04</span>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">What we explicitly don't do.</h2>
+      </div>
+      <p class="mb-10 text-[color:var(--color-text-muted)] leading-relaxed">
+        Honest trade-offs, so you know if AgentPKI is the right tool.
+      </p>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <div class="flex items-center gap-2 mb-3 text-red-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span class="font-mono text-[10px] uppercase tracking-widest">no</span>
+          </div>
+          <h3 class="font-semibold tracking-tight mb-2">No settlement layer</h3>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">If you need on-chain settlement, dispute resolution, or programmable payment, use Kite (or any L2). AgentPKI identifies who the agent is; you can pair it with whichever settlement system fits.</p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <div class="flex items-center gap-2 mb-3 text-red-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span class="font-mono text-[10px] uppercase tracking-widest">no</span>
+          </div>
+          <h3 class="font-semibold tracking-tight mb-2">No per-request signing in v0.1</h3>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Passports are short-lived (≤ 24h), not per-request. For per-request integrity, use Mode B (RFC 9421 HTTP Message Signatures) — but that's optional, not the default.</p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <div class="flex items-center gap-2 mb-3 text-red-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span class="font-mono text-[10px] uppercase tracking-widest">no</span>
+          </div>
+          <h3 class="font-semibold tracking-tight mb-2">No W3C VC envelope in v0.1</h3>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">v0.1 ships PASETO v4 for production speed. The spec has a credential-envelope abstraction so VC mode slots in backward-compatibly. v0.2+ adds it for stacks that need W3C compliance.</p>
+        </div>
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
+          <div class="flex items-center gap-2 mb-3 text-red-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span class="font-mono text-[10px] uppercase tracking-widest">no</span>
+          </div>
+          <h3 class="font-semibold tracking-tight mb-2">No hardware root of trust in v0.1</h3>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Issuers run on GCP Cloud KMS today. T3 hardware-attested issuance (HSM + TPM attestation) ships alongside paid tiers Q3 2026 for regulated industries that need it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 5. WHO IT'S BUILT FOR FIRST ─────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-4xl mx-auto px-6 py-20">
+      <div class="flex items-baseline gap-3 mb-8">
+        <span class="font-mono text-2xl text-[color:var(--color-accent-bright)]">05</span>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Who this is built for first.</h2>
+      </div>
+      <p class="mb-10 text-[color:var(--color-text-muted)] leading-relaxed">
+        Two customer types where the value is sharpest right now. Everyone else still benefits — but these are who we're talking to in 2026.
+      </p>
+
+      <div class="space-y-5">
+        <div class="rounded-xl border border-[color:var(--color-accent)]/30 bg-gradient-to-br from-[color:var(--color-accent)]/[0.06] to-transparent p-7">
+          <h3 class="text-xl font-semibold tracking-tight mb-3">Bot-defense vendors</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed mb-3">
+            Cloudflare, DataDome, hCaptcha, Arkose, Castle, Kasada. Their false-positive rate on AI-agent traffic is rising every quarter. AgentPKI is a clean signal input — never overrides their decisions, just adds a "this agent presented a cryptographically-verified passport at tier T" bit to their scoring layer.
+          </p>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">What they get:</strong> measurable false-positive reduction on the traffic that's growing fastest. A neutral trust root that doesn't favor any one agent platform. Optional revenue share on verifies.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-[color:var(--color-accent)]/30 bg-gradient-to-br from-[color:var(--color-accent)]/[0.06] to-transparent p-7">
+          <h3 class="text-xl font-semibold tracking-tight mb-3">Enterprises with regulated agent fleets</h3>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed mb-3">
+            Banks, healthcare, insurance, anything under SOC&nbsp;2 / HIPAA / EU AI Act / GDPR. They have agents acting on customer data and need to prove which agent did what to which data, with cryptographic attestation regulators will accept.
+          </p>
+          <p class="text-[color:var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[color:var(--color-text)]">What they get:</strong> KYB-verified issuance (T2), hardware-attested keys (T3), audit-grade mint log, dedicated verifier with residency control. The paper trail their compliance team can hand to a regulator.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── FINAL CTA ─────────── -->
+  <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
+    <div class="max-w-4xl mx-auto px-6 py-24 text-center relative">
+      <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Convinced — or want to push back?</h2>
+      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
+        See the protocol run live, or skip ahead to the dashboard. We'd also rather hear your honest pushback now than after you've integrated.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-3 justify-center">
+        <a href="/demo?run=1" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-medium text-base hover:bg-[color:var(--color-accent-bright)] transition">
+          Watch the live demo
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+          Sign up free
+        </a>
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20%E2%80%94%20pushback%20or%20question" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+          Push back to the founder
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Base>

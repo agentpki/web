@@ -82,7 +82,7 @@ import Footer from '../components/Footer.astro';
       </div>
 
       <!-- Two-column: diagram on the left, "how to read this" on the right -->
-      <div class="grid lg:grid-cols-[1.5fr_1fr] gap-10 lg:gap-12 items-center">
+      <div class="grid lg:grid-cols-[1.9fr_1fr] gap-8 lg:gap-10 items-center">
 
         <!-- LEFT: animated diagram with ambient glow -->
         <div class="relative">
@@ -371,6 +371,10 @@ import Footer from '../components/Footer.astro';
         <span class="text-[color:var(--color-accent-bright)] font-medium">The classical-PKI answer is missing.</span>
         That's what AgentPKI is — open spec, edge-verified, vendor-neutral, chain-agnostic.
       </p>
+      <a href="/why" class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition group">
+        Read the full why &mdash; vs MCP, A2A, Kite, SPIFFE
+        <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
   </section>
 
