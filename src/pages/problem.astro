@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
 ---
 <Base title="The problem AgentPKI solves — agent identity, the missing layer" description="The agentic web doesn't have a cross-vendor identity layer. MCP, A2A, Kite, SPIFFE, blockchain — each solves a piece. AgentPKI is the neutral PKI piece the rest of the web needs.">
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
@@ -445,14 +446,14 @@ import Footer from '../components/Footer.astro';
         <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
           Sign up free
         </a>
-        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20%E2%80%94%20pushback%20or%20question"
-           data-email-copy="hello@agentpki.dev"
-           class="email-cta inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
-          <span class="email-cta-label">Push back to the founder</span>
-        </a>
+        <button type="button" data-contact-modal data-contact-source="problem / final CTA"
+                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition cursor-pointer">
+          Talk to Founder
+        </button>
       </div>
     </div>
   </section>
 
   <Footer />
+  <ContactModal />
 </Base>

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
 ---
 <Base title="Live demo — AgentPKI" description="Mint and verify a real AgentPKI passport in your browser. Runs against our production-deployed Cloudflare Workers.">
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
@@ -421,4 +422,5 @@ score -= (await apkiSignal(req))
   </script>
 
   <Footer />
+  <ContactModal />
 </Base>

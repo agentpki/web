@@ -1,0 +1,214 @@
+---
+// Shared contact-form modal. Trigger by adding `data-contact-modal` to any button
+// or anchor; the global handler in the inline script below intercepts the click,
+// prevents navigation, and opens this modal. Sets a hidden `source` field from
+// the trigger's data-contact-source attribute so we know which CTA fired the form.
+---
+
+<dialog id="contact-modal" class="contact-modal fixed inset-0 m-auto rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-0 backdrop:bg-black/60 backdrop:backdrop-blur-sm w-full max-w-lg open:flex open:flex-col">
+  <div class="relative p-6 sm:p-8">
+    <button id="contact-modal-close" type="button" aria-label="Close" class="absolute top-4 right-4 inline-flex w-8 h-8 items-center justify-center rounded-md text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] hover:bg-[color:var(--color-bg)]/40 transition">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- ── DEFAULT VIEW: form ── -->
+    <div id="contact-modal-form-wrap">
+      <h2 class="text-2xl font-semibold tracking-tight">Talk to Founder</h2>
+      <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">
+        Personal reply from Sarvesh within 48&nbsp;hours. Tell us a bit about you — what you're building, what you'd want from AgentPKI, anything you want to push back on.
+      </p>
+
+      <form id="contact-modal-form" class="mt-6 space-y-4">
+        <input type="hidden" name="source" id="contact-modal-source" value="">
+
+        <div>
+          <label for="contact-name" class="block text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)] mb-1.5">Your name <span class="text-red-400">*</span></label>
+          <input id="contact-name" name="name" type="text" required maxlength="120" autocomplete="name"
+                 class="w-full px-3 py-2.5 rounded-lg bg-[color:var(--color-bg)] border border-[color:var(--color-border-bright)] text-[color:var(--color-text)] placeholder-[color:var(--color-text-dim)] focus:outline-none focus:border-[color:var(--color-accent)]/60 transition"
+                 placeholder="Sarvesh Patel">
+        </div>
+
+        <div>
+          <label for="contact-email" class="block text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)] mb-1.5">Email <span class="text-red-400">*</span></label>
+          <input id="contact-email" name="email" type="email" required maxlength="200" autocomplete="email"
+                 class="w-full px-3 py-2.5 rounded-lg bg-[color:var(--color-bg)] border border-[color:var(--color-border-bright)] text-[color:var(--color-text)] placeholder-[color:var(--color-text-dim)] focus:outline-none focus:border-[color:var(--color-accent)]/60 transition"
+                 placeholder="you@company.com">
+        </div>
+
+        <div>
+          <label for="contact-phone" class="block text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)] mb-1.5">Phone <span class="text-[color:var(--color-text-dim)] normal-case font-sans tracking-normal">(optional)</span></label>
+          <input id="contact-phone" name="phone" type="tel" maxlength="60" autocomplete="tel"
+                 class="w-full px-3 py-2.5 rounded-lg bg-[color:var(--color-bg)] border border-[color:var(--color-border-bright)] text-[color:var(--color-text)] placeholder-[color:var(--color-text-dim)] focus:outline-none focus:border-[color:var(--color-accent)]/60 transition"
+                 placeholder="+1 555 123 4567">
+        </div>
+
+        <div>
+          <label for="contact-description" class="block text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)] mb-1.5">What's on your mind? <span class="text-red-400">*</span></label>
+          <textarea id="contact-description" name="description" required minlength="5" maxlength="5000" rows="5"
+                    class="w-full px-3 py-2.5 rounded-lg bg-[color:var(--color-bg)] border border-[color:var(--color-border-bright)] text-[color:var(--color-text)] placeholder-[color:var(--color-text-dim)] focus:outline-none focus:border-[color:var(--color-accent)]/60 transition resize-y"
+                    placeholder="What you're building, what you'd want from AgentPKI, anything you'd push back on, what timeline you're working to…"></textarea>
+        </div>
+
+        <div id="contact-modal-error" class="hidden rounded-lg border border-red-500/40 bg-red-500/[0.06] px-3 py-2.5 text-sm text-red-300"></div>
+
+        <button id="contact-modal-submit" type="submit"
+                class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed">
+          <svg id="contact-modal-icon-send" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <svg id="contact-modal-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round">
+              <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <span id="contact-modal-submit-label">Send to the founder</span>
+        </button>
+
+        <p class="text-[11px] text-[color:var(--color-text-dim)] text-center">
+          By submitting, you agree we can email you back. We don't share leads, ever.
+        </p>
+      </form>
+    </div>
+
+    <!-- ── SUCCESS VIEW ── -->
+    <div id="contact-modal-success" class="hidden text-center py-8">
+      <div class="inline-flex w-14 h-14 items-center justify-center rounded-full bg-green-500/15 border border-green-500/40 mb-5">
+        <svg class="w-7 h-7 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+      </div>
+      <h2 class="text-2xl font-semibold tracking-tight">Got it.</h2>
+      <p class="mt-3 text-[color:var(--color-text-muted)]" id="contact-modal-success-message">
+        We'll reply within 48 hours from <code class="text-sm text-[color:var(--color-accent-bright)]">hello@agentpki.dev</code>.
+      </p>
+      <p class="mt-2 text-sm text-[color:var(--color-text-dim)]">
+        If you don't see it, check spam — we send via Resend.
+      </p>
+      <button type="button" id="contact-modal-success-close"
+              class="mt-7 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline>
+  (function () {
+    const modal = document.getElementById('contact-modal');
+    const closeBtn = document.getElementById('contact-modal-close');
+    const successCloseBtn = document.getElementById('contact-modal-success-close');
+    const form = document.getElementById('contact-modal-form');
+    const formWrap = document.getElementById('contact-modal-form-wrap');
+    const successView = document.getElementById('contact-modal-success');
+    const successMessage = document.getElementById('contact-modal-success-message');
+    const errBox = document.getElementById('contact-modal-error');
+    const submitBtn = document.getElementById('contact-modal-submit');
+    const submitLabel = document.getElementById('contact-modal-submit-label');
+    const submitIcon = document.getElementById('contact-modal-icon-send');
+    const submitSpin = document.getElementById('contact-modal-icon-spin');
+    const sourceField = document.getElementById('contact-modal-source');
+
+    if (!modal || !form) return;
+
+    function openModal(source) {
+      // Reset to form view
+      formWrap.classList.remove('hidden');
+      successView.classList.add('hidden');
+      errBox.classList.add('hidden');
+      errBox.textContent = '';
+      if (sourceField) sourceField.value = source || '';
+      // <dialog> open
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+      // Focus first input
+      setTimeout(() => document.getElementById('contact-name')?.focus(), 50);
+    }
+
+    function closeModal() {
+      if (typeof modal.close === 'function') {
+        modal.close();
+      } else {
+        modal.removeAttribute('open');
+      }
+    }
+
+    // Global click handler — any element with [data-contact-modal] opens the modal
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest && e.target.closest('[data-contact-modal]');
+      if (!trigger) return;
+      e.preventDefault();
+      const source = trigger.getAttribute('data-contact-source') || trigger.textContent?.trim() || '';
+      openModal(source);
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    successCloseBtn?.addEventListener('click', closeModal);
+
+    // Click backdrop to close
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitIcon.classList.toggle('hidden', loading);
+      submitSpin.classList.toggle('hidden', !loading);
+      submitLabel.textContent = loading ? 'Sending…' : 'Send to the founder';
+    }
+
+    function showError(msg) {
+      errBox.textContent = msg;
+      errBox.classList.remove('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errBox.classList.add('hidden');
+      setLoading(true);
+
+      const fd = new FormData(form);
+      const payload = {
+        name: String(fd.get('name') || '').trim(),
+        email: String(fd.get('email') || '').trim(),
+        phone: String(fd.get('phone') || '').trim(),
+        description: String(fd.get('description') || '').trim(),
+        source: String(fd.get('source') || ''),
+      };
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showError(data?.detail || data?.error || 'Something went wrong. Please email hello@agentpki.dev directly.');
+          setLoading(false);
+          return;
+        }
+        // Success
+        if (data?.message && successMessage) {
+          successMessage.innerHTML = data.message.replace(/hello@agentpki\.dev/g, '<code class="text-sm text-[color:var(--color-accent-bright)]">hello@agentpki.dev</code>');
+        }
+        formWrap.classList.add('hidden');
+        successView.classList.remove('hidden');
+        form.reset();
+        setLoading(false);
+      } catch (err) {
+        showError('Network error. Please email hello@agentpki.dev directly.');
+        setLoading(false);
+      }
+    });
+  })();
+</script>
+
+<style>
+  /* Native dialog needs explicit width sizing for the open state */
+  dialog.contact-modal {
+    border: 1px solid var(--color-border);
+  }
+  dialog.contact-modal::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+  }
+</style>
