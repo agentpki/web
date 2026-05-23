@@ -6,19 +6,25 @@ import Base from '../layouts/Base.astro';
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
   <div class="bg-layer bg-grid" aria-hidden="true"></div>
 
-  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-  <header class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg)]/70 backdrop-blur-xl sticky top-0 z-50">
+  <!-- ─────────── NAV ─────────── -->
+  <header id="site-nav" class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg)]/70 backdrop-blur-xl sticky top-0 z-50 transition-all">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2 font-medium tracking-tight">
         <img src="/favicon.svg" alt="" class="w-7 h-7" />
         <span>AgentPKI</span>
       </a>
-      <nav class="flex items-center gap-6 text-sm">
+      <nav class="flex items-center gap-3 sm:gap-6 text-sm">
+        <a href="#try-it-live" class="hidden sm:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Demo</a>
         <a href="/spec/v0.1" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Spec</a>
-        <a href="https://github.com/agentpki" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
+        <a href="https://github.com/agentpki" class="hidden sm:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
         <a href="https://dashboard.agentpki.dev"
            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[color:var(--color-accent)]/40 text-[color:var(--color-accent-bright)] hover:bg-[color:var(--color-accent)]/10 transition">
-          Sign in &rarr;
+          Sign in
+        </a>
+        <a id="nav-signup-cta"
+           href="https://dashboard.agentpki.dev"
+           class="opacity-0 pointer-events-none translate-y-1 inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+          Sign up free &rarr;
         </a>
       </nav>
     </div>
@@ -47,15 +53,23 @@ import Base from '../layouts/Base.astro';
       </p>
 
       <div class="mt-9 flex flex-wrap gap-3 justify-center">
+        <a id="hero-watch-demo" href="#try-it-live"
+           class="group inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+          <span class="relative flex w-2 h-2">
+            <span class="absolute inset-0 rounded-full bg-black/40 animate-ping"></span>
+            <span class="relative w-2 h-2 rounded-full bg-black"></span>
+          </span>
+          Watch the live demo
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
         <a href="/spec/v0.1"
-           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
           Read the spec
           <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href="https://dashboard.agentpki.dev"
            class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
           Sign up free
-          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
 
@@ -257,33 +271,67 @@ import Base from '../layouts/Base.astro';
     </div>
   </section>
 
-  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PROBLEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ─────────── PROBLEM ─────────── -->
   <section>
-    <div class="max-w-4xl mx-auto px-6 py-24">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
-        The agentic web needs an identity layer it doesn't have yet.
-      </h2>
-      <div class="mt-8 space-y-5 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
-        <p>
-          Bot-defense systems â€” Cloudflare, DataDome, hCaptcha, Arkose â€” cannot tell a
-          legitimate Anthropic, OpenAI, or Mistral agent apart from a scraper.
-          They either overblock (and frustrate human users whose agents are doing
-          benign work on their behalf) or underblock (and bleed data and revenue to
-          actual abuse).
-        </p>
-        <p>
-          Every major agent platform is solving identity inside its own ecosystem â€”
-          MCP authentication, A2A, AP2. None of them are building the cross-vendor
-          neutral layer that the rest of the web needs.
-        </p>
-        <p>
-          Blockchain-anchored approaches solve the commerce case at the cost of
-          1â€“12 second finality, gas fees, and an audit story that won't pass
-          SOC&nbsp;2 or the EU AI Act. The 90% of agent traffic that isn't
-          commerce â€” research, scheduling, automation, reading â€” needs a
-          classical-PKI answer.
-        </p>
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="max-w-3xl">
+        <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">The problem</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
+          The agentic web needs an identity layer it doesn't have yet.
+        </h2>
       </div>
+
+      <div class="mt-12 grid md:grid-cols-3 gap-4">
+        <!-- Problem card 1: bot defense -->
+        <div class="rounded-xl border border-red-500/25 bg-red-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-red-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-red-400">false positives</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Bot defense can't tell agents apart from scrapers.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              Cloudflare, DataDome, hCaptcha, Arkose either overblock (frustrate humans whose agents are working on their behalf) or underblock (bleed data and revenue to actual abuse). They need a third bucket.
+            </p>
+          </div>
+        </div>
+
+        <!-- Problem card 2: vendor fragmentation -->
+        <div class="rounded-xl border border-amber-500/25 bg-amber-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-amber-400">vendor lock-in</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Every platform is building its own silo.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              MCP, A2A, AP2 — each solves identity inside its own walls. Nobody is building the neutral cross-vendor layer the rest of the web needs to verify an agent that doesn't live in their stack.
+            </p>
+          </div>
+        </div>
+
+        <!-- Problem card 3: blockchain trade-offs -->
+        <div class="rounded-xl border border-blue-500/25 bg-blue-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-blue-400">wrong trade-off</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Blockchain answers a commerce question with seconds of latency.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              1–12 second finality + gas fees + an audit story that doesn't pass SOC&nbsp;2 or the EU AI Act. Fine for settlement; unusable for the 90% of agent traffic that's research, scheduling, reading, automation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-10 max-w-3xl text-[color:var(--color-text-muted)] leading-relaxed">
+        <span class="text-[color:var(--color-accent-bright)] font-medium">The classical-PKI answer is missing.</span>
+        That's what AgentPKI is — open spec, edge-verified, vendor-neutral, chain-agnostic.
+      </p>
     </div>
   </section>
 
@@ -560,15 +608,15 @@ import Base from '../layouts/Base.astro';
   <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ CODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
     <div class="max-w-6xl mx-auto px-6 py-24">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Two lines on each side.</h2>
-      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">
-        Agents sign with the SDK. Sites verify with a single POST.
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Drop-in on every side.</h2>
+      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg max-w-2xl">
+        Agents sign with the SDK. Sites verify with one POST. Bot-defense vendors slot in 30 lines of middleware.
       </p>
 
       <!-- Equal-height cards (grid-stretch + flex-column).
            Outer card has a subtle violet tint that pops on the dark page;
            inner body uses the page bg so the code block sits in the darkest layer. -->
-      <div class="mt-10 grid lg:grid-cols-2 gap-5 items-stretch">
+      <div class="mt-10 grid lg:grid-cols-3 gap-5 items-stretch">
         <div class="code-card">
           <div class="code-card-header">
             <span class="code-card-dot"></span>
@@ -625,12 +673,44 @@ Content-Type: application/json
 }`}</code></pre>
           </div>
         </div>
+
+        <div class="code-card">
+          <div class="code-card-header">
+            <span class="code-card-dot"></span>
+            <span>Bot-defense middleware</span>
+            <span class="code-card-badge">~30 LOC drop-in</span>
+          </div>
+          <div class="code-card-body">
+            <pre class="astro-code"><code>{`// Slot into Cloudflare / DataDome /
+// hCaptcha / Arkose decision pipelines.
+// SIGNAL-only — never overrides yours.
+
+const apkiSignal = async (req) => {
+  const token = req.headers
+    .get('AgentPKI-Token');
+  if (!token) return null;
+
+  const r = await fetch(
+    'https://verify.agentpki.dev/v1/verify',
+    { method: 'POST',
+      body: JSON.stringify({ token }) }
+  );
+  const v = await r.json();
+  return { verdict: v.verdict,
+           tier: v.passport?.tier };
+};
+
+// → feeds your existing score
+score -= (await apkiSignal(req))
+  ?.verdict === 'allow' ? 30 : 0;`}</code></pre>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ TRY IT LIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-  <section class="border-t border-[color:var(--color-border)]">
+  <!-- ─────────── TRY IT LIVE ─────────── -->
+  <section id="try-it-live" class="border-t border-[color:var(--color-border)] scroll-mt-20">
     <div class="max-w-6xl mx-auto px-6 py-24">
       <div class="text-center mb-10">
         <p class="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
@@ -732,6 +812,28 @@ Content-Type: application/json
 
       if (!button) return;
 
+      // Hero "Watch the live demo" CTA: scroll to the section AND auto-trigger the run
+      const heroDemoLink = document.getElementById('hero-watch-demo');
+      if (heroDemoLink) {
+        heroDemoLink.addEventListener('click', () => {
+          // Let the native #try-it-live anchor scroll first; trigger run after the scroll completes
+          setTimeout(() => button.click(), 650);
+        });
+      }
+
+      // Sticky nav: reveal the "Sign up free" pill once user scrolls past the hero
+      const navCta = document.getElementById('nav-signup-cta');
+      if (navCta) {
+        const onScroll = () => {
+          const past = window.scrollY > 480;
+          navCta.style.opacity = past ? '1' : '0';
+          navCta.style.transform = past ? 'translateY(0)' : 'translateY(4px)';
+          navCta.style.pointerEvents = past ? 'auto' : 'none';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+
       const setLoading = (loading) => {
         button.disabled = loading;
         iconPlay.classList.toggle('hidden', loading);
@@ -825,76 +927,73 @@ Content-Type: application/json
       <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Who it's for</h2>
 
       <div class="mt-12 grid md:grid-cols-3 gap-4">
-        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] flex flex-col">
+          <div class="mb-4 step-icon inline-flex items-center justify-center w-11 h-11 rounded-lg text-[color:var(--color-accent-bright)]">
+            <svg class="w-6 h-6 text-[color:var(--color-accent-bright)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="m18 5 3 3"/><path d="m15 8 3 3"/></svg>
+          </div>
           <h3 class="font-semibold tracking-tight text-lg">Agent platforms</h3>
-          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed flex-1">
             Mint passports for your agent fleet. T1 DNS-verified is free.
             T2 KYB-verified unlocks paid scopes and commerce flows.
             T3 hardware-attested for high-stakes financial and healthcare use.
           </p>
+          <a href="https://dashboard.agentpki.dev" class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">Claim your domain &rarr;</a>
         </div>
-        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] flex flex-col">
+          <div class="mb-4 step-icon inline-flex items-center justify-center w-11 h-11 rounded-lg text-[color:var(--color-accent-bright)]">
+            <svg class="w-6 h-6 text-[color:var(--color-accent-bright)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
           <h3 class="font-semibold tracking-tight text-lg">Websites &amp; APIs</h3>
-          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed flex-1">
             Verify agents at the edge before serving. Set a policy (minimum tier,
             required scopes, abuse threshold) and let the verifier decide.
-            Allow, throttle, or deny â€” your call.
+            Allow, throttle, or deny — your call.
           </p>
+          <a href="/spec/v0.1#9-site-policy" class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">Read the policy spec &rarr;</a>
         </div>
-        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
+
+        <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] flex flex-col">
+          <div class="mb-4 step-icon inline-flex items-center justify-center w-11 h-11 rounded-lg text-[color:var(--color-accent-bright)]">
+            <svg class="w-6 h-6 text-[color:var(--color-accent-bright)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 2L4 6v6c0 5.5 3.5 10 8 12 4.5-2 8-6.5 8-12V6l-8-4z"/></svg>
+          </div>
           <h3 class="font-semibold tracking-tight text-lg">Bot-defense vendors</h3>
-          <p class="mt-4 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed flex-1">
             Drop-in trust signal for your decision pipeline. Native modules
             planned for Cloudflare, DataDome, hCaptcha, Arkose. Stops false
             positives on real agent traffic without weakening anti-abuse.
           </p>
+          <a href="https://github.com/agentpki/bot-defense-reference" class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">See the 30-line drop-in &rarr;</a>
         </div>
       </div>
     </div>
   </section>
 
 
-  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ WAITLIST CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ─────────── FINAL CTA ─────────── -->
   <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
-    <div class="max-w-3xl mx-auto px-6 py-28 text-center relative">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Early access is open.</h2>
-      <p class="mt-4 text-lg lg:text-xl text-[color:var(--color-text-muted)]">
-        We're working with a small set of agent platforms, bot-defense vendors, and design partners on the
-        v0.1 spec and reference implementations. Tell us who you are.
+    <div class="max-w-4xl mx-auto px-6 py-28 text-center relative">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+        Spin up your own issuer in 3 minutes.
+      </h2>
+      <p class="mt-5 text-lg lg:text-xl text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
+        Free DNS-tier (T1) signup. Verify your domain, mint Ed25519 keys, deploy a real-issuer Worker — all from a self-serve dashboard.
       </p>
 
-      <form action="mailto:hello@agentpki.dev"
-            method="POST"
-            enctype="text/plain"
-            class="mt-10 max-w-xl mx-auto grid sm:grid-cols-[1fr_auto] gap-3">
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="you@company.com"
-          class="px-4 py-3 rounded-lg bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border-bright)] focus:border-[color:var(--color-accent)] outline-none transition"
-        />
-        <select
-          name="role"
-          required
-          class="px-4 py-3 rounded-lg bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border-bright)] focus:border-[color:var(--color-accent)] outline-none transition"
-        >
-          <option value="">I am a/anâ€¦</option>
-          <option value="agent-platform">Agent platform</option>
-          <option value="site">Website or API operator</option>
-          <option value="bot-defense">Bot-defense vendor</option>
-          <option value="enterprise">Enterprise agent fleet</option>
-          <option value="other">Other</option>
-        </select>
-        <button
-          type="submit"
-          class="sm:col-span-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
-          Request early access
-        </button>
-      </form>
+      <div class="mt-10 flex flex-wrap gap-3 justify-center">
+        <a href="https://dashboard.agentpki.dev"
+           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-medium text-base hover:bg-[color:var(--color-accent-bright)] transition">
+          Sign up free &mdash; no credit card
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20design%20partner"
+           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+          Talk to the founder
+        </a>
+      </div>
 
-      <p class="mt-4 text-xs text-[color:var(--color-text-muted)]">
-        We'll respond personally within 48&nbsp;hours.
+      <p class="mt-5 text-xs text-[color:var(--color-text-muted)]">
+        Bot-defense vendors, enterprise design partners, and agent platforms — reach out directly at <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">hello@agentpki.dev</a>. Personal reply within 48&nbsp;hours.
       </p>
     </div>
   </section>
