@@ -752,24 +752,57 @@ score -= (await apkiSignal(req))
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">01</span>
-                <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)]">passport minted</span>
+                <span class="font-semibold text-sm tracking-tight">Issuer minted a passport</span>
               </div>
               <span id="try-mint-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
             </div>
-            <pre id="try-mint-output" class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+            <p id="try-mint-narrative" class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3"></p>
+            <details class="group">
+              <summary class="cursor-pointer text-xs font-mono text-[color:var(--color-text-dim)] hover:text-[color:var(--color-accent)] transition select-none inline-flex items-center gap-1">
+                <svg class="w-3 h-3 transition-transform group-open:rotate-90" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4z"/></svg>
+                Show signed token &amp; payload
+              </summary>
+              <pre id="try-mint-output" class="mt-3 text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+            </details>
           </div>
 
           <!-- Step 2: verify result -->
           <div id="try-verify" class="hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/80 p-5">
-            <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2">
                 <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">02</span>
-                <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)]">verifier response</span>
+                <span class="font-semibold text-sm tracking-tight">Verifier validated it</span>
               </div>
               <span id="try-verify-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
             </div>
-            <div id="try-verdict-badge" class="mb-3 hidden"></div>
-            <pre id="try-verify-output" class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+            <div id="try-verdict-badge" class="mb-4 hidden"></div>
+            <p id="try-verify-narrative" class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3"></p>
+            <details class="group">
+              <summary class="cursor-pointer text-xs font-mono text-[color:var(--color-text-dim)] hover:text-[color:var(--color-accent)] transition select-none inline-flex items-center gap-1">
+                <svg class="w-3 h-3 transition-transform group-open:rotate-90" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4z"/></svg>
+                Show full verifier response
+              </summary>
+              <pre id="try-verify-output" class="mt-3 text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
+            </details>
+          </div>
+
+          <!-- Final summary - shown after both steps -->
+          <div id="try-summary" class="hidden rounded-xl border border-[color:var(--color-accent)]/30 bg-gradient-to-br from-[color:var(--color-accent)]/10 to-transparent p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="w-4 h-4 text-[color:var(--color-accent-bright)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              <span class="font-semibold text-sm tracking-tight">What just happened?</span>
+            </div>
+            <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>The demo issuer signed a fresh <strong class="text-[color:var(--color-text)]">PASETO v4.public</strong> token with its Ed25519 private key, scoped to <code class="text-xs">read:articles</code>.</li>
+              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>The verifier fetched the issuer's public key from its <code class="text-xs">/.well-known/agentpki-issuer.json</code> directory, validated the signature, consulted the CRL, and returned a verdict.</li>
+              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>No shared secrets. No blockchain. No callout to a vendor's API. All cryptographic, stateless, &lt; 50 ms at the edge — globally.</li>
+            </ul>
+            <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] flex flex-wrap gap-3 items-center justify-between">
+              <p class="text-xs text-[color:var(--color-text-dim)]">In production, you replace <code class="text-[10px]">demo.agentpki.dev</code> with your own issuer.</p>
+              <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-1 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">
+                Spin up your own issuer &rarr;
+              </a>
+            </div>
           </div>
 
           <!-- Error state -->
@@ -795,29 +828,38 @@ score -= (await apkiSignal(req))
       const VERIFIER    = 'https://verify.agentpki.dev';
 
       const $ = (id) => document.getElementById(id);
-      const button       = $('try-run');
-      const label        = $('try-label');
-      const iconPlay     = $('try-icon-play');
-      const iconSpin     = $('try-icon-spin');
-      const results      = $('try-results');
-      const mintBlock    = $('try-mint');
-      const mintOutput   = $('try-mint-output');
-      const mintTime     = $('try-mint-time');
-      const verifyBlock  = $('try-verify');
-      const verifyOutput = $('try-verify-output');
-      const verifyTime   = $('try-verify-time');
-      const verdictBadge = $('try-verdict-badge');
-      const errorBlock   = $('try-error');
-      const errorOutput  = $('try-error-output');
+      const button         = $('try-run');
+      const label          = $('try-label');
+      const iconPlay       = $('try-icon-play');
+      const iconSpin       = $('try-icon-spin');
+      const results        = $('try-results');
+      const mintBlock      = $('try-mint');
+      const mintOutput     = $('try-mint-output');
+      const mintNarrative  = $('try-mint-narrative');
+      const mintTime       = $('try-mint-time');
+      const verifyBlock    = $('try-verify');
+      const verifyOutput   = $('try-verify-output');
+      const verifyNarrative = $('try-verify-narrative');
+      const verifyTime     = $('try-verify-time');
+      const verdictBadge   = $('try-verdict-badge');
+      const summaryBlock   = $('try-summary');
+      const errorBlock     = $('try-error');
+      const errorOutput    = $('try-error-output');
 
       if (!button) return;
 
-      // Hero "Watch the live demo" CTA: scroll to the section AND auto-trigger the run
+      // Hero "Watch the live demo" CTA: scroll to the section AND auto-trigger the run.
+      // Delay long enough for the section to fully scroll into view and the button
+      // to be visibly pulsing — otherwise the auto-run feels jarring.
       const heroDemoLink = document.getElementById('hero-watch-demo');
       if (heroDemoLink) {
         heroDemoLink.addEventListener('click', () => {
-          // Let the native #try-it-live anchor scroll first; trigger run after the scroll completes
-          setTimeout(() => button.click(), 650);
+          // Pulse the run button so visitor sees it's about to fire
+          button.classList.add('ring-4', 'ring-[color:var(--color-accent)]/40');
+          setTimeout(() => {
+            button.classList.remove('ring-4', 'ring-[color:var(--color-accent)]/40');
+            button.click();
+          }, 1600);
         });
       }
 
@@ -846,11 +888,12 @@ score -= (await apkiSignal(req))
         results.classList.remove('hidden');
         mintBlock.classList.add('hidden');
         verifyBlock.classList.add('hidden');
+        summaryBlock.classList.add('hidden');
         errorBlock.classList.add('hidden');
         verdictBadge.classList.add('hidden');
 
         try {
-          // â”€â”€ Step 1: mint a passport
+          // ── Step 1: mint a passport
           const t0 = performance.now();
           const mintRes = await fetch(
             DEMO_ISSUER + '/mint?sub=' +
@@ -862,11 +905,22 @@ score -= (await apkiSignal(req))
           }
           const minted = await mintRes.json();
           const t1 = performance.now();
+          const mintMs = Math.round(t1 - t0);
 
-          mintTime.textContent = Math.round(t1 - t0) + 'ms';
+          mintTime.textContent = mintMs + 'ms';
+          mintNarrative.innerHTML =
+            '<code class="text-[color:var(--color-accent-bright)]">demo.agentpki.dev</code> just signed a fresh <strong class="text-[color:var(--color-text)]">PASETO v4.public</strong> token for an agent called <code class="text-xs">' +
+            minted.passport.sub +
+            '</code>, scoped to <code class="text-xs">' +
+            (minted.passport.scope || []).join(', ') +
+            '</code>. Token signed with Ed25519 key <code class="text-[10px]">' +
+            minted.passport.kid +
+            '</code>, valid for ' +
+            minted.expires_in +
+            ' seconds.';
           mintOutput.textContent = JSON.stringify(
             {
-              token: minted.token.slice(0, 64) + 'â€¦',
+              token: minted.token.slice(0, 64) + '…',
               passport: {
                 iss: minted.passport.iss,
                 sub: minted.passport.sub,
@@ -881,7 +935,10 @@ score -= (await apkiSignal(req))
           );
           mintBlock.classList.remove('hidden');
 
-          // â”€â”€ Step 2: verify the passport
+          // Brief pause so the user sees Step 1 land before Step 2 starts
+          await new Promise((r) => setTimeout(r, 350));
+
+          // ── Step 2: verify the passport
           const verifyRes = await fetch(VERIFIER + '/v1/verify', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -889,28 +946,43 @@ score -= (await apkiSignal(req))
           });
           const verdict = await verifyRes.json();
           const t2 = performance.now();
+          const workerMs = verdict.elapsed_ms ?? '?';
+          const wallMs = Math.round(t2 - t1);
 
-          verifyTime.textContent =
-            'worker ' + (verdict.elapsed_ms ?? '?') + 'ms Â· wall ' + Math.round(t2 - t1) + 'ms';
+          verifyTime.textContent = 'worker ' + workerMs + 'ms · wall ' + wallMs + 'ms';
 
           const isAllow = verdict.verdict === 'allow';
-          const badgeBase =
-            'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border ';
-          const badgeColor = isAllow
-            ? 'bg-green-500/10 text-green-400 border-green-500/40'
-            : 'bg-red-500/10 text-red-400 border-red-500/40';
-          verdictBadge.className = 'mb-3 ' + (verdict.verdict ? '' : 'hidden');
+          const verdictColor = isAllow
+            ? { fg: 'text-green-300', bg: 'bg-green-500/10', border: 'border-green-500/40', icon: 'text-green-400' }
+            : { fg: 'text-red-300',   bg: 'bg-red-500/10',   border: 'border-red-500/40',   icon: 'text-red-400'   };
+          const checkSvg = isAllow
+            ? '<svg class="w-7 h-7 ' + verdictColor.icon + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>'
+            : '<svg class="w-7 h-7 ' + verdictColor.icon + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+          verdictBadge.className =
+            'mb-4 flex items-center gap-3 px-4 py-3 rounded-lg border ' +
+            verdictColor.bg + ' ' + verdictColor.border;
           verdictBadge.innerHTML =
-            '<span class="' +
-            badgeBase +
-            badgeColor +
-            '">verdict: ' +
-            (verdict.verdict || 'unknown') +
-            '</span>';
+            checkSvg +
+            '<div class="flex-1">' +
+            '<div class="font-mono text-xl font-semibold ' + verdictColor.fg + ' uppercase tracking-wide">verdict: ' + (verdict.verdict || 'unknown') + '</div>' +
+            '<div class="text-xs ' + verdictColor.fg + '/70 font-mono mt-0.5">' + workerMs + 'ms edge compute · ' + wallMs + 'ms wall-clock</div>' +
+            '</div>';
           verdictBadge.classList.remove('hidden');
+
+          verifyNarrative.innerHTML = isAllow
+            ? '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> fetched the issuer\'s public key from <code class="text-xs">/.well-known/agentpki-issuer.json</code>, verified the Ed25519 signature against the passport payload, confirmed the token is not expired and not revoked (CRL fresh: <code class="text-xs">' +
+              (verdict.crl_fresh ? 'true' : 'false') +
+              '</code>), then returned <strong class="text-green-300">allow</strong>.'
+            : '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> received the token but rejected it. Reason: <code class="text-xs">' +
+              (verdict.failure_reason || 'unknown') +
+              '</code>. ' + (verdict.failure_detail ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">' + verdict.failure_detail + '</span>' : '');
 
           verifyOutput.textContent = JSON.stringify(verdict, null, 2);
           verifyBlock.classList.remove('hidden');
+
+          // Show the summary card last
+          await new Promise((r) => setTimeout(r, 200));
+          summaryBlock.classList.remove('hidden');
         } catch (e) {
           errorOutput.textContent = (e && e.message) || String(e);
           errorBlock.classList.remove('hidden');
