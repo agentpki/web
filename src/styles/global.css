@@ -391,4 +391,23 @@ code:not(pre code) {
     animation: none !important;
   }
   .step-card, .stat-card, .std-badge { transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Scroll-reveal animation — sections fade and rise as they enter the viewport.
+ * Toggled by IntersectionObserver in index.astro.
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
 }

@@ -15,8 +15,9 @@ import Base from '../layouts/Base.astro';
       </a>
       <nav class="flex items-center gap-3 sm:gap-6 text-sm">
         <a href="#try-it-live" class="hidden sm:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Demo</a>
+        <a href="#pricing" class="hidden sm:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Pricing</a>
         <a href="/spec/v0.1" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">Spec</a>
-        <a href="https://github.com/agentpki" class="hidden sm:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
+        <a href="https://github.com/agentpki" class="hidden md:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
         <a href="https://dashboard.agentpki.dev"
            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[color:var(--color-accent)]/40 text-[color:var(--color-accent-bright)] hover:bg-[color:var(--color-accent)]/10 transition">
           Sign in
@@ -33,13 +34,18 @@ import Base from '../layouts/Base.astro';
   <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ HERO â€” single-column centered text â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <section class="aurora-glow relative overflow-hidden">
     <div class="max-w-5xl mx-auto px-6 pt-24 pb-16 lg:pt-32 lg:pb-20 text-center">
-      <p class="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
+      <a href="#try-it-live" class="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition group">
         <span class="relative flex w-1.5 h-1.5">
-          <span class="absolute inset-0 rounded-full bg-[color:var(--color-accent)] opacity-75 animate-ping"></span>
-          <span class="relative w-1.5 h-1.5 rounded-full bg-[color:var(--color-accent)]"></span>
+          <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
+          <span class="relative w-1.5 h-1.5 rounded-full bg-green-400"></span>
         </span>
-        v0.1 draft &middot; published 2026-05-21
-      </p>
+        <span class="font-mono">live</span>
+        <span class="text-[color:var(--color-text-dim)]">·</span>
+        <span><strong class="text-[color:var(--color-text)] font-medium">agentpki.dev</strong> verifying in production</span>
+        <span class="text-[color:var(--color-text-dim)]">·</span>
+        <span class="font-mono">v0.1</span>
+        <svg class="w-3 h-3 ml-1 transition-transform group-hover:translate-x-0.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2.5l3 3.5-3 3.5"/></svg>
+      </a>
 
       <h1 class="text-5xl sm:text-6xl lg:text-[5rem] font-semibold tracking-[-0.025em] leading-[1.02] text-balance">
         Cryptographic identity for<br />
@@ -1041,6 +1047,156 @@ score -= (await apkiSignal(req))
     </div>
   </section>
 
+  <!-- ─────────── PRICING / CUSTOMER MATRIX ─────────── -->
+  <section id="pricing" class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20 scroll-mt-20">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="max-w-2xl mb-12">
+        <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">pricing</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Free forever to start. Pay only as you scale.</h2>
+        <p class="mt-5 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
+          The protocol, SDKs, reference verifier, and bot-defense middleware are Apache&nbsp;2.0 / MIT open source. We sell the hosted operational layer on top — pick the lane that matches your scale.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-5">
+        <!-- TIER 1: free / hobbyist -->
+        <div class="relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col">
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">tier · open</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-semibold tracking-tight">Free</span>
+            <span class="text-sm text-[color:var(--color-text-muted)]">· forever</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For individual developers, OSS projects, and small teams self-serving.</p>
+
+          <div class="space-y-2.5 text-sm flex-1">
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">T1 DNS-verified issuer</strong> — 1 domain, unlimited passports</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Self-hosted reference verifier (open source)</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>SDKs (TS + Python), CLI, all spec docs</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bot-defense reference middleware (30 LOC)</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-text-dim)] mt-0.5">—</span><span class="text-[color:var(--color-text-muted)]">Community support · best-effort uptime</span></div>
+          </div>
+
+          <a href="https://dashboard.agentpki.dev" class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
+            Sign up free &rarr;
+          </a>
+          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">No credit card · 2-minute setup</p>
+        </div>
+
+        <!-- TIER 2: hosted issuer (featured) -->
+        <div class="relative rounded-2xl border-2 border-[color:var(--color-accent)]/60 bg-gradient-to-b from-[color:var(--color-accent)]/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(167,139,250,0.4)]">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-accent)] text-black text-[10px] font-mono uppercase tracking-widest font-semibold">most popular</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)]">tier · hosted</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-semibold tracking-tight">$99</span>
+            <span class="text-sm text-[color:var(--color-text-muted)]">/mo · per issuer</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For SaaS teams shipping agents — hosted issuer, no Worker to run yourself.</p>
+
+          <div class="space-y-2.5 text-sm flex-1">
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Everything in Free</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">Hosted issuer</strong> — we run the Worker, rotate keys, ship the CRL</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>100k mints/mo included · $0.001/mint after</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Dashboard analytics, audit log, abuse pipeline</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>99.9% SLA · email support · 24h response</span></div>
+          </div>
+
+          <a href="https://dashboard.agentpki.dev?plan=hosted" class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[color:var(--color-accent)] text-black text-sm font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+            Start 30-day trial &rarr;
+          </a>
+          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">No card during trial · cancel anytime</p>
+        </div>
+
+        <!-- TIER 3: enterprise -->
+        <div class="relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col">
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">tier · enterprise</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-4xl font-semibold tracking-tight">Custom</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For banks, regulated industries, bot-defense vendors, and large agent fleets.</p>
+
+          <div class="space-y-2.5 text-sm flex-1">
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Everything in Hosted</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">T2 KYB</strong> + <strong class="text-[color:var(--color-text)]">T3 hardware</strong>-attested issuers</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Dedicated verifier with regional residency</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>SOC&nbsp;2 Type II · HIPAA · EU AI Act attestation</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>99.99% SLA · 24/7 on-call · dedicated CSM</span></div>
+            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bot-defense vendor rev-share available</span></div>
+          </div>
+
+          <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20enterprise%20inquiry" class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
+            Talk to the founder &rarr;
+          </a>
+          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">48h response · NDAs available</p>
+        </div>
+      </div>
+
+      <!-- Customer × use-case matrix below the tiers -->
+      <div class="mt-16">
+        <h3 class="text-xl font-semibold tracking-tight mb-6">Who uses which tier</h3>
+        <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-[color:var(--color-border)] text-left">
+                  <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Customer type</th>
+                  <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Typical scale</th>
+                  <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Best-fit tier</th>
+                  <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Outcome they get</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[color:var(--color-border)]">
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">Solo dev / OSS project</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">&lt; 10k mints/mo</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-text-dim)]/15 text-[color:var(--color-text-muted)] font-mono text-[11px]">Free</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Real cryptographic identity for their agent without running infrastructure</td>
+                </tr>
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">SaaS shipping AI agents</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">10k–1M mints/mo</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/20 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Hosted $99/mo</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Issue + rotate keys + audit, no Worker to operate. Customers' bot-defense vendors stop blocking their agent traffic.</td>
+                </tr>
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">Website / API operator</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">any</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-text-dim)]/15 text-[color:var(--color-text-muted)] font-mono text-[11px]">Free verifier</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Distinguish legit AI agents from scrapers at the edge, set a per-route policy</td>
+                </tr>
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">Bot-defense vendor</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">100M+ verifies/mo</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · rev share</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Native AgentPKI signal in their decision pipeline, false-positive reduction, co-marketing as "AgentPKI inside"</td>
+                </tr>
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">Bank / regulated enterprise</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">10–500 issuers</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · T2/T3</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">KYB-verified issuance, SOC&nbsp;2 / EU AI Act paper trail, hardware-attested keys, residency control</td>
+                </tr>
+                <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
+                  <td class="px-5 py-4 font-medium">Agent marketplace / federation</td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">multi-tenant</td>
+                  <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · federation</span></td>
+                  <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Cross-org passport scoping (vendor A's agents allowed at vendor B's API under negotiated terms)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="mt-5 text-xs text-[color:var(--color-text-dim)]">Mints/verifies/issuers numbers are guidance, not hard caps. Need something different? <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">Email us</a> — we tailor.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ─────────── FINAL CTA ─────────── -->
   <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
@@ -1070,7 +1226,32 @@ score -= (await apkiSignal(req))
     </div>
   </section>
 
-  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- Scroll-reveal: sections fade in as they enter the viewport -->
+  <script is:inline>
+    (function () {
+      const sections = document.querySelectorAll('section');
+      if (!('IntersectionObserver' in window) || sections.length === 0) return;
+      sections.forEach((s, i) => {
+        // Skip the very first hero so it loads visible above the fold
+        if (i === 0) return;
+        s.classList.add('reveal');
+      });
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('reveal-in');
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -80px 0px', threshold: 0.08 },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    })();
+  </script>
+
+  <!-- ─────────── FOOTER ─────────── -->
   <footer class="border-t border-[color:var(--color-border)]">
     <div class="max-w-6xl mx-auto px-6 py-10 flex flex-wrap items-center justify-between gap-6 text-sm text-[color:var(--color-text-muted)]">
       <div class="flex items-center gap-2">
