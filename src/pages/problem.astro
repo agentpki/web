@@ -20,6 +20,70 @@ import Footer from '../components/Footer.astro';
     </div>
   </section>
 
+  <!-- ─────────── PROBLEM ─────────── -->
+  <section>
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="max-w-3xl">
+        <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">The problem</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
+          The agentic web needs an identity layer it doesn't have yet.
+        </h2>
+      </div>
+
+      <div class="mt-12 grid md:grid-cols-3 gap-4">
+        <!-- Problem card 1: bot defense -->
+        <div class="rounded-xl border border-red-500/25 bg-red-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-red-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span class="font-mono text-xs uppercase tracking-widest text-red-400">false positives</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Bot defense can't tell agents apart from scrapers.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              Cloudflare, DataDome, hCaptcha, Arkose either overblock (frustrate humans whose agents are working on their behalf) or underblock (bleed data and revenue to actual abuse). They need a third bucket.
+            </p>
+          </div>
+        </div>
+
+        <!-- Problem card 2: vendor fragmentation -->
+        <div class="rounded-xl border border-amber-500/25 bg-amber-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span class="font-mono text-xs uppercase tracking-widest text-amber-400">vendor lock-in</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Every platform is building its own silo.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              MCP, A2A, AP2 — each solves identity inside its own walls. Nobody is building the neutral cross-vendor layer the rest of the web needs to verify an agent that doesn't live in their stack.
+            </p>
+          </div>
+        </div>
+
+        <!-- Problem card 3: blockchain trade-offs -->
+        <div class="rounded-xl border border-blue-500/25 bg-blue-500/[0.03] p-7 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-center gap-2 mb-4">
+              <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span class="font-mono text-xs uppercase tracking-widest text-blue-400">wrong trade-off</span>
+            </div>
+            <h3 class="font-semibold tracking-tight text-lg">Blockchain answers a commerce question with seconds of latency.</h3>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              1–12 second finality + gas fees + an audit story that doesn't pass SOC&nbsp;2 or the EU AI Act. Fine for settlement; unusable for the 90% of agent traffic that's research, scheduling, reading, automation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-10 max-w-3xl text-[color:var(--color-text-muted)] leading-relaxed">
+        <span class="text-[color:var(--color-accent-bright)] font-medium">The classical-PKI answer is missing.</span>
+        That's what AgentPKI is — open spec, edge-verified, vendor-neutral, chain-agnostic. The rest of this page is the long form: why this exists, why the existing pieces don't add up, and what we deliberately do (and don't) build.
+      </p>
+    </div>
+  </section>
+
   <!-- ─────────── 1. THE PROBLEM ─────────── -->
   <section>
     <div class="max-w-4xl mx-auto px-6 py-20">
