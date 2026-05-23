@@ -46,4 +46,29 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   })();
+
+  // Email CTA: copy address to clipboard alongside the mailto: attempt.
+  // Solves the "nothing happens when I click" case for users without a
+  // default mail-handler configured in their browser/OS.
+  (function () {
+    const ctas = document.querySelectorAll('[data-email-copy]');
+    ctas.forEach((cta) => {
+      cta.addEventListener('click', async () => {
+        const email = cta.getAttribute('data-email-copy');
+        if (!email || !navigator.clipboard) return;
+        try {
+          await navigator.clipboard.writeText(email);
+          const label = cta.querySelector('.email-cta-label');
+          if (!label) return;
+          const original = label.textContent;
+          label.textContent = 'Copied!';
+          cta.classList.add('text-[color:var(--color-accent-bright)]');
+          setTimeout(() => {
+            label.textContent = original;
+            cta.classList.remove('text-[color:var(--color-accent-bright)]');
+          }, 1600);
+        } catch { /* clipboard blocked — mailto: handler still fires */ }
+      });
+    });
+  })();
 </script>

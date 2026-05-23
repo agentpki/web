@@ -481,13 +481,15 @@ import Footer from '../components/Footer.astro';
           <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20design%20partner"
-           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
-          Talk to the founder
+           data-email-copy="hello@agentpki.dev"
+           class="email-cta group inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition font-mono text-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span class="email-cta-label">hello@agentpki.dev</span>
         </a>
       </div>
 
       <p class="mt-5 text-xs text-[color:var(--color-text-muted)]">
-        Bot-defense vendors, enterprise design partners, and agent platforms — reach out directly at <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">hello@agentpki.dev</a>. Personal reply within 48&nbsp;hours.
+        Bot-defense vendors, enterprise design partners, and agent platforms — personal reply within 48&nbsp;hours. Click the email to open your mail app; the address is also copied to your clipboard automatically.
       </p>
     </div>
   </section>

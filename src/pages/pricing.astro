@@ -109,8 +109,10 @@ import Footer from '../components/Footer.astro';
             <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bot-defense vendor rev-share available</span></div>
           </div>
 
-          <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20enterprise%20inquiry" class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
-            Talk to the founder &rarr;
+          <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20enterprise%20inquiry"
+             data-email-copy="hello@agentpki.dev"
+             class="email-cta mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
+            <span class="email-cta-label">Talk to the founder &rarr;</span>
           </a>
           <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">48h response · NDAs available</p>
         </div>
@@ -235,8 +237,11 @@ import Footer from '../components/Footer.astro';
           Sign up free
           <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20pricing%20chat" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
-          Email the founder
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20pricing%20chat"
+           data-email-copy="hello@agentpki.dev"
+           class="email-cta group inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition font-mono text-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span class="email-cta-label">hello@agentpki.dev</span>
         </a>
       </div>
     </div>
