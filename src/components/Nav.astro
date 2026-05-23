@@ -13,6 +13,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
       <span>AgentPKI</span>
     </a>
     <nav class="flex items-center gap-3 sm:gap-6 text-sm">
+      <a href="/" class={`transition ${pathname === '/' ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Home</a>
       <a href="/demo" class={`hidden sm:inline transition ${isActive('/demo') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Demo</a>
       <a href="/pricing" class={`hidden sm:inline transition ${isActive('/pricing') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Pricing</a>
       <a href="/spec/v0.1" class={`transition ${isActive('/spec') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Spec</a>
