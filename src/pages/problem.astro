@@ -264,6 +264,108 @@ import Footer from '../components/Footer.astro';
     </div>
   </section>
 
+  <!-- ──────────── BUILT ON OPEN STANDARDS (icons added) ──────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 py-24">
+      <div class="flex items-end justify-between flex-wrap gap-4">
+        <div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Built on open standards.</h2>
+          <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">
+            No proprietary crypto. No bespoke tokens. Just the well-vetted primitives the rest of the internet runs on.
+          </p>
+        </div>
+        <a href="/spec/v0.1#20-references" class="text-sm text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">See all references &rarr;</a>
+      </div>
+
+      <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- PASETO v4 -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/>
+                <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">token</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">PASETO v4</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Platform-Agnostic Security Tokens. Modern alternative to JWT — no algorithm-confusion footgun.</p>
+        </div>
+
+        <!-- Ed25519 -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="m18 5 3 3"/><path d="m15 8 3 3"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 8032</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Ed25519</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">EdDSA curve. Fast, deterministic, side-channel resistant. The crypto every modern stack agrees on.</p>
+        </div>
+
+        <!-- HTTP Message Signatures -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>
+                <path d="M9 13c1.5 0 1.5 2 3 2s1.5-2 3-2"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 9421</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">HTTP Message Signatures</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Mode B binds the passport to method, URL, and body — kills replay attacks within the signature window.</p>
+        </div>
+
+        <!-- Ed25519 SPKI -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">RFC 8410</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Ed25519 SPKI</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Standard X.509 public-key envelope. Drop into existing PKI tooling without translation.</p>
+        </div>
+
+        <!-- Apache 2.0 / MIT -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">license</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">Apache 2.0 / MIT</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Spec under Apache 2.0 (patent grant). SDKs and reference verifier under MIT. Forkable, embeddable, no rug-pull.</p>
+        </div>
+
+        <!-- W3C VC ready -->
+        <div class="std-badge p-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60">
+          <div class="flex items-center justify-between">
+            <span class="std-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">planned</span>
+          </div>
+          <div class="mt-4 font-mono text-sm font-semibold tracking-tight">W3C VC ready</div>
+          <p class="mt-2 text-sm text-[color:var(--color-text-muted)]">Credential-envelope abstraction in the spec lets a Verifiable-Credential mode slot in backward-compatibly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- ─────────── FINAL CTA ─────────── -->
   <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
     <div class="max-w-4xl mx-auto px-6 py-24 text-center relative">
