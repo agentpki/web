@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 ---
-<Base title="Why AgentPKI — agent identity, the missing layer" description="The agentic web doesn't have a cross-vendor identity layer. MCP, A2A, Kite, SPIFFE, blockchain — each solves a piece. AgentPKI is the neutral PKI piece the rest of the web needs.">
+<Base title="The problem AgentPKI solves — agent identity, the missing layer" description="The agentic web doesn't have a cross-vendor identity layer. MCP, A2A, Kite, SPIFFE, blockchain — each solves a piece. AgentPKI is the neutral PKI piece the rest of the web needs.">
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
   <div class="bg-layer bg-grid" aria-hidden="true"></div>
 
@@ -12,7 +12,7 @@ import Footer from '../components/Footer.astro';
   <!-- ─────────── HEADER ─────────── -->
   <section class="border-b border-[color:var(--color-border)]">
     <div class="max-w-4xl mx-auto px-6 pt-16 pb-12 lg:pt-20 lg:pb-16">
-      <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">why this exists</span>
+      <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">the problem &amp; the fix</span>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">The agentic web is missing a piece, and no one is building it.</h1>
       <p class="mt-6 text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
         Every major agent platform — Anthropic, OpenAI, Mistral, Google — is solving identity inside its own walls. Every bot-defense vendor — Cloudflare, DataDome, hCaptcha, Arkose — is trying to classify the resulting agent traffic without any cryptographic signal to anchor on. The web needs a neutral layer that lets the second group verify what the first group signed. That layer is what AgentPKI is.

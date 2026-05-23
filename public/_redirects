@@ -1,0 +1,4 @@
+# Old /why page renamed to /problem (2026-05-23). Permanent redirect so
+# any links shared in outreach or pasted into chat still resolve.
+/why    /problem    301
+/why/   /problem    301
