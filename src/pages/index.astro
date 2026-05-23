@@ -13,7 +13,7 @@ import Footer from '../components/Footer.astro';
   <!-- ──────────── HERO — single-column centered text ──────────── -->
   <section class="aurora-glow relative overflow-hidden">
     <div class="max-w-5xl mx-auto px-6 pt-24 pb-16 lg:pt-32 lg:pb-20 text-center">
-      <a href="#try-it-live" class="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition group">
+      <a href="/demo" class="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent)]/50 hover:text-[color:var(--color-text)] transition group">
         <span class="relative flex w-1.5 h-1.5">
           <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
           <span class="relative w-1.5 h-1.5 rounded-full bg-green-400"></span>
@@ -64,10 +64,10 @@ import Footer from '../components/Footer.astro';
     </div>
   </section>
 
-  <!-- ──────────── TRUST FLOW — 2-column: diagram left, narrative right ──────────── -->
+  <!-- ──────────── TRUST FLOW — full-width diagram + 3-column narrative below ──────────── -->
   <section class="relative overflow-hidden">
     <div class="max-w-6xl mx-auto px-6 pt-16 pb-24 lg:pt-20 lg:pb-32">
-      <!-- Section header (left-aligned, replaces the old centered caption) -->
+      <!-- Section header (left-aligned) -->
       <div class="max-w-3xl mb-12">
         <p class="inline-flex items-center gap-2 mb-4 text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)]">
           <span class="relative flex w-1.5 h-1.5">
@@ -81,16 +81,13 @@ import Footer from '../components/Footer.astro';
         </h2>
       </div>
 
-      <!-- Two-column: diagram on the left, "how to read this" on the right -->
-      <div class="grid lg:grid-cols-[2.2fr_1fr] gap-10 lg:gap-14 items-center">
+      <!-- FULL-WIDTH animated diagram with ambient glow -->
+      <div class="relative">
+        <!-- Ambient glow behind the diagram -->
+        <div class="absolute inset-0 -m-10 lg:-m-16 bg-[color:var(--color-accent)]/12 blur-[120px] rounded-[3rem] pointer-events-none" aria-hidden="true"></div>
 
-        <!-- LEFT: animated diagram with ambient glow -->
-        <div class="relative">
-          <!-- Ambient glow behind the diagram -->
-          <div class="absolute inset-0 -m-8 lg:-m-16 bg-[color:var(--color-accent)]/12 blur-[120px] rounded-[3rem] pointer-events-none" aria-hidden="true"></div>
-
-          <!-- Diagram container — minimal padding so SVG fills the column -->
-          <div class="relative rounded-2xl border border-[color:var(--color-border)]/60 bg-[color:var(--color-bg-elevated)]/30 backdrop-blur-sm p-2 sm:p-3 lg:p-4">
+        <!-- Diagram container — minimal padding so SVG can render large -->
+        <div class="relative rounded-2xl border border-[color:var(--color-border)]/60 bg-[color:var(--color-bg-elevated)]/30 backdrop-blur-sm p-3 sm:p-5 lg:p-6">
 
           <svg viewBox="0 0 900 480" class="hero-diagram w-full h-auto" xmlns="http://www.w3.org/2000/svg" aria-label="AgentPKI trust flow: issuer mints, agent presents, verifier validates">
             <defs>
@@ -221,56 +218,57 @@ import Footer from '../components/Footer.astro';
 
           </svg>
         </div>
-        </div>
-        <!-- End LEFT column -->
+      </div>
+      <!-- End full-width diagram -->
 
-        <!-- RIGHT: how to read this -->
-        <div>
-          <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)] mb-6">How to read this</h3>
+      <!-- 3-column narrative below the diagram -->
+      <div class="mt-16 lg:mt-20">
+        <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-muted)] mb-8">How to read this</h3>
 
-          <ol class="space-y-7">
-            <li class="flex gap-4">
-              <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">01</span>
-              <div>
-                <h4 class="font-semibold tracking-tight text-base">Issuer signs</h4>
-                <p class="mt-2 text-[15px] text-[color:var(--color-text-muted)] leading-relaxed">
-                  An agent platform (e.g., <code class="text-sm">anthropic.com</code>) signs a short-lived PASETO v4 passport with its Ed25519 private key. Key lives in an HSM and rotates every 90 days. The passport carries the agent's identity, capability scope, and trust tier.
-                </p>
-              </div>
-            </li>
-
-            <li class="flex gap-4">
-              <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">02</span>
-              <div>
-                <h4 class="font-semibold tracking-tight text-base">Agent presents</h4>
-                <p class="mt-2 text-[15px] text-[color:var(--color-text-muted)] leading-relaxed">
-                  The SDK attaches the passport to every outbound HTTPS request — either as a bearer header (Mode A) or via RFC 9421 HTTP Message Signatures bound to the request body (Mode B). One-line integration.
-                </p>
-              </div>
-            </li>
-
-            <li class="flex gap-4">
-              <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">03</span>
-              <div>
-                <h4 class="font-semibold tracking-tight text-base">Verifier validates</h4>
-                <p class="mt-2 text-[15px] text-[color:var(--color-text-muted)] leading-relaxed">
-                  The receiving site/API runs the verifier at the edge: fetches the issuer's public key from <code class="text-sm">/.well-known/agentpki-issuer.json</code>, verifies the Ed25519 signature, consults the revocation list, applies site policy, returns a verdict — under 50 ms p99, globally.
-                </p>
-              </div>
-            </li>
-          </ol>
-
-          <div class="mt-10 pt-6 border-t border-[color:var(--color-border)]">
-            <p class="text-[15px] text-[color:var(--color-text-muted)] leading-relaxed">
-              No shared secrets. No blockchain. No callout to a vendor's API. The site doesn't trust any single bot-defense vendor — only the issuer's published public key.
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 step-card">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="step-icon inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">01</span>
+              <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)]">Issuer signs</span>
+            </div>
+            <h4 class="font-semibold tracking-tight text-lg">The agent platform mints a passport.</h4>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              An agent platform (e.g., <code class="text-xs">anthropic.com</code>) signs a short-lived PASETO v4 passport with its Ed25519 private key. Key lives in an HSM and rotates every 90 days. The passport carries the agent's identity, scope, and trust tier.
             </p>
-            <a href="/demo?run=1" class="mt-5 inline-flex items-center gap-1.5 text-base font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition group">
-              Watch it run live
-              <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
+          </div>
+
+          <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 step-card">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="step-icon inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">02</span>
+              <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)]">Agent presents</span>
+            </div>
+            <h4 class="font-semibold tracking-tight text-lg">The SDK attaches it to every request.</h4>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              Either as a bearer header (Mode A, simple) or via RFC&nbsp;9421 HTTP Message Signatures bound to the request body (Mode B, integrity). One-line integration for the agent platform.
+            </p>
+          </div>
+
+          <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 step-card">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="step-icon inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold border border-[color:var(--color-accent)]/30">03</span>
+              <span class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)]">Verifier validates</span>
+            </div>
+            <h4 class="font-semibold tracking-tight text-lg">The edge returns a verdict in under 50 ms.</h4>
+            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              The verifier fetches the issuer's public key from <code class="text-xs">/.well-known/agentpki-issuer.json</code> (KV-cached), checks the Ed25519 signature, consults the CRL, applies site policy, returns allow / throttle / deny.
+            </p>
           </div>
         </div>
-        <!-- End RIGHT column -->
+
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-4">
+          <p class="text-[15px] text-[color:var(--color-text-muted)] leading-relaxed max-w-2xl">
+            No shared secrets. No blockchain. No callout to a vendor's API. The site doesn't trust any single bot-defense vendor — only the issuer's published public key.
+          </p>
+          <a href="/demo?run=1" class="inline-flex items-center gap-1.5 text-base font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition group">
+            Watch it run live
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -481,65 +479,6 @@ import Footer from '../components/Footer.astro';
               <text x="70" y="96" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="8">PASETO &middot; Ed25519</text>
             </g>
           </svg>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ──────────── HOW IT WORKS ──────────── -->
-  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-6xl mx-auto px-6 py-24">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">How it works</h2>
-      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg">Three participants, one verification path.</p>
-
-      <div class="relative mt-12">
-        <div class="step-connector hidden md:block left-[16%] right-[16%]" aria-hidden="true"></div>
-
-        <div class="grid md:grid-cols-3 gap-4 relative">
-          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
-            <div class="flex items-center gap-3">
-              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="m18 5 3 3"/><path d="m15 8 3 3"/></svg>
-              </span>
-              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 01</span>
-            </div>
-            <h3 class="mt-5 font-semibold tracking-tight text-lg">Issuer mints</h3>
-            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
-              The agent platform signs a short-lived passport with Ed25519 — PASETO v4 envelope,
-              24h max lifetime, agent identity plus capability scope plus trust tier. Keys live
-              in a managed HSM or hardware-attested enclave.
-            </p>
-          </div>
-
-          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
-            <div class="flex items-center gap-3">
-              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </span>
-              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 02</span>
-            </div>
-            <h3 class="mt-5 font-semibold tracking-tight text-lg">Agent presents</h3>
-            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
-              The SDK attaches the passport to every outbound request — either as a bearer
-              header for simple flows, or via RFC&nbsp;9421 HTTP Message Signatures bound to
-              the request body. Two lines of integration.
-            </p>
-          </div>
-
-          <div class="step-card p-7 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
-            <div class="flex items-center gap-3">
-              <span class="step-icon flex items-center justify-center w-10 h-10 rounded-lg text-[color:var(--color-accent-bright)]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-              </span>
-              <span class="font-mono text-xs text-[color:var(--color-text-dim)] tracking-widest">STEP 03</span>
-            </div>
-            <h3 class="mt-5 font-semibold tracking-tight text-lg">Verifier validates</h3>
-            <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
-              A Cloudflare Workers edge resolves the issuer public key, verifies the
-              signature, checks the revocation Bloom filter, applies site policy, and
-              returns a verdict — all in under 50 milliseconds, globally.
-            </p>
-          </div>
         </div>
       </div>
     </div>
