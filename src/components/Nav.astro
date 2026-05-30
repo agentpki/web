@@ -17,7 +17,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
       <a href="/problem" class={`hidden sm:inline transition whitespace-nowrap ${isActive('/problem') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Problem / Solution</a>
       <a href="/demo" class={`hidden sm:inline transition ${isActive('/demo') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Demo</a>
       <a href="/pricing" class={`hidden sm:inline transition ${isActive('/pricing') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Pricing</a>
-      <a href="/spec/v0.1" class={`transition ${isActive('/spec') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Spec</a>
+      <a href="/spec" class={`transition ${isActive('/spec') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Spec</a>
       <a href="https://github.com/agentpki" class="hidden md:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
       <a href="https://dashboard.agentpki.dev"
          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[color:var(--color-accent)]/40 text-[color:var(--color-accent-bright)] hover:bg-[color:var(--color-accent)]/10 transition">

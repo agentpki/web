@@ -1,0 +1,142 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ContactModal from '../../components/ContactModal.astro';
+---
+<Base
+  title="AgentPKI Protocol Specifications"
+  description="Open-protocol cryptographic identity for AI agents. v0.1 (stable draft) and v0.2 (active draft) specifications."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- ─────────── HEADER ─────────── -->
+  <section class="border-b border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 pt-16 pb-12 lg:pt-20 lg:pb-16">
+      <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">specifications</span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">
+        AgentPKI Protocol — published specifications
+      </h1>
+      <p class="mt-6 text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
+        Two published spec versions: <strong class="text-[color:var(--color-text)]">v0.1</strong> defined the core protocol (passport format, signing, verification, trust tiers); <strong class="text-[color:var(--color-text)]">v0.2</strong> adds the operational layer (KV-backed directory cache, CRL, Mode B replay detection, abuse aggregation). v0.2 is additive — no breaking changes from v0.1.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── VERSION CARDS ─────────── -->
+  <section>
+    <div class="max-w-5xl mx-auto px-6 py-16">
+      <div class="grid lg:grid-cols-2 gap-5">
+
+        <!-- v0.2 — current -->
+        <a href="/spec/v0.2" class="group relative rounded-2xl border-2 border-[color:var(--color-accent)]/60 bg-gradient-to-b from-[color:var(--color-accent)]/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(167,139,250,0.4)] hover:border-[color:var(--color-accent)] transition">
+          <div class="absolute -top-3 left-7">
+            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-accent)] text-black text-[10px] font-mono uppercase tracking-widest font-semibold">latest</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-3 mt-2">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)]">draft · active</span>
+          </div>
+          <div class="flex items-baseline gap-3 mb-3">
+            <span class="text-4xl font-semibold tracking-tight">v0.2</span>
+            <span class="text-sm text-[color:var(--color-text-muted)]">published 2026-05-27</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+            Adds production operational layer: KV-backed issuer directory cache with explicit TTL hints, full Certificate Revocation List (CRL) format, Mode B replay detection via Durable Object, abuse aggregation reporting endpoint, and extended verifier response schema (<code class="text-xs">crl_fresh</code>, <code class="text-xs">replay_checked</code>, <code class="text-xs">cached_until</code>).
+          </p>
+
+          <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">What's new since v0.1</h3>
+          <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] flex-1">
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Tiered issuer directory caching (memory → KV → origin)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>CRL document format + verifier behavior + caching rules</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Durable-Object-backed replay detection for Mode B</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span><code class="text-xs">POST /v1/abuse/report</code> aggregation endpoint</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Same-zone Worker fetch trap documented + service-binding fix</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-text-dim)] mt-0.5">·</span><span class="text-[color:var(--color-text-muted)]">Fully backward-compatible with v0.1 — no wire-format changes</span></li>
+          </ul>
+
+          <span class="mt-6 inline-flex items-center gap-1.5 text-base font-medium text-[color:var(--color-accent)] group-hover:text-[color:var(--color-accent-bright)] transition">
+            Read v0.2 spec
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <!-- v0.1 — stable -->
+        <a href="/spec/v0.1" class="group rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col hover:border-[color:var(--color-accent)]/40 transition">
+          <div class="flex items-baseline gap-2 mb-3">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">draft · stable</span>
+          </div>
+          <div class="flex items-baseline gap-3 mb-3">
+            <span class="text-4xl font-semibold tracking-tight">v0.1</span>
+            <span class="text-sm text-[color:var(--color-text-muted)]">published 2026-05-21</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+            The protocol core: passport token format (PASETO v4), Ed25519 signing, issuer directory at <code class="text-xs">/.well-known/agentpki-issuer.json</code>, three trust tiers (T1 DNS, T2 KYB, T3 hardware), Mode A bearer + Mode B RFC 9421 signed wire formats, verification procedure, capability scoping.
+          </p>
+
+          <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">What v0.1 defines</h3>
+          <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] flex-1">
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Passport token format (PASETO v4.public + Ed25519)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Issuer identity + trust tier model</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Mode A bearer header + Mode B HTTP Message Signatures</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Verification procedure (12 steps) + edge SLA expectations</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Capability scoping vocabulary</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bridges to MCP, A2A, Kite, SPIFFE, OWASP ANS</span></li>
+          </ul>
+
+          <span class="mt-6 inline-flex items-center gap-1.5 text-base font-medium text-[color:var(--color-accent)] group-hover:text-[color:var(--color-accent-bright)] transition">
+            Read v0.1 spec
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+      </div>
+
+      <!-- ─────────── License + repo ─────────── -->
+      <div class="mt-12 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-6">
+        <div class="grid sm:grid-cols-3 gap-6 text-sm">
+          <div>
+            <h4 class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">License</h4>
+            <p class="text-[color:var(--color-text)] font-medium">Apache License 2.0</p>
+            <p class="text-[color:var(--color-text-muted)] text-xs mt-1">Patent grant included. Forkable, embeddable, no rug-pull.</p>
+          </div>
+          <div>
+            <h4 class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">Repository</h4>
+            <p class="text-[color:var(--color-text)] font-medium"><a href="https://github.com/agentpki/spec" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">github.com/agentpki/spec</a></p>
+            <p class="text-[color:var(--color-text-muted)] text-xs mt-1">Source markdown, issue tracker, contribution guidelines.</p>
+          </div>
+          <div>
+            <h4 class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">SDKs implementing this protocol</h4>
+            <p class="text-[color:var(--color-text)] font-medium"><code class="text-xs">@agentpki/sdk</code> (npm), <code class="text-xs">agentpki</code> (PyPI)</p>
+            <p class="text-[color:var(--color-text-muted)] text-xs mt-1">v0.1.x supports v0.1; v0.2.x adds v0.2 features.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── FINAL CTA ─────────── -->
+  <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
+    <div class="max-w-4xl mx-auto px-6 py-20 text-center relative">
+      <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">See the protocol in action.</h2>
+      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
+        Anyone can run the full mint → verify pipeline against the production deployment in their browser.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-3 justify-center">
+        <a href="/demo?run=1" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-medium text-base hover:bg-[color:var(--color-accent-bright)] transition">
+          Watch the live demo
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button type="button" data-contact-modal data-contact-source="spec index / final CTA"
+                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition cursor-pointer">
+          Talk to Founder
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+</Base>

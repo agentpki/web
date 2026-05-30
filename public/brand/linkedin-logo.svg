@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Dark background, slightly rounded so it works as both square + circle (LinkedIn often masks to a circle) -->
+  <defs>
+    <radialGradient id="bgGlow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0%"  stop-color="#1a1530"/>
+      <stop offset="55%" stop-color="#0f0f17"/>
+      <stop offset="100%" stop-color="#08080b"/>
+    </radialGradient>
+    <linearGradient id="shieldStroke" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="checkStroke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="400" rx="80" fill="url(#bgGlow)"/>
+
+  <!-- Subtle inner ring suggesting depth -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="rgba(167,139,250,0.08)" stroke-width="1"/>
+
+  <!-- Shield -->
+  <g filter="url(#softGlow)">
+    <path d="M200 80
+             L300 140
+             L300 240
+             C300 290 256 328 200 340
+             C144 328 100 290 100 240
+             L100 140 Z"
+          fill="rgba(167,139,250,0.10)"
+          stroke="url(#shieldStroke)"
+          stroke-width="10"
+          stroke-linejoin="round"/>
+
+    <!-- Checkmark -->
+    <path d="M148 210 L188 250 L264 168"
+          fill="none"
+          stroke="url(#checkStroke)"
+          stroke-width="18"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+  </g>
+</svg>
