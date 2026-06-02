@@ -32,22 +32,38 @@ import ContactModal from '../components/ContactModal.astro';
     <div class="max-w-3xl mx-auto px-6 py-12">
       <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8">
         <!-- Header row -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-          <div class="text-xs sm:text-sm text-[color:var(--color-text-muted)] font-mono">
+        <div class="flex flex-col gap-4">
+          <div class="text-xs sm:text-sm text-[color:var(--color-text-muted)] font-mono break-all">
             <code>demo.agentpki.dev/mint</code>
             <span class="mx-2 text-[color:var(--color-text-dim)]">&rarr;</span>
             <code>verify.agentpki.dev/v1/verify</code>
           </div>
-          <button id="try-run"
-                  class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0">
-            <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
-            <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-              <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
-                <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
-              </circle>
-            </svg>
-            <span id="try-label">Run mint &rarr; verify</span>
-          </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="try-run"
+                    class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0">
+              <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
+              <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
+                  <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+              <span id="try-label">Run mint &rarr; verify</span>
+            </button>
+            <button id="try-tamper"
+                    class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0 text-sm">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span id="try-tamper-label">Try with tampered token</span>
+            </button>
+          </div>
+          <p class="text-xs text-[color:var(--color-text-dim)]">
+            <strong class="text-[color:var(--color-text-muted)]">Tampered token</strong>: we mint a valid passport, then flip a character in the signature before sending it to the verifier. Demonstrates the <em>not allowed</em> path with a real rejection.
+          </p>
+        </div>
+
+        <!-- Live step status — populated by JS as the demo runs -->
+        <div id="try-steps" class="hidden mt-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/40 p-4">
+          <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">Live status</div>
+          <ul id="try-steps-list" class="space-y-1.5 text-sm font-mono"></ul>
         </div>
 
         <div id="try-results" class="mt-6 space-y-4 hidden">
@@ -101,10 +117,16 @@ import ContactModal from '../components/ContactModal.astro';
               <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>The verifier fetched the issuer's public key from its <code class="text-xs">/.well-known/agentpki-issuer.json</code> directory, validated the signature, consulted the CRL, and returned a verdict.</li>
               <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>No shared secrets. No blockchain. No callout to a vendor's API. All cryptographic, stateless, &lt; 50 ms at the edge — globally.</li>
             </ul>
-            <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] flex flex-wrap gap-3 items-center justify-between">
-              <p class="text-xs text-[color:var(--color-text-dim)]">In production, you replace <code class="text-[10px]">demo.agentpki.dev</code> with your own issuer.</p>
-              <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-1 text-sm font-medium text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)] transition">
-                Spin up your own issuer &rarr;
+            <div class="mt-5 pt-5 border-t border-[color:var(--color-border)]">
+              <p class="text-sm text-[color:var(--color-text-muted)] mb-3">
+                In production, you replace <code class="text-xs">demo.agentpki.dev</code> with your own issuer.
+              </p>
+              <a href="https://dashboard.agentpki.dev"
+                 class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition text-base">
+                Spin up your own issuer
+                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none">
+                  <path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </a>
             </div>
           </div>
@@ -281,10 +303,14 @@ score -= (await apkiSignal(req))
 
       const $ = (id) => document.getElementById(id);
       const button         = $('try-run');
+      const tamperButton   = $('try-tamper');
       const label          = $('try-label');
+      const tamperLabel    = $('try-tamper-label');
       const iconPlay       = $('try-icon-play');
       const iconSpin       = $('try-icon-spin');
       const results        = $('try-results');
+      const stepsContainer = $('try-steps');
+      const stepsList      = $('try-steps-list');
       const mintBlock      = $('try-mint');
       const mintOutput     = $('try-mint-output');
       const mintNarrative  = $('try-mint-narrative');
@@ -300,15 +326,72 @@ score -= (await apkiSignal(req))
 
       if (!button) return;
 
-      const setLoading = (loading) => {
+      const setLoading = (loading, mode) => {
         button.disabled = loading;
-        iconPlay.classList.toggle('hidden', loading);
-        iconSpin.classList.toggle('hidden', !loading);
-        label.textContent = loading ? 'Running…' : 'Run again';
+        tamperButton.disabled = loading;
+        iconPlay.classList.toggle('hidden', loading && mode === 'clean');
+        iconSpin.classList.toggle('hidden', !(loading && mode === 'clean'));
+        label.textContent = loading && mode === 'clean' ? 'Running…' : 'Run mint → verify';
+        tamperLabel.textContent = loading && mode === 'tamper' ? 'Tampering…' : 'Try with tampered token';
       };
 
-      button.addEventListener('click', async () => {
-        setLoading(true);
+      // Append a live status line. status: 'pending' | 'done' | 'fail'
+      const addStep = (text, status) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        const color = status === 'done'
+          ? 'text-green-400'
+          : status === 'fail'
+            ? 'text-red-400'
+            : 'text-[color:var(--color-accent-bright)]';
+        const icon = status === 'done'
+          ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+          : status === 'fail'
+            ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+            : '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 animate-spin ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke-linecap="round"/></svg>';
+        li.innerHTML = icon + '<span class="text-[color:var(--color-text-muted)] leading-snug">' + text + '</span>';
+        stepsList.appendChild(li);
+        return li;
+      };
+      const markLastStep = (status, newText) => {
+        const li = stepsList.lastElementChild;
+        if (!li) return;
+        const color = status === 'done' ? 'text-green-400' : 'text-red-400';
+        const icon = status === 'done'
+          ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        const textSpan = li.lastElementChild;
+        li.innerHTML = icon + (textSpan ? textSpan.outerHTML : '');
+        if (newText) {
+          li.lastElementChild.innerHTML = newText;
+        }
+      };
+      const resetSteps = () => {
+        stepsList.innerHTML = '';
+        stepsContainer.classList.remove('hidden');
+      };
+
+      // Tamper helper: PASETO tokens have 4 dot-separated parts.
+      // The 3rd part is base64url(payload || signature) — flipping a single char
+      // in the last 8 chars of part 3 lands inside the signature with very high
+      // probability, producing a `verdict: not_allowed` with reason `signature_invalid`.
+      const tamperToken = (token) => {
+        const parts = token.split('.');
+        if (parts.length < 3) return token; // unexpected shape; pass through
+        const p = parts[2];
+        if (p.length < 4) return token;
+        // Flip a char near the end (signature is at the end of part 3).
+        const idx = p.length - 4;
+        const orig = p[idx];
+        // Swap to a different alphanumeric so we don't accidentally land on '=' (padding).
+        const swap = orig === 'A' ? 'B' : 'A';
+        parts[2] = p.slice(0, idx) + swap + p.slice(idx + 1);
+        return parts.join('.');
+      };
+
+      const run = async (mode) => {
+        setLoading(true, mode);
+        resetSteps();
         results.classList.remove('hidden');
         mintBlock.classList.add('hidden');
         verifyBlock.classList.add('hidden');
@@ -318,6 +401,7 @@ score -= (await apkiSignal(req))
 
         try {
           // ── Step 1: mint a passport
+          addStep('Calling <code>demo.agentpki.dev/mint</code> — issuer Worker signs a fresh PASETO v4.public token with its Ed25519 key…', 'pending');
           const t0 = performance.now();
           const mintRes = await fetch(
             DEMO_ISSUER + '/mint?sub=' +
@@ -325,11 +409,13 @@ score -= (await apkiSignal(req))
               '&scope=read:articles,read:public-data&lifetime=300'
           );
           if (!mintRes.ok) {
+            markLastStep('fail');
             throw new Error('mint failed: HTTP ' + mintRes.status + ' ' + (await mintRes.text()));
           }
           const minted = await mintRes.json();
           const t1 = performance.now();
           const mintMs = Math.round(t1 - t0);
+          markLastStep('done', 'Mint succeeded in ' + mintMs + 'ms — got back a signed PASETO v4.public token (passport payload + Ed25519 signature, encoded as one string).');
 
           mintTime.textContent = mintMs + 'ms';
           mintNarrative.innerHTML =
@@ -361,20 +447,43 @@ score -= (await apkiSignal(req))
 
           await new Promise((r) => setTimeout(r, 350));
 
-          // ── Step 2: verify the passport
+          // ── Tamper step (only in tampered mode)
+          let tokenToVerify = minted.token;
+          if (mode === 'tamper') {
+            addStep('Tampering with the signature — flipping one character in the base64-encoded Ed25519 signature portion of the token…', 'pending');
+            tokenToVerify = tamperToken(minted.token);
+            markLastStep('done', 'Tampered. The payload is intact but the Ed25519 signature no longer matches. A standards-compliant verifier MUST reject this.');
+            await new Promise((r) => setTimeout(r, 300));
+          }
+
+          // ── Step 2: verify
+          addStep(
+            mode === 'tamper'
+              ? 'POSTing the <strong class="text-red-300">tampered</strong> token to <code>verify.agentpki.dev/v1/verify</code>…'
+              : 'POSTing token to <code>verify.agentpki.dev/v1/verify</code> — verifier fetches issuer pubkey from <code>/.well-known/agentpki-issuer.json</code>, checks signature, consults CRL…',
+            'pending'
+          );
           const verifyRes = await fetch(VERIFIER + '/v1/verify', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ token: minted.token }),
+            body: JSON.stringify({ token: tokenToVerify }),
           });
           const verdict = await verifyRes.json();
           const t2 = performance.now();
           const workerMs = verdict.elapsed_ms ?? '?';
           const wallMs = Math.round(t2 - t1);
+          const isAllow = verdict.verdict === 'allow';
+          markLastStep(
+            isAllow ? 'done' : 'fail',
+            (isAllow
+              ? '<strong class="text-green-300">Verifier returned allow</strong>'
+              : '<strong class="text-red-300">Verifier returned ' + (verdict.verdict || 'not_allowed') + '</strong>' +
+                (verdict.failure_reason ? ' — reason: <code class="text-xs">' + verdict.failure_reason + '</code>' : '')
+            ) + ' in ' + workerMs + 'ms (edge compute), ' + wallMs + 'ms wall-clock.'
+          );
 
           verifyTime.textContent = 'worker ' + workerMs + 'ms · wall ' + wallMs + 'ms';
 
-          const isAllow = verdict.verdict === 'allow';
           const verdictColor = isAllow
             ? { fg: 'text-green-300', bg: 'bg-green-500/10', border: 'border-green-500/40', icon: 'text-green-400' }
             : { fg: 'text-red-300',   bg: 'bg-red-500/10',   border: 'border-red-500/40',   icon: 'text-red-400'   };
@@ -398,20 +507,24 @@ score -= (await apkiSignal(req))
               '</code>), then returned <strong class="text-green-300">allow</strong>.'
             : '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> received the token but rejected it. Reason: <code class="text-xs">' +
               (verdict.failure_reason || 'unknown') +
-              '</code>. ' + (verdict.failure_detail ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">' + verdict.failure_detail + '</span>' : '');
+              '</code>. ' + (verdict.failure_detail ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">' + verdict.failure_detail + '</span>' : '') +
+              (mode === 'tamper' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Exactly the outcome you want: a tampered token is mathematically impossible to validate without the issuer\'s private key.</span>' : '');
 
           verifyOutput.textContent = JSON.stringify(verdict, null, 2);
           verifyBlock.classList.remove('hidden');
 
           await new Promise((r) => setTimeout(r, 200));
-          summaryBlock.classList.remove('hidden');
+          if (isAllow) summaryBlock.classList.remove('hidden');
         } catch (e) {
           errorOutput.textContent = (e && e.message) || String(e);
           errorBlock.classList.remove('hidden');
         } finally {
-          setLoading(false);
+          setLoading(false, mode);
         }
-      });
+      };
+
+      button.addEventListener('click', () => run('clean'));
+      tamperButton.addEventListener('click', () => run('tamper'));
 
       // Auto-run on page load if ?run=1 is in URL (used by landing's hero CTA)
       const params = new URLSearchParams(window.location.search);
