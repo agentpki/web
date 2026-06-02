@@ -29,34 +29,50 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── DEMO CARD ─────────── -->
   <section>
-    <div class="max-w-3xl mx-auto px-6 py-12">
-      <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8 lg:p-10">
         <!-- Header row -->
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-5">
           <div class="text-xs sm:text-sm text-[color:var(--color-text-muted)] font-mono break-all">
             <code>demo.agentpki.dev/mint</code>
             <span class="mx-2 text-[color:var(--color-text-dim)]">&rarr;</span>
             <code>verify.agentpki.dev/v1/verify</code>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button id="try-run"
-                    class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0">
-              <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
-              <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
-                  <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
-                </circle>
-              </svg>
-              <span id="try-label">Run mint &rarr; verify</span>
-            </button>
-            <button id="try-tamper"
-                    class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed shrink-0 text-sm">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              <span id="try-tamper-label">Try with tampered token</span>
-            </button>
+
+          <!-- Two-button row: side-by-side on desktop with clear visual separation; stack on mobile -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <!-- HAPPY PATH button + caption -->
+            <div class="flex flex-col gap-2">
+              <button id="try-run"
+                      class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm">
+                <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
+                <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                  <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
+                    <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <span id="try-label">Run mint &rarr; verify</span>
+              </button>
+              <p class="text-xs text-[color:var(--color-text-dim)] text-center sm:text-left">
+                Expected: <strong class="text-green-300">verdict: allow</strong> (~150ms end-to-end)
+              </p>
+            </div>
+
+            <!-- REJECT PATH button + caption -->
+            <div class="flex flex-col gap-2">
+              <button id="try-tamper"
+                      class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border-2 border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <span id="try-tamper-label">Try with tampered token</span>
+              </button>
+              <p class="text-xs text-[color:var(--color-text-dim)] text-center sm:text-left">
+                Expected: <strong class="text-red-300">verdict: not_allowed</strong> (signature_invalid)
+              </p>
+            </div>
           </div>
-          <p class="text-xs text-[color:var(--color-text-dim)]">
-            <strong class="text-[color:var(--color-text-muted)]">Tampered token</strong>: we mint a valid passport, then flip a character in the signature before sending it to the verifier. Demonstrates the <em>not allowed</em> path with a real rejection.
+
+          <p class="text-xs text-[color:var(--color-text-dim)] border-t border-[color:var(--color-border)] pt-4">
+            <strong class="text-[color:var(--color-text-muted)]">How the tampered path works:</strong> we mint a valid passport, then flip a character in the base64-encoded signature before sending it to the verifier. Demonstrates the <em>not allowed</em> path with a real cryptographic rejection — not a mock.
           </p>
         </div>
 
@@ -526,9 +542,16 @@ score -= (await apkiSignal(req))
       button.addEventListener('click', () => run('clean'));
       tamperButton.addEventListener('click', () => run('tamper'));
 
-      // Auto-run on page load if ?run=1 is in URL (used by landing's hero CTA)
+      // Auto-run on page load if ?run=1 is in URL (used by landing's hero CTA).
+      // Strip the param from the URL immediately so a subsequent refresh
+      // doesn't re-trigger the run — common annoyance: user navigates here
+      // from the hero CTA, demo runs, they refresh to try again, and it
+      // self-clicks before they can press anything.
       const params = new URLSearchParams(window.location.search);
       if (params.get('run') === '1') {
+        params.delete('run');
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
+        window.history.replaceState(null, '', newUrl);
         setTimeout(() => button.click(), 800);
       }
     })();
