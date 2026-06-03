@@ -27,6 +27,82 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- ─────────── WHO THIS IS FOR (role cards) ─────────── -->
+  <section class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30">
+    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Who this is for</h2>
+      <p class="text-[color:var(--color-text-muted)] max-w-2xl mb-8">If you operate one of these, the demo below is going to look immediately useful. Click for a tailored explanation later on the page.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="#for-vendors" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-blue-400/50 hover:bg-blue-500/5 transition no-underline">
+          <div class="text-sm font-bold text-blue-300 mb-1">Bot-defense vendors</div>
+          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Cloudflare · DataDome · hCaptcha · Arkose · Castle · F5 · Akamai · Kasada</div>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Additive signal in your existing pipeline. <strong class="text-[color:var(--color-text)]">Never overrides your score.</strong> 30-line middleware drop-in. Verdict in ~21ms.</p>
+          <div class="text-xs text-blue-300 font-medium">See how the integration looks &rarr;</div>
+        </a>
+        <a href="#for-publishers" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-green-400/50 hover:bg-green-500/5 transition no-underline">
+          <div class="text-sm font-bold text-green-300 mb-1">Publishers fighting scrapers</div>
+          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Reuters · NYT · The Verge · Stack Overflow · dev.to · GitHub</div>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Finally distinguish <strong class="text-[color:var(--color-text)]">legitimate AI traffic</strong> from scrapers wearing agent costumes. Lower CAPTCHA rates for verified agents; higher block confidence for unsigned ones.</p>
+          <div class="text-xs text-green-300 font-medium">See the comparison &rarr;</div>
+        </a>
+        <a href="#for-api" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-amber-400/50 hover:bg-amber-500/5 transition no-underline">
+          <div class="text-sm font-bold text-amber-300 mb-1">Sites with API tiers</div>
+          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Stripe · Shopify · Reddit · Twilio · Anthropic itself</div>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Apply <strong class="text-[color:var(--color-text)]">scope-based rate limits</strong> to authenticated agents. "Anthropic's tier-2 research bot" gets different quotas than "unknown agent traffic." Auditable, attributable, revocable.</p>
+          <div class="text-xs text-amber-300 font-medium">See the passport claim &rarr;</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── WHAT THE PUBLISHER'S EDGE SEES (comparison) ─────────── -->
+  <section id="for-publishers" class="border-b border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What the publisher's edge sees</h2>
+      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">Without AgentPKI, bot-defense vendors have to guess. With AgentPKI, the request carries a verifiable claim.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- WITHOUT -->
+        <div class="rounded-xl border border-red-500/30 bg-[color:var(--color-bg-elevated)]/60 p-6">
+          <div class="text-[10px] uppercase tracking-widest text-red-400 font-bold mb-2">Without AgentPKI</div>
+          <h3 class="font-semibold tracking-tight mb-4">Today's reality at reuters.com</h3>
+          <div class="space-y-3 text-sm font-mono">
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">User-Agent</div>python-requests/2.31.0</div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">IP</div><span class="text-[color:var(--color-text-muted)]">3.123.45.67 (rotating residential)</span></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Signed identity claim</div><span class="text-[color:var(--color-text-muted)]">none</span></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Behavioral fingerprint</div><span class="text-[color:var(--color-text-muted)]">looks scripted</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] text-sm text-red-300">
+            &rarr; Bot-defense vendor: <strong>"Could be Anthropic, could be a scraper. risk_score 0.65. Serve CAPTCHA."</strong>
+          </div>
+        </div>
+
+        <!-- WITH -->
+        <div class="rounded-xl border border-green-500/40 bg-[color:var(--color-bg-elevated)]/60 p-6">
+          <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-2">With AgentPKI</div>
+          <h3 class="font-semibold tracking-tight mb-4">Same request, signed passport attached</h3>
+
+          <!-- PLAIN-ENGLISH CLAIM STATEMENT -->
+          <div class="rounded-lg border border-green-500/30 bg-green-500/[0.07] p-4 mb-4">
+            <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-1">&#128220; What the passport actually says</div>
+            <p class="text-sm text-[color:var(--color-text)] leading-relaxed">"Anthropic claims this agent is their <strong class="text-green-300">research-bot-v3</strong>, authorized for <strong class="text-green-300">read-only article access</strong>, with <strong class="text-green-300">tier-2 (KYB-verified)</strong> trust. Signed by Anthropic's Ed25519 key. Valid until 12:35 PM."</p>
+          </div>
+
+          <div class="space-y-3 text-sm font-mono">
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Issuer</div><code class="text-[color:var(--color-accent-bright)]">anthropic.com</code></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Agent ID</div><code class="text-[color:var(--color-accent-bright)]">agent:anthropic.com/research-bot-v3</code></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Scope</div><code class="text-[color:var(--color-accent-bright)]">["read:articles"]</code></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Tier &middot; lifetime</div><code class="text-[color:var(--color-accent-bright)]">2 (KYB-verified) &middot; 300s</code></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Token</div><span class="text-[color:var(--color-text-muted)]">v4.public.eyJpc3M… (Ed25519 signed)</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] text-sm text-green-300">
+            &rarr; Bot-defense vendor: <strong>"Anthropic, cryptographically. risk_score 0.02. Allow."</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ─────────── DEMO CARD ─────────── -->
   <section>
     <div class="max-w-5xl mx-auto px-6 py-12">
@@ -206,6 +282,114 @@ import ContactModal from '../components/ContactModal.astro';
           <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Returned as JSON: <code class="text-xs">&#123;"verdict":"allow", ...&#125;</code> with elapsed Worker compute time. In a real deployment this verdict tells your edge whether to serve the request.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ─────────── LIFECYCLE TRACE ─────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What just happened, end-to-end</h2>
+      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The whole agent &harr; site &harr; bot-defense flow, step by step. Six numbered moments. Most of them are invisible to the user; that's the point.</p>
+      <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-6 lg:p-8">
+        <ol class="space-y-3 text-[color:var(--color-text-muted)] list-decimal pl-6">
+          <li><strong class="text-[color:var(--color-text)]">Anthropic's research-bot SDK</strong> signed a passport with their Ed25519 private key, scoped to <code class="text-xs">read:articles</code>, valid for 5 minutes.</li>
+          <li><strong class="text-[color:var(--color-text)]">The SDK attached the passport</strong> as a header to the outbound HTTP request to <code class="text-xs">reuters.com/api/article/123</code>.</li>
+          <li><strong class="text-[color:var(--color-text)]">Reuters' Cloudflare edge</strong> received the request, extracted the passport, sent it to <code class="text-xs">verify.agentpki.dev/v1/verify</code>.</li>
+          <li><strong class="text-[color:var(--color-text)]">The verifier</strong> fetched Anthropic's public key from <code class="text-xs">anthropic.com/.well-known/agentpki-issuer.json</code> (cached at edge), validated the Ed25519 signature, consulted Anthropic's CRL (also cached), returned <code class="text-xs">verdict: allow</code> + passport metadata.</li>
+          <li><strong class="text-[color:var(--color-text)]">Cloudflare's bot-defense</strong> fed the verdict into its existing score: signed passport from a tier-2 verified issuer dropped risk_score from 0.65 &rarr; 0.02.</li>
+          <li><strong class="text-[color:var(--color-text)]">Reuters allowed the request</strong>, served the article, and logged "anthropic.com &rarr; research-bot-v3 &rarr; /api/article/123" in their bot-traffic audit.</li>
+        </ol>
+        <p class="text-sm text-[color:var(--color-text-dim)] mt-5">No shared secrets between Reuters and Anthropic. No central authority. No blockchain. Just standards-grade cryptography (PASETO v4 + Ed25519 + RFC 9421) over a public protocol that any verifier on the web can check.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── VENDOR INTEGRATION ─────────── -->
+  <section id="for-vendors" class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
+    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">How a bot-defense vendor consumes the verdict</h2>
+      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The verifier's verdict isn't the final answer &mdash; it's <strong class="text-[color:var(--color-text)]">one signal</strong> that flows into the vendor's existing scoring pipeline. AgentPKI never overrides; it only adds. Same shape as how vendors already consume third-party threat-intel feeds.</p>
+
+      <div class="space-y-4">
+        <!-- BEFORE -->
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[color:var(--color-text-dim)]"></span>
+            <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] font-bold">Vendor's existing pipeline (today)</div>
+          </div>
+          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// Cloudflare bot-management scoring (simplified)
+let score = 0;
+score += fingerprint(req);          // 0.30 — looks scripted
+score += ipReputation(req.ip);      // 0.20 — fresh residential
+score += behaviorAnalysis(session); // 0.15 — no human variance
+
+// Total: 0.65 → above 0.5 threshold → CAPTCHA`}</pre>
+        </div>
+
+        <!-- ADD -->
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[color:var(--color-accent)]"></span>
+            <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)] font-bold">Add AgentPKI middleware (~30 LOC drop-in)</div>
+          </div>
+          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// One new signal — never replaces, only adjusts.
+const apki = await verifyAgentPKI(req);
+if (apki?.verdict === 'allow') {
+  score -= 0.40 * tierWeight(apki.passport.tier);
+  //         ↑ tier 2 (KYB) = 1.0 · tier 3 (HSM) = 1.25
+}`}</pre>
+        </div>
+
+        <!-- AFTER -->
+        <div class="rounded-xl border border-green-500/30 bg-[color:var(--color-bg)]/60 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+            <div class="font-mono text-[10px] uppercase tracking-widest text-green-300 font-bold">New combined decision</div>
+          </div>
+          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// 0.65 (fingerprint+ip+behavior) − 0.40 (tier-2 AgentPKI signal)
+// = 0.25 → below threshold → ALLOW
+
+// Result: Anthropic's research bot gets through.
+//         Unsigned Python script (no AgentPKI header) still hits 0.65 → CAPTCHA.
+//         Tampered token → AgentPKI verify returns 'deny' → no adjustment.`}</pre>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
+        <strong class="text-[color:var(--color-text)]">The vendor stays in control.</strong> They pick the weight (we suggest 0.40 for tier 2, 0.50 for tier 3). They decide the threshold. AgentPKI never sees the request itself &mdash; only the token. The vendor's behavioral models, IP reputation databases, customer-specific rules &mdash; all still run and still matter. AgentPKI just adds the one thing nobody could measure before: <strong class="text-[color:var(--color-text)]">"this traffic carries a verifiable claim of legitimacy from a known issuer."</strong>
+      </p>
+      <p class="mt-3 text-sm text-[color:var(--color-text-muted)]">
+        Reference 30-line integration on GitHub: <a href="https://github.com/agentpki/bot-defense-reference" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]"><code>github.com/agentpki/bot-defense-reference</code></a> &mdash; drops into Cloudflare Workers, DataDome's API hook, hCaptcha's enterprise endpoint, Arkose's signal-API, or your own edge.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── API TIER SECTION ─────────── -->
+  <section id="for-api" class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What this gives an API with tiered access</h2>
+      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-6">If you run an API that wants to apply different limits to different agents (Stripe, Shopify, Reddit, anyone with a developer tier), AgentPKI gives you a verifiable answer to <em>"whose agent is this and what are they authorized to do?"</em></p>
+      <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-5 lg:p-6">
+        <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// Your API gateway, after AgentPKI verification:
+const passport = await verifyAgentPKI(req);
+
+// 1. Rate-limit by issuer, not just IP
+rateLimiter.check(\`agent:\${passport.iss}/\${passport.sub}\`);
+
+// 2. Authorize by scope
+if (req.path.startsWith('/articles/') && !passport.scope.includes('read:articles')) {
+  return res.status(403).send({ error: 'insufficient_scope' });
+}
+
+// 3. Bill the issuer's account, not the user's
+billing.charge(passport.iss, calculateUsage(req));
+
+// 4. Audit-log who did what
+audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: passport.tier });`}</pre>
+      </div>
+      <p class="mt-5 text-sm text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
+        Without AgentPKI, the API can only see <code class="text-xs">User-Agent</code> headers (which lie) and IP addresses (which rotate). With AgentPKI, the API gets a <strong class="text-[color:var(--color-text)]">cryptographically signed, revocable, auditable claim</strong> of who's calling and what they're authorized to do &mdash; without needing every agent operator to register an API key with you in advance.
+      </p>
     </div>
   </section>
 
