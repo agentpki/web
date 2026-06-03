@@ -39,12 +39,12 @@ import ContactModal from '../components/ContactModal.astro';
             <code>verify.agentpki.dev/v1/verify</code>
           </div>
 
-          <!-- Two-button row: side-by-side on desktop with clear visual separation; stack on mobile -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <!-- HAPPY PATH button + caption -->
+          <!-- Three-button row: side-by-side on desktop with clear visual separation; stack on mobile -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            <!-- 1. HAPPY PATH -->
             <div class="flex flex-col gap-2">
               <button id="try-run"
-                      class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm">
+                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm">
                 <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
                 <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
                   <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
@@ -53,27 +53,46 @@ import ContactModal from '../components/ContactModal.astro';
                 </svg>
                 <span id="try-label">Run mint &rarr; verify</span>
               </button>
-              <p class="text-xs text-[color:var(--color-text-dim)] text-center sm:text-left">
-                Expected: <strong class="text-green-300">verdict: allow</strong> (~150ms end-to-end)
+              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
+                Expected: <strong class="text-green-300">verdict: allow</strong>
               </p>
             </div>
 
-            <!-- REJECT PATH button + caption -->
+            <!-- 2. TAMPER PATH -->
             <div class="flex flex-col gap-2">
               <button id="try-tamper"
-                      class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border-2 border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
+                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg border-2 border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
+                <span class="text-xs opacity-70">Run with &rarr;</span>
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                <span id="try-tamper-label">Try with tampered token</span>
+                <span id="try-tamper-label">Tamper signature</span>
               </button>
-              <p class="text-xs text-[color:var(--color-text-dim)] text-center sm:text-left">
+              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
                 Expected: <strong class="text-red-300">verdict: not_allowed</strong> (signature_invalid)
+              </p>
+            </div>
+
+            <!-- 3. REVOKED-KEY PATH -->
+            <div class="flex flex-col gap-2">
+              <button id="try-revoked"
+                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg border-2 border-amber-500/40 text-amber-300 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
+                <span class="text-xs opacity-70">Run with &rarr;</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                <span id="try-revoked-label">Use revoked key</span>
+              </button>
+              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
+                Expected: <strong class="text-amber-300">verdict: not_allowed</strong> (revoked_key)
               </p>
             </div>
           </div>
 
-          <p class="text-xs text-[color:var(--color-text-dim)] border-t border-[color:var(--color-border)] pt-4">
-            <strong class="text-[color:var(--color-text-muted)]">How the tampered path works:</strong> we mint a valid passport, then flip a character in the base64-encoded signature before sending it to the verifier. Demonstrates the <em>not allowed</em> path with a real cryptographic rejection — not a mock.
-          </p>
+          <div class="text-xs text-[color:var(--color-text-dim)] border-t border-[color:var(--color-border)] pt-4 space-y-2">
+            <p>
+              <strong class="text-[color:var(--color-text-muted)]">How the tampered path works:</strong> we mint a valid passport, then flip a character in the base64-encoded signature before sending it to the verifier. The signature no longer matches the payload &rarr; Ed25519 verify returns false &rarr; <code>signature_invalid</code>.
+            </p>
+            <p>
+              <strong class="text-[color:var(--color-text-muted)]">How the revoked-key path works:</strong> we mint a passport with a <em>kid</em> ("key identifier") that the demo issuer has listed in its <code>revoked_keys</code> directory entry. The signature is mathematically valid (same private key) but the verifier rejects with <code>revoked_key</code> — exactly the v0.2 CRL/key-rotation story. Demonstrates that revocation works <em>without</em> coordinating with every verifier on the web.
+            </p>
+          </div>
         </div>
 
         <!-- Live step status — populated by JS as the demo runs -->
@@ -320,8 +339,10 @@ score -= (await apkiSignal(req))
       const $ = (id) => document.getElementById(id);
       const button         = $('try-run');
       const tamperButton   = $('try-tamper');
+      const revokedButton  = $('try-revoked');
       const label          = $('try-label');
       const tamperLabel    = $('try-tamper-label');
+      const revokedLabel   = $('try-revoked-label');
       const iconPlay       = $('try-icon-play');
       const iconSpin       = $('try-icon-spin');
       const results        = $('try-results');
@@ -345,10 +366,14 @@ score -= (await apkiSignal(req))
       const setLoading = (loading, mode) => {
         button.disabled = loading;
         tamperButton.disabled = loading;
+        if (revokedButton) revokedButton.disabled = loading;
         iconPlay.classList.toggle('hidden', loading && mode === 'clean');
         iconSpin.classList.toggle('hidden', !(loading && mode === 'clean'));
         label.textContent = loading && mode === 'clean' ? 'Running…' : 'Run mint → verify';
-        tamperLabel.textContent = loading && mode === 'tamper' ? 'Tampering…' : 'Try with tampered token';
+        tamperLabel.textContent = loading && mode === 'tamper' ? 'Tampering…' : 'Tamper signature';
+        if (revokedLabel) {
+          revokedLabel.textContent = loading && mode === 'revoked' ? 'Minting w/ revoked kid…' : 'Use revoked key';
+        }
       };
 
       // Append a live status line. status: 'pending' | 'done' | 'fail'
@@ -417,13 +442,20 @@ score -= (await apkiSignal(req))
 
         try {
           // ── Step 1: mint a passport
-          addStep('Calling <code>demo.agentpki.dev/mint</code> — issuer Worker signs a fresh PASETO v4.public token with its Ed25519 key…', 'pending');
+          // For mode === 'revoked', ask the issuer to sign with a kid that
+          // it has listed in revoked_keys — real cryptography, real CRL story.
+          const mintStepText =
+            mode === 'revoked'
+              ? 'Calling <code>demo.agentpki.dev/mint?revoked=1</code> — issuer signs with a deliberately-rotated <em>kid</em> that\'s in its <code>revoked_keys</code> directory entry…'
+              : 'Calling <code>demo.agentpki.dev/mint</code> — issuer Worker signs a fresh PASETO v4.public token with its Ed25519 key…';
+          addStep(mintStepText, 'pending');
           const t0 = performance.now();
-          const mintRes = await fetch(
+          const mintUrl =
             DEMO_ISSUER + '/mint?sub=' +
-              encodeURIComponent('agent:browser-demo/visitor') +
-              '&scope=read:articles,read:public-data&lifetime=300'
-          );
+            encodeURIComponent('agent:browser-demo/visitor') +
+            '&scope=read:articles,read:public-data&lifetime=300' +
+            (mode === 'revoked' ? '&revoked=1' : '');
+          const mintRes = await fetch(mintUrl);
           if (!mintRes.ok) {
             markLastStep('fail');
             throw new Error('mint failed: HTTP ' + mintRes.status + ' ' + (await mintRes.text()));
@@ -431,7 +463,11 @@ score -= (await apkiSignal(req))
           const minted = await mintRes.json();
           const t1 = performance.now();
           const mintMs = Math.round(t1 - t0);
-          markLastStep('done', 'Mint succeeded in ' + mintMs + 'ms — got back a signed PASETO v4.public token (passport payload + Ed25519 signature, encoded as one string).');
+          const mintDoneText =
+            mode === 'revoked'
+              ? 'Mint succeeded in ' + mintMs + 'ms. Token signed by kid <code>' + minted.passport.kid + '</code> — listed as revoked in the issuer\'s directory.'
+              : 'Mint succeeded in ' + mintMs + 'ms — got back a signed PASETO v4.public token (passport payload + Ed25519 signature, encoded as one string).';
+          markLastStep('done', mintDoneText);
 
           mintTime.textContent = mintMs + 'ms';
           mintNarrative.innerHTML =
@@ -473,12 +509,13 @@ score -= (await apkiSignal(req))
           }
 
           // ── Step 2: verify
-          addStep(
+          const verifyStepText =
             mode === 'tamper'
               ? 'POSTing the <strong class="text-red-300">tampered</strong> token to <code>verify.agentpki.dev/v1/verify</code>…'
-              : 'POSTing token to <code>verify.agentpki.dev/v1/verify</code> — verifier fetches issuer pubkey from <code>/.well-known/agentpki-issuer.json</code>, checks signature, consults CRL…',
-            'pending'
-          );
+              : mode === 'revoked'
+                ? 'POSTing token (signed by <strong class="text-amber-300">revoked kid</strong>) to <code>verify.agentpki.dev/v1/verify</code> — verifier will fetch the issuer\'s directory, find the kid in <code>revoked_keys</code>, and reject…'
+                : 'POSTing token to <code>verify.agentpki.dev/v1/verify</code> — verifier fetches issuer pubkey from <code>/.well-known/agentpki-issuer.json</code>, checks signature, consults CRL…';
+          addStep(verifyStepText, 'pending');
           const verifyRes = await fetch(VERIFIER + '/v1/verify', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -524,7 +561,8 @@ score -= (await apkiSignal(req))
             : '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> received the token but rejected it. Reason: <code class="text-xs">' +
               (verdict.failure_reason || 'unknown') +
               '</code>. ' + (verdict.failure_detail ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">' + verdict.failure_detail + '</span>' : '') +
-              (mode === 'tamper' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Exactly the outcome you want: a tampered token is mathematically impossible to validate without the issuer\'s private key.</span>' : '');
+              (mode === 'tamper' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Exactly the outcome you want: a tampered token is mathematically impossible to validate without the issuer\'s private key.</span>' : '') +
+              (mode === 'revoked' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Even though the Ed25519 signature is mathematically valid, the verifier checked the issuer\'s directory and found the <em>kid</em> listed in <code>revoked_keys</code>. This is why short lifetimes + CRL matter — Anthropic can rotate a key and every verifier on the web honors it without coordinating with anyone.</span>' : '');
 
           verifyOutput.textContent = JSON.stringify(verdict, null, 2);
           verifyBlock.classList.remove('hidden');
@@ -541,6 +579,7 @@ score -= (await apkiSignal(req))
 
       button.addEventListener('click', () => run('clean'));
       tamperButton.addEventListener('click', () => run('tamper'));
+      if (revokedButton) revokedButton.addEventListener('click', () => run('revoked'));
 
       // Auto-run on page load if ?run=1 is in URL (used by landing's hero CTA).
       // Strip the param from the URL immediately so a subsequent refresh
