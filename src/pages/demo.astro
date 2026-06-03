@@ -7,372 +7,660 @@ import ContactModal from '../components/ContactModal.astro';
 <Base title="Live demo — AgentPKI" description="Mint and verify a real AgentPKI passport in your browser. Runs against our production-deployed Cloudflare Workers.">
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
   <div class="bg-layer bg-grid" aria-hidden="true"></div>
-
   <Nav />
 
-  <!-- ─────────── HEADER ─────────── -->
-  <section class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 pt-16 pb-12 lg:pt-20 lg:pb-16 text-center">
-      <p class="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
-        <span class="relative flex w-1.5 h-1.5">
-          <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
-          <span class="relative w-1.5 h-1.5 rounded-full bg-green-400"></span>
-        </span>
-        live on production infrastructure
-      </p>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">Try AgentPKI <span class="text-green-400">live.</span></h1>
-      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto leading-relaxed">
-        Click <strong class="text-[color:var(--color-text)]">Run mint → verify</strong>. The button calls our demo issuer to sign a fresh passport, then ships that passport to our edge verifier. Both are real production Cloudflare Workers — no mock, no replay.
-      </p>
-    </div>
-  </section>
+  <style is:global>
+    /* ─── Demo-page-scoped design tokens (mirrors demo-v2-preview.html) ─── */
+    :root {
+      --demo-bg: #08080b;
+      --demo-bg-elev: #111114;
+      --demo-bg-card: #15151a;
+      --demo-border: #1f1f25;
+      --demo-border-bright: #2a2a33;
+      --demo-text: #f2f2f5;
+      --demo-text-muted: #b8b8c4;
+      --demo-text-dim: #6b6b78;
+      --demo-accent: #a78bfa;
+      --demo-accent-bright: #c4b5fd;
+      --demo-success: #4ade80;
+      --demo-success-bright: #6ee7a3;
+      --demo-danger: #f87171;
+      --demo-warn: #fbbf24;
+      --demo-info: #60a5fa;
+    }
 
-  <!-- ─────────── WHO THIS IS FOR (role cards) ─────────── -->
-  <section class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Who this is for</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-2xl mb-8">If you operate one of these, the demo below is going to look immediately useful. Click for a tailored explanation later on the page.</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="#for-vendors" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-blue-400/50 hover:bg-blue-500/5 transition no-underline">
-          <div class="text-sm font-bold text-blue-300 mb-1">Bot-defense vendors</div>
-          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Cloudflare · DataDome · hCaptcha · Arkose · Castle · F5 · Akamai · Kasada</div>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Additive signal in your existing pipeline. <strong class="text-[color:var(--color-text)]">Never overrides your score.</strong> 30-line middleware drop-in. Verdict in ~21ms.</p>
-          <div class="text-xs text-blue-300 font-medium">See how the integration looks &rarr;</div>
-        </a>
-        <a href="#for-publishers" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-green-400/50 hover:bg-green-500/5 transition no-underline">
-          <div class="text-sm font-bold text-green-300 mb-1">Publishers fighting scrapers</div>
-          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Reuters · NYT · The Verge · Stack Overflow · dev.to · GitHub</div>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Finally distinguish <strong class="text-[color:var(--color-text)]">legitimate AI traffic</strong> from scrapers wearing agent costumes. Lower CAPTCHA rates for verified agents; higher block confidence for unsigned ones.</p>
-          <div class="text-xs text-green-300 font-medium">See the comparison &rarr;</div>
-        </a>
-        <a href="#for-api" class="role-card group block rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5 hover:border-amber-400/50 hover:bg-amber-500/5 transition no-underline">
-          <div class="text-sm font-bold text-amber-300 mb-1">Sites with API tiers</div>
-          <div class="text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">Stripe · Shopify · Reddit · Twilio · Anthropic itself</div>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">Apply <strong class="text-[color:var(--color-text)]">scope-based rate limits</strong> to authenticated agents. "Anthropic's tier-2 research bot" gets different quotas than "unknown agent traffic." Auditable, attributable, revocable.</p>
-          <div class="text-xs text-amber-300 font-medium">See the passport claim &rarr;</div>
-        </a>
-      </div>
-    </div>
-  </section>
+    .demo-page code, .demo-page pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+    .demo-page code { font-size: 0.875em; color: var(--demo-accent-bright); }
 
-  <!-- ─────────── PICK AN AGENT (scenario cards) ─────────── -->
-  <section class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2"><span class="inline-flex items-center justify-center w-7 h-7 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-sm font-semibold mr-2 align-middle">1</span>Pick an agent</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">Each scenario is a real agent hitting a real publisher API. The buttons in &sect;3 below run them against the production verifier — same cryptography, three different outcomes.</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-green-500/40 bg-green-500/[0.04] p-5">
-          <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-2">Verified AI agent</div>
-          <h3 class="font-semibold tracking-tight mb-2">Anthropic — research-bot-v3</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Anthropic's research bot, reading Reuters articles on behalf of a Claude user. Tier 2 KYB-verified issuer.</p>
-          <div class="mt-3 text-xs text-[color:var(--color-text-dim)]">Expected: <strong class="text-green-300">verdict: allow</strong> &middot; tier 2</div>
+    .demo-page .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Hero */
+    .demo-page .demo-hero { padding: 4rem 0 3rem; text-align: center; }
+    .demo-page .demo-hero h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); margin: 0 0 1rem; font-weight: 600; letter-spacing: -0.02em; color: var(--demo-text); }
+    .demo-page .demo-hero h1 .accent { color: var(--demo-success); }
+    .demo-page .demo-hero p { font-size: 1.125rem; color: var(--demo-text-muted); max-width: 42rem; margin: 0 auto; }
+
+    /* Sections */
+    .demo-page .demo-section { padding: 2.5rem 0; border-top: 1px solid var(--demo-border); }
+    .demo-page .demo-section.no-border { border-top: none; }
+    .demo-page .demo-section h2 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--demo-text);
+    }
+    .demo-page .demo-section h2 .step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 0.5rem;
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--demo-accent-bright);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-right: 0.625rem;
+      vertical-align: 2px;
+    }
+    .demo-page .demo-section .lead { color: var(--demo-text-muted); margin: 0 0 1.5rem; max-width: 50rem; }
+
+    /* Role cards (Who this is for) */
+    .demo-page .roles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .demo-page .role {
+      background: var(--demo-bg-card);
+      border: 1.5px solid var(--demo-border-bright);
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 150ms, background 150ms;
+      display: flex;
+      flex-direction: column;
+    }
+    .demo-page .role:hover { border-color: var(--demo-accent); background: rgba(167, 139, 250, 0.05); }
+    .demo-page .role[data-role="vendors"]:hover { border-color: var(--demo-info); background: rgba(96, 165, 250, 0.05); }
+    .demo-page .role[data-role="publishers"]:hover { border-color: var(--demo-success); background: rgba(74, 222, 128, 0.05); }
+    .demo-page .role[data-role="api"]:hover { border-color: var(--demo-warn); background: rgba(251, 191, 36, 0.05); }
+    .demo-page .role-label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--demo-text);
+      margin-bottom: 0.375rem;
+    }
+    .demo-page .role[data-role="vendors"] .role-label { color: var(--demo-info); }
+    .demo-page .role[data-role="publishers"] .role-label { color: var(--demo-success-bright); }
+    .demo-page .role[data-role="api"] .role-label { color: var(--demo-warn); }
+    .demo-page .role-names {
+      font-size: 0.6875rem;
+      color: var(--demo-text-dim);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .demo-page .role-pitch {
+      font-size: 0.875rem;
+      color: var(--demo-text-muted);
+      line-height: 1.5;
+      margin: 0 0 0.875rem;
+      flex: 1;
+    }
+    .demo-page .role-pitch b { color: var(--demo-text); font-weight: 600; }
+    .demo-page .role-cta {
+      font-size: 0.75rem;
+      color: var(--demo-accent-bright);
+      font-weight: 500;
+    }
+    .demo-page .role[data-role="vendors"] .role-cta { color: var(--demo-info); }
+    .demo-page .role[data-role="publishers"] .role-cta { color: var(--demo-success-bright); }
+    .demo-page .role[data-role="api"] .role-cta { color: var(--demo-warn); }
+
+    /* Scenario picker */
+    .demo-page .scenarios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .demo-page .scenario {
+      background: var(--demo-bg-card);
+      border: 1.5px solid var(--demo-border-bright);
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: border-color 150ms, background 150ms, transform 150ms;
+    }
+    .demo-page .scenario:hover { border-color: var(--demo-accent); }
+    .demo-page .scenario.active {
+      border-color: var(--demo-accent);
+      background: rgba(167, 139, 250, 0.07);
+    }
+    .demo-page .scenario .role-tag {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--demo-text-dim);
+      margin-bottom: 0.5rem;
+    }
+    .demo-page .scenario .title { font-weight: 600; font-size: 1rem; margin-bottom: 0.375rem; color: var(--demo-text); }
+    .demo-page .scenario .desc { font-size: 0.8125rem; color: var(--demo-text-muted); margin: 0; }
+    .demo-page .scenario .expected {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--demo-text-dim);
+    }
+    .demo-page .scenario .expected b { color: inherit; font-weight: 500; }
+    .demo-page .scenario.success .expected b { color: var(--demo-success); }
+    .demo-page .scenario.danger .expected b { color: var(--demo-danger); }
+    .demo-page .scenario.warn .expected b { color: var(--demo-warn); }
+
+    /* Side-by-side comparison */
+    .demo-page .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 760px) { .demo-page .compare { grid-template-columns: 1fr; } }
+    .demo-page .col {
+      background: var(--demo-bg-card);
+      border: 1.5px solid var(--demo-border-bright);
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+    }
+    .demo-page .col.bad { border-color: rgba(248, 113, 113, 0.35); }
+    .demo-page .col.good { border-color: rgba(74, 222, 128, 0.35); }
+    .demo-page .col .col-label {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .demo-page .col.bad .col-label { color: var(--demo-danger); }
+    .demo-page .col.good .col-label { color: var(--demo-success); }
+    .demo-page .col .col-title { font-weight: 600; font-size: 1rem; margin-bottom: 1rem; color: var(--demo-text); }
+    .demo-page .field { margin-bottom: 0.75rem; }
+    .demo-page .field:last-child { margin-bottom: 0; }
+    .demo-page .field .k {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--demo-text-dim);
+      margin-bottom: 0.125rem;
+    }
+    .demo-page .field .v { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.8125rem; color: var(--demo-text); word-break: break-all; }
+    .demo-page .field .v.muted { color: var(--demo-text-muted); }
+    .demo-page .claim-statement {
+      margin-bottom: 1rem;
+      padding: 0.875rem 1rem;
+      background: rgba(74, 222, 128, 0.07);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 0.625rem;
+      font-size: 0.875rem;
+      line-height: 1.55;
+    }
+    .demo-page .claim-statement .claim-label {
+      display: block;
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--demo-success);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .demo-page .claim-statement em {
+      font-style: normal;
+      color: var(--demo-text);
+    }
+    .demo-page .claim-statement em b {
+      color: var(--demo-success-bright);
+      font-weight: 600;
+    }
+    .demo-page .col .verdict-line {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--demo-border);
+      font-size: 0.8125rem;
+    }
+    .demo-page .col.bad .verdict-line { color: var(--demo-danger); }
+    .demo-page .col.good .verdict-line { color: var(--demo-success-bright); }
+
+    /* Buttons */
+    .demo-page .btn-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.875rem;
+    }
+    @media (max-width: 760px) { .demo-page .btn-row { grid-template-columns: 1fr; } }
+    .demo-page .demo-btn {
+      padding: 0.875rem 1rem;
+      border-radius: 0.625rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid;
+      background: transparent;
+      transition: background 150ms, border-color 150ms, transform 80ms;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--demo-text);
+      width: 100%;
+    }
+    .demo-page .demo-btn:active { transform: translateY(1px); }
+    .demo-page .demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .demo-page .demo-btn.primary {
+      background: var(--demo-accent);
+      color: #08080b;
+      border-color: var(--demo-accent);
+    }
+    .demo-page .demo-btn.primary:hover:not(:disabled) { background: var(--demo-accent-bright); border-color: var(--demo-accent-bright); }
+    .demo-page .demo-btn.danger {
+      color: var(--demo-danger);
+      border-color: rgba(248, 113, 113, 0.45);
+      background: rgba(248, 113, 113, 0.06);
+    }
+    .demo-page .demo-btn.danger:hover:not(:disabled) { background: rgba(248, 113, 113, 0.14); border-color: rgba(248, 113, 113, 0.7); }
+    .demo-page .demo-btn.warn {
+      color: var(--demo-warn);
+      border-color: rgba(251, 191, 36, 0.45);
+      background: rgba(251, 191, 36, 0.06);
+    }
+    .demo-page .demo-btn.warn:hover:not(:disabled) { background: rgba(251, 191, 36, 0.14); border-color: rgba(251, 191, 36, 0.7); }
+    .demo-page .btn-sub {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--demo-text-dim);
+      text-align: center;
+    }
+    .demo-page .btn-sub b { color: inherit; font-weight: 500; }
+
+    /* Status panel */
+    .demo-page .status {
+      background: var(--demo-bg-card);
+      border: 1.5px solid var(--demo-border-bright);
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .demo-page .status .head {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--demo-text-dim);
+      margin-bottom: 0.75rem;
+    }
+    .demo-page .step-list { list-style: none; margin: 0; padding: 0; }
+    .demo-page .step-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      color: var(--demo-text-muted);
+      margin-bottom: 0.5rem;
+      line-height: 1.45;
+    }
+    .demo-page .step-list li:last-child { margin-bottom: 0; }
+    .demo-page .step-list .step-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+    .demo-page .step-list .step-icon.pending {
+      border: 2px solid var(--demo-accent-bright);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: demoSpin 0.9s linear infinite;
+    }
+    .demo-page .step-list .step-icon.done { color: var(--demo-success); }
+    .demo-page .step-list .step-icon.fail { color: var(--demo-danger); }
+    @keyframes demoSpin { to { transform: rotate(360deg); } }
+
+    /* Verdict badge */
+    .demo-page .verdict {
+      margin-top: 1.5rem;
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      border: 1.5px solid;
+    }
+    .demo-page .verdict.allow {
+      background: rgba(74, 222, 128, 0.08);
+      border-color: rgba(74, 222, 128, 0.4);
+    }
+    .demo-page .verdict.deny {
+      background: rgba(248, 113, 113, 0.08);
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+    .demo-page .verdict .verdict-icon { width: 2.5rem; height: 2.5rem; flex-shrink: 0; }
+    .demo-page .verdict.allow .verdict-icon { color: var(--demo-success); }
+    .demo-page .verdict.deny .verdict-icon { color: var(--demo-danger); }
+    .demo-page .verdict .row1 {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .demo-page .verdict.allow .row1 { color: var(--demo-success-bright); }
+    .demo-page .verdict.deny .row1 { color: var(--demo-danger); }
+    .demo-page .verdict .row2 {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      opacity: 0.7;
+    }
+
+    /* Translation */
+    .demo-page .translation {
+      margin-top: 0.875rem;
+      padding: 1rem 1.125rem;
+      background: rgba(96, 165, 250, 0.06);
+      border-left: 4px solid var(--demo-info);
+      border-radius: 0 0.5rem 0.5rem 0;
+      font-size: 0.9375rem;
+      color: var(--demo-text);
+    }
+    .demo-page .translation b { color: var(--demo-info); }
+
+    /* Vendor integration */
+    .demo-page .integration { display: flex; flex-direction: column; gap: 1rem; }
+    .demo-page .integration-row {
+      background: var(--demo-bg-card);
+      border-radius: 0.875rem;
+      border: 1.5px solid var(--demo-border-bright);
+      padding: 1rem 1.25rem;
+    }
+    .demo-page .integration-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 0.625rem;
+    }
+    .demo-page .integration-label .dot {
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .demo-page .integration-label.before { color: var(--demo-text-dim); }
+    .demo-page .integration-label.before .dot { background: var(--demo-text-dim); }
+    .demo-page .integration-label.add { color: var(--demo-accent-bright); }
+    .demo-page .integration-label.add .dot { background: var(--demo-accent); }
+    .demo-page .integration-label.after { color: var(--demo-success-bright); }
+    .demo-page .integration-label.after .dot { background: var(--demo-success); }
+    .demo-page .demo-code {
+      background: rgba(0,0,0,0.4);
+      padding: 0.875rem 1rem;
+      border-radius: 0.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--demo-text-muted);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+
+    /* Lifecycle trace */
+    .demo-page .lifecycle ol { padding-left: 1.5rem; margin: 0.75rem 0 0; color: var(--demo-text-muted); }
+    .demo-page .lifecycle ol li { margin-bottom: 0.5rem; }
+    .demo-page .lifecycle ol li b { color: var(--demo-text); }
+    .demo-page .lifecycle ol li code { color: var(--demo-accent-bright); }
+
+    /* Details */
+    .demo-page details summary { cursor: pointer; color: var(--demo-text-dim); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.75rem; user-select: none; }
+    .demo-page details summary:hover { color: var(--demo-accent); }
+    .demo-page details pre { background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.75rem; color: var(--demo-text-muted); margin: 0.75rem 0 0; }
+
+    .demo-page .demo-hidden { display: none !important; }
+    .demo-page .demo-muted { color: var(--demo-text-muted); }
+  </style>
+
+  <div class="demo-page">
+    <div class="wrap">
+
+      <!-- HERO -->
+      <section class="demo-section no-border demo-hero">
+        <h1>Try AgentPKI <span class="accent">live</span>.</h1>
+        <p>Three different agents hit a publisher's API. See what happens with and without AgentPKI. Real cryptography, real production Workers, ~150ms end-to-end.</p>
+      </section>
+
+      <!-- WHO THIS IS FOR — role cards -->
+      <section class="demo-section">
+        <h2>Who this is for</h2>
+        <p class="lead">If you operate one of these, the demo below is going to look immediately useful. Click your role to jump to a tailored explanation later in the page.</p>
+        <div class="roles" id="roles">
+          <a class="role" href="#for-vendors" data-role="vendors">
+            <div class="role-label">Bot-defense vendors</div>
+            <div class="role-names">Cloudflare · DataDome · hCaptcha · Arkose · Castle · F5 · Akamai · Kasada</div>
+            <p class="role-pitch">Additive signal in your existing pipeline. <b>Never overrides your score.</b> 30-line middleware drop-in. Verdict comes back in ~21ms at the edge.</p>
+            <div class="role-cta">See how the integration looks &rarr;</div>
+          </a>
+          <a class="role" href="#for-publishers" data-role="publishers">
+            <div class="role-label">Publishers fighting scrapers</div>
+            <div class="role-names">Reuters · NYT · The Verge · Stack Overflow · dev.to · GitHub</div>
+            <p class="role-pitch">Finally distinguish <b>legitimate AI traffic</b> from scrapers wearing agent costumes. Lower CAPTCHA rates for verified agents; higher block confidence for unsigned ones.</p>
+            <div class="role-cta">See the comparison &rarr;</div>
+          </a>
+          <a class="role" href="#for-api" data-role="api">
+            <div class="role-label">Sites with API tiers</div>
+            <div class="role-names">Stripe · Shopify · Reddit · Twilio · Anthropic itself</div>
+            <p class="role-pitch">Apply <b>scope-based rate limits</b> to authenticated agents. "Anthropic's tier-2 research bot" gets different quotas than "unknown agent traffic." Auditable, attributable, revocable.</p>
+            <div class="role-cta">See the passport claim &rarr;</div>
+          </a>
         </div>
-        <div class="rounded-xl border border-red-500/40 bg-red-500/[0.04] p-5">
-          <div class="text-[10px] uppercase tracking-widest text-red-400 font-bold mb-2">Tampered passport</div>
-          <h3 class="font-semibold tracking-tight mb-2">Imposter — flipped signature</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Same Anthropic claim, but we flip a byte in the signature before sending. Cryptography catches it.</p>
-          <div class="mt-3 text-xs text-[color:var(--color-text-dim)]">Expected: <strong class="text-red-300">verdict: not_allowed</strong> &middot; signature_invalid</div>
-        </div>
-        <div class="rounded-xl border border-amber-500/40 bg-amber-500/[0.04] p-5">
-          <div class="text-[10px] uppercase tracking-widest text-amber-400 font-bold mb-2">Revoked key</div>
-          <h3 class="font-semibold tracking-tight mb-2">Compromised — key rotation</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">A passport from an old, rotated-out Anthropic key. The directory's <code class="text-xs">revoked_keys</code> list catches it — even though the signature is mathematically valid.</p>
-          <div class="mt-3 text-xs text-[color:var(--color-text-dim)]">Expected: <strong class="text-amber-300">verdict: not_allowed</strong> &middot; revoked_key</div>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ─────────── WHAT THE PUBLISHER'S EDGE SEES (comparison) ─────────── -->
-  <section id="for-publishers" class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What the publisher's edge sees</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">Without AgentPKI, bot-defense vendors have to guess. With AgentPKI, the request carries a verifiable claim.</p>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- WITHOUT -->
-        <div class="rounded-xl border border-red-500/30 bg-[color:var(--color-bg-elevated)]/60 p-6">
-          <div class="text-[10px] uppercase tracking-widest text-red-400 font-bold mb-2">Without AgentPKI</div>
-          <h3 class="font-semibold tracking-tight mb-4">Today's reality at reuters.com</h3>
-          <div class="space-y-3 text-sm font-mono">
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">User-Agent</div>python-requests/2.31.0</div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">IP</div><span class="text-[color:var(--color-text-muted)]">3.123.45.67 (rotating residential)</span></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Signed identity claim</div><span class="text-[color:var(--color-text-muted)]">none</span></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Behavioral fingerprint</div><span class="text-[color:var(--color-text-muted)]">looks scripted</span></div>
+      <!-- STEP 1: pick a scenario -->
+      <section class="demo-section">
+        <h2><span class="step">1</span>Pick an agent</h2>
+        <p class="lead">Each scenario is a real agent that hits a real publisher API (Reuters in the example). Click one to highlight it; the matching button in step 3 will run it.</p>
+        <div class="scenarios" id="scenarios">
+          <div class="scenario success active" data-id="anthropic">
+            <div class="role-tag">Verified AI agent</div>
+            <div class="title">Anthropic — research-bot-v3</div>
+            <p class="desc">Anthropic's research bot, reading Reuters articles on behalf of a Claude user.</p>
+            <div class="expected">Expected: <b>verdict: allow</b> &middot; tier 2</div>
           </div>
-          <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] text-sm text-red-300">
-            &rarr; Bot-defense vendor: <strong>"Could be Anthropic, could be a scraper. risk_score 0.65. Serve CAPTCHA."</strong>
+          <div class="scenario danger" data-id="tampered">
+            <div class="role-tag">Tampered passport</div>
+            <div class="title">Imposter — flipped signature</div>
+            <p class="desc">Same Anthropic claim, but we flip a byte in the signature before sending. Cryptography catches it.</p>
+            <div class="expected">Expected: <b>verdict: not_allowed</b> &middot; signature_invalid</div>
+          </div>
+          <div class="scenario warn" data-id="revoked">
+            <div class="role-tag">Revoked key</div>
+            <div class="title">Compromised — key rotation</div>
+            <p class="desc">A passport from an old, revoked Anthropic key. The CRL says no — even though the signature is mathematically valid.</p>
+            <div class="expected">Expected: <b>verdict: not_allowed</b> &middot; revoked_key</div>
           </div>
         </div>
+      </section>
 
-        <!-- WITH -->
-        <div class="rounded-xl border border-green-500/40 bg-[color:var(--color-bg-elevated)]/60 p-6">
-          <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-2">With AgentPKI</div>
-          <h3 class="font-semibold tracking-tight mb-4">Same request, signed passport attached</h3>
-
-          <!-- PLAIN-ENGLISH CLAIM STATEMENT -->
-          <div class="rounded-lg border border-green-500/30 bg-green-500/[0.07] p-4 mb-4">
-            <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-1">&#128220; What the passport actually says</div>
-            <p class="text-sm text-[color:var(--color-text)] leading-relaxed">"Anthropic claims this agent is their <strong class="text-green-300">research-bot-v3</strong>, authorized for <strong class="text-green-300">read-only article access</strong>, with <strong class="text-green-300">tier-2 (KYB-verified)</strong> trust. Signed by Anthropic's Ed25519 key. Valid until 12:35 PM."</p>
-          </div>
-
-          <div class="space-y-3 text-sm font-mono">
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Issuer</div><code class="text-[color:var(--color-accent-bright)]">anthropic.com</code></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Agent ID</div><code class="text-[color:var(--color-accent-bright)]">agent:anthropic.com/research-bot-v3</code></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Scope</div><code class="text-[color:var(--color-accent-bright)]">["read:articles"]</code></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Tier &middot; lifetime</div><code class="text-[color:var(--color-accent-bright)]">2 (KYB-verified) &middot; 300s</code></div>
-            <div><div class="text-[10px] uppercase tracking-wider text-[color:var(--color-text-dim)] mb-0.5">Token</div><span class="text-[color:var(--color-text-muted)]">v4.public.eyJpc3M… (Ed25519 signed)</span></div>
-          </div>
-          <div class="mt-4 pt-4 border-t border-[color:var(--color-border)] text-sm text-green-300">
-            &rarr; Bot-defense vendor: <strong>"Anthropic, cryptographically. risk_score 0.02. Allow."</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─────────── DEMO CARD ─────────── -->
-  <section>
-    <div class="max-w-[1400px] mx-auto px-8 py-12">
-      <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8 lg:p-10">
-        <!-- Header row -->
-        <div class="flex flex-col gap-5">
-          <div class="text-xs sm:text-sm text-[color:var(--color-text-muted)] font-mono break-all">
-            <code>demo.agentpki.dev/mint</code>
-            <span class="mx-2 text-[color:var(--color-text-dim)]">&rarr;</span>
-            <code>verify.agentpki.dev/v1/verify</code>
-          </div>
-
-          <!-- Three-button row: side-by-side on desktop with clear visual separation; stack on mobile -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-            <!-- 1. HAPPY PATH -->
-            <div class="flex flex-col gap-2">
-              <button id="try-run"
-                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm">
-                <svg id="try-icon-play" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4l10 6-10 6z"/></svg>
-                <svg id="try-icon-spin" class="w-4 h-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                  <circle cx="10" cy="10" r="7" stroke-width="2.5" stroke-dasharray="44" stroke-dashoffset="22" stroke-linecap="round" class="origin-center">
-                    <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="0.9s" repeatCount="indefinite"/>
-                  </circle>
-                </svg>
-                <span id="try-label">Run mint &rarr; verify</span>
-              </button>
-              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
-                Expected: <strong class="text-green-300">verdict: allow</strong>
-              </p>
+      <!-- STEP 2: comparison -->
+      <section class="demo-section">
+        <h2><span class="step">2</span>What the publisher's edge sees</h2>
+        <p class="lead">Without AgentPKI, bot-defense vendors have to guess. With AgentPKI, the request carries a verifiable claim.</p>
+        <div class="compare">
+          <div class="col bad">
+            <div class="col-label">Without AgentPKI</div>
+            <div class="col-title">Today's reality at reuters.com</div>
+            <div class="field">
+              <div class="k">User-Agent</div>
+              <div class="v">python-requests/2.31.0</div>
             </div>
-
-            <!-- 2. TAMPER PATH -->
-            <div class="flex flex-col gap-2">
-              <button id="try-tamper"
-                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg border-2 border-red-500/40 text-red-300 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
-                <span class="text-xs opacity-70">Run with &rarr;</span>
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                <span id="try-tamper-label">Tamper signature</span>
-              </button>
-              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
-                Expected: <strong class="text-red-300">verdict: not_allowed</strong> (signature_invalid)
-              </p>
+            <div class="field">
+              <div class="k">IP</div>
+              <div class="v muted">3.123.45.67 (rotating residential)</div>
             </div>
-
-            <!-- 3. REVOKED-KEY PATH -->
-            <div class="flex flex-col gap-2">
-              <button id="try-revoked"
-                      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg border-2 border-amber-500/40 text-amber-300 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-500/60 transition disabled:opacity-60 disabled:cursor-not-allowed font-semibold">
-                <span class="text-xs opacity-70">Run with &rarr;</span>
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                <span id="try-revoked-label">Use revoked key</span>
-              </button>
-              <p class="text-xs text-[color:var(--color-text-dim)] text-center md:text-left">
-                Expected: <strong class="text-amber-300">verdict: not_allowed</strong> (revoked_key)
-              </p>
+            <div class="field">
+              <div class="k">Signed identity claim</div>
+              <div class="v muted">none</div>
+            </div>
+            <div class="field">
+              <div class="k">Behavioral fingerprint</div>
+              <div class="v muted">looks scripted</div>
+            </div>
+            <div class="verdict-line">
+              &rarr; Bot-defense vendor: <b>"Could be Anthropic, could be a scraper. risk_score 0.65. Serve CAPTCHA."</b>
             </div>
           </div>
+          <div class="col good" id="for-publishers">
+            <div class="col-label">With AgentPKI</div>
+            <div class="col-title">Same request, signed passport attached</div>
+            <div class="claim-statement">
+              <span class="claim-label">&#128220; What the passport actually says:</span>
+              <em>"Anthropic claims this agent is their <b>research-bot-v3</b>, authorized for <b>read-only article access</b>, with <b>tier-2 (KYB-verified)</b> trust. Signed by Anthropic's Ed25519 key. Valid until 12:35 PM."</em>
+            </div>
+            <div class="field">
+              <div class="k">Issuer</div>
+              <div class="v"><code>anthropic.com</code></div>
+            </div>
+            <div class="field">
+              <div class="k">Agent ID</div>
+              <div class="v"><code>agent:anthropic.com/research-bot-v3</code></div>
+            </div>
+            <div class="field">
+              <div class="k">Scope</div>
+              <div class="v"><code>["read:articles"]</code></div>
+            </div>
+            <div class="field">
+              <div class="k">Tier &middot; lifetime</div>
+              <div class="v"><code>2 (KYB-verified) &middot; 300s</code></div>
+            </div>
+            <div class="field">
+              <div class="k">Token</div>
+              <div class="v muted">v4.public.eyJpc3M&hellip; (Ed25519 signed)</div>
+            </div>
+            <div class="verdict-line">
+              &rarr; Bot-defense vendor: <b>"Anthropic, cryptographically. risk_score 0.02. Allow."</b>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div class="text-xs text-[color:var(--color-text-dim)] border-t border-[color:var(--color-border)] pt-4 space-y-2">
-            <p>
-              <strong class="text-[color:var(--color-text-muted)]">How the tampered path works:</strong> we mint a valid passport, then flip a character in the base64-encoded signature before sending it to the verifier. The signature no longer matches the payload &rarr; Ed25519 verify returns false &rarr; <code>signature_invalid</code>.
-            </p>
-            <p>
-              <strong class="text-[color:var(--color-text-muted)]">How the revoked-key path works:</strong> we mint a passport with a <em>kid</em> ("key identifier") that the demo issuer has listed in its <code>revoked_keys</code> directory entry. The signature is mathematically valid (same private key) but the verifier rejects with <code>revoked_key</code> — exactly the v0.2 CRL/key-rotation story. Demonstrates that revocation works <em>without</em> coordinating with every verifier on the web.
-            </p>
+      <!-- STEP 3: trigger -->
+      <section class="demo-section">
+        <h2><span class="step">3</span>Run the demo</h2>
+        <p class="lead">Each button mints + sends to the production verifier. Verdicts come back in ~150ms.</p>
+        <div class="btn-row">
+          <div>
+            <button class="demo-btn primary" data-run="anthropic" id="btn-anthropic">&#9654; Run as Anthropic bot</button>
+            <p class="btn-sub">Expected: <b>verdict: allow</b></p>
+          </div>
+          <div>
+            <button class="demo-btn danger" data-run="tampered" id="btn-tampered">&#10007; Tamper signature</button>
+            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
+          </div>
+          <div>
+            <button class="demo-btn warn" data-run="revoked" id="btn-revoked">&#8856; Use revoked key</button>
+            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
           </div>
         </div>
 
-        <!-- Live step status — populated by JS as the demo runs -->
-        <div id="try-steps" class="hidden mt-6 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/40 p-4">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">Live status</div>
-          <ul id="try-steps-list" class="space-y-1.5 text-sm font-mono"></ul>
+        <!-- Live status -->
+        <div class="status demo-hidden" id="status">
+          <div class="head">Live trace</div>
+          <ul class="step-list" id="step-list"></ul>
         </div>
 
-        <div id="try-results" class="mt-6 space-y-4 hidden">
-          <!-- Step 1: mint result -->
-          <div id="try-mint" class="hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/80 p-5">
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-2">
-                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">01</span>
-                <span class="font-semibold text-sm tracking-tight">Issuer minted a passport</span>
-              </div>
-              <span id="try-mint-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
-            </div>
-            <p id="try-mint-narrative" class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3"></p>
-            <details class="group">
-              <summary class="cursor-pointer text-xs font-mono text-[color:var(--color-text-dim)] hover:text-[color:var(--color-accent)] transition select-none inline-flex items-center gap-1">
-                <svg class="w-3 h-3 transition-transform group-open:rotate-90" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4z"/></svg>
-                Show signed token &amp; payload
-              </summary>
-              <pre id="try-mint-output" class="mt-3 text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
-            </details>
-          </div>
-
-          <!-- Step 2: verify result -->
-          <div id="try-verify" class="hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/80 p-5">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] font-mono text-xs font-semibold">02</span>
-                <span class="font-semibold text-sm tracking-tight">Verifier validated it</span>
-              </div>
-              <span id="try-verify-time" class="text-xs font-mono text-[color:var(--color-text-dim)]"></span>
-            </div>
-            <div id="try-verdict-badge" class="mb-4 hidden"></div>
-            <p id="try-verify-narrative" class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3"></p>
-            <details class="group">
-              <summary class="cursor-pointer text-xs font-mono text-[color:var(--color-text-dim)] hover:text-[color:var(--color-accent)] transition select-none inline-flex items-center gap-1">
-                <svg class="w-3 h-3 transition-transform group-open:rotate-90" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4z"/></svg>
-                Show full verifier response
-              </summary>
-              <pre id="try-verify-output" class="mt-3 text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed"></pre>
-            </details>
-          </div>
-
-          <!-- Final summary - shown after both steps -->
-          <div id="try-summary" class="hidden rounded-xl border border-[color:var(--color-accent)]/30 bg-gradient-to-br from-[color:var(--color-accent)]/10 to-transparent p-5">
-            <div class="flex items-center gap-2 mb-3">
-              <svg class="w-4 h-4 text-[color:var(--color-accent-bright)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-              <span class="font-semibold text-sm tracking-tight">What just happened?</span>
-            </div>
-            <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] leading-relaxed">
-              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>The demo issuer signed a fresh <strong class="text-[color:var(--color-text)]">PASETO v4.public</strong> token with its Ed25519 private key, scoped to <code class="text-xs">read:articles</code>.</li>
-              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>The verifier fetched the issuer's public key from its <code class="text-xs">/.well-known/agentpki-issuer.json</code> directory, validated the signature, consulted the CRL, and returned a verdict.</li>
-              <li class="flex gap-2"><span class="text-[color:var(--color-accent)]">→</span>No shared secrets. No blockchain. No callout to a vendor's API. All cryptographic, stateless, &lt; 50 ms at the edge — globally.</li>
-            </ul>
-            <div class="mt-5 pt-5 border-t border-[color:var(--color-border)]">
-              <p class="text-sm text-[color:var(--color-text-muted)] mb-3">
-                In production, you replace <code class="text-xs">demo.agentpki.dev</code> with your own issuer.
-              </p>
-              <a href="https://dashboard.agentpki.dev"
-                 class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition text-base">
-                Spin up your own issuer
-                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none">
-                  <path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          <!-- Error state -->
-          <div id="try-error" class="hidden rounded-xl border border-red-500/40 bg-red-500/5 p-5">
-            <div class="flex items-center gap-2 mb-2">
-              <svg class="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span class="font-mono text-xs uppercase tracking-widest text-red-400">demo error</span>
-            </div>
-            <pre id="try-error-output" class="text-xs font-mono text-red-300 overflow-x-auto"></pre>
+        <!-- Verdict badge -->
+        <div class="verdict demo-hidden" id="verdict">
+          <svg class="verdict-icon" id="verdict-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <div style="flex:1;">
+            <div class="row1" id="verdict-text">VERDICT: ALLOW</div>
+            <div class="row2" id="verdict-time">21ms edge compute &middot; 153ms wall-clock</div>
           </div>
         </div>
-      </div>
 
-      <p class="mt-6 text-center text-xs text-[color:var(--color-text-dim)] max-w-2xl mx-auto">
-        Runs entirely in your browser. CORS-enabled on both Workers — the page itself has no backend. The demo issuer uses a hardcoded keypair clearly labeled DEMO-ONLY in source; production issuers use HSM-resident keys per spec §5.3.
-      </p>
-    </div>
-  </section>
+        <!-- Translation -->
+        <div class="translation demo-hidden" id="translation">
+          <b>What this means in practice:</b>
+          <span id="translation-text"></span>
+        </div>
+      </section>
 
-  <!-- ─────────── LIFECYCLE TRACE ─────────── -->
-  <section class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What just happened, end-to-end</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The whole agent &harr; site &harr; bot-defense flow, step by step. Six numbered moments. Most of them are invisible to the user; that's the point.</p>
-      <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-6 lg:p-8">
-        <ol class="space-y-3 text-[color:var(--color-text-muted)] list-decimal pl-6">
-          <li><strong class="text-[color:var(--color-text)]">Anthropic's research-bot SDK</strong> signed a passport with their Ed25519 private key, scoped to <code class="text-xs">read:articles</code>, valid for 5 minutes.</li>
-          <li><strong class="text-[color:var(--color-text)]">The SDK attached the passport</strong> as a header to the outbound HTTP request to <code class="text-xs">reuters.com/api/article/123</code>.</li>
-          <li><strong class="text-[color:var(--color-text)]">Reuters' Cloudflare edge</strong> received the request, extracted the passport, sent it to <code class="text-xs">verify.agentpki.dev/v1/verify</code>.</li>
-          <li><strong class="text-[color:var(--color-text)]">The verifier</strong> fetched Anthropic's public key from <code class="text-xs">anthropic.com/.well-known/agentpki-issuer.json</code> (cached at edge), validated the Ed25519 signature, consulted Anthropic's CRL (also cached), returned <code class="text-xs">verdict: allow</code> + passport metadata.</li>
-          <li><strong class="text-[color:var(--color-text)]">Cloudflare's bot-defense</strong> fed the verdict into its existing score: signed passport from a tier-2 verified issuer dropped risk_score from 0.65 &rarr; 0.02.</li>
-          <li><strong class="text-[color:var(--color-text)]">Reuters allowed the request</strong>, served the article, and logged "anthropic.com &rarr; research-bot-v3 &rarr; /api/article/123" in their bot-traffic audit.</li>
-        </ol>
-        <p class="text-sm text-[color:var(--color-text-dim)] mt-5">No shared secrets between Reuters and Anthropic. No central authority. No blockchain. Just standards-grade cryptography (PASETO v4 + Ed25519 + RFC 9421) over a public protocol that any verifier on the web can check.</p>
-      </div>
-    </div>
-  </section>
+      <!-- STEP 4: vendor integration -->
+      <section class="demo-section" id="for-vendors">
+        <h2><span class="step">4</span>How a bot-defense vendor consumes the verdict</h2>
+        <p class="lead">The verdict from &sect;3 isn't the final answer — it's <strong>one signal</strong> that flows into the vendor's existing scoring pipeline. AgentPKI never overrides; it only adds. Same shape as how vendors already consume third-party threat-intel feeds.</p>
 
-  <!-- ─────────── VENDOR INTEGRATION ─────────── -->
-  <section id="for-vendors" class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">How a bot-defense vendor consumes the verdict</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The verifier's verdict isn't the final answer &mdash; it's <strong class="text-[color:var(--color-text)]">one signal</strong> that flows into the vendor's existing scoring pipeline. AgentPKI never overrides; it only adds. Same shape as how vendors already consume third-party threat-intel feeds.</p>
-
-      <div class="space-y-4">
-        <!-- BEFORE -->
-        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-[color:var(--color-text-dim)]"></span>
-            <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] font-bold">Vendor's existing pipeline (today)</div>
-          </div>
-          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// Cloudflare bot-management scoring (simplified)
+        <div class="integration">
+          <div class="integration-row">
+            <div class="integration-label before">
+              <span class="dot"></span>
+              Vendor's existing pipeline (today)
+            </div>
+            <pre class="demo-code">{`// Cloudflare bot-management scoring (simplified)
 let score = 0;
 score += fingerprint(req);          // 0.30 — looks scripted
 score += ipReputation(req.ip);      // 0.20 — fresh residential
 score += behaviorAnalysis(session); // 0.15 — no human variance
 
 // Total: 0.65 → above 0.5 threshold → CAPTCHA`}</pre>
-        </div>
-
-        <!-- ADD -->
-        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg)]/60 p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-[color:var(--color-accent)]"></span>
-            <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)] font-bold">Add AgentPKI middleware (~30 LOC drop-in)</div>
           </div>
-          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// One new signal — never replaces, only adjusts.
+
+          <div class="integration-row">
+            <div class="integration-label add">
+              <span class="dot"></span>
+              Add AgentPKI middleware (~30 LOC drop-in)
+            </div>
+            <pre class="demo-code">{`// One new signal — never replaces, only adjusts.
 const apki = await verifyAgentPKI(req);
 if (apki?.verdict === 'allow') {
   score -= 0.40 * tierWeight(apki.passport.tier);
   //         ↑ tier 2 (KYB) = 1.0 · tier 3 (HSM) = 1.25
 }`}</pre>
-        </div>
-
-        <!-- AFTER -->
-        <div class="rounded-xl border border-green-500/30 bg-[color:var(--color-bg)]/60 p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-            <div class="font-mono text-[10px] uppercase tracking-widest text-green-300 font-bold">New combined decision</div>
           </div>
-          <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// 0.65 (fingerprint+ip+behavior) − 0.40 (tier-2 AgentPKI signal)
+
+          <div class="integration-row">
+            <div class="integration-label after">
+              <span class="dot"></span>
+              New combined decision
+            </div>
+            <pre class="demo-code">{`// 0.65 (fingerprint+ip+behavior) − 0.40 (tier-2 AgentPKI signal)
 // = 0.25 → below threshold → ALLOW
 
 // Result: Anthropic's research bot gets through.
 //         Unsigned Python script (no AgentPKI header) still hits 0.65 → CAPTCHA.
 //         Tampered token → AgentPKI verify returns 'deny' → no adjustment.`}</pre>
+          </div>
         </div>
-      </div>
 
-      <p class="mt-6 text-sm text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
-        <strong class="text-[color:var(--color-text)]">The vendor stays in control.</strong> They pick the weight (we suggest 0.40 for tier 2, 0.50 for tier 3). They decide the threshold. AgentPKI never sees the request itself &mdash; only the token. The vendor's behavioral models, IP reputation databases, customer-specific rules &mdash; all still run and still matter. AgentPKI just adds the one thing nobody could measure before: <strong class="text-[color:var(--color-text)]">"this traffic carries a verifiable claim of legitimacy from a known issuer."</strong>
-      </p>
-      <p class="mt-3 text-sm text-[color:var(--color-text-muted)]">
-        Reference 30-line integration on GitHub: <a href="https://github.com/agentpki/bot-defense-reference" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]"><code>github.com/agentpki/bot-defense-reference</code></a> &mdash; drops into Cloudflare Workers, DataDome's API hook, hCaptcha's enterprise endpoint, Arkose's signal-API, or your own edge.
-      </p>
-    </div>
-  </section>
+        <p class="demo-muted" style="margin-top: 1.5rem; font-size: 0.875rem;">
+          <strong>The vendor stays in control.</strong> They pick the weight (we suggest 0.40 for tier 2, 0.50 for tier 3). They decide the threshold. AgentPKI never sees the request itself — only the token. The vendor's behavioral models, IP reputation databases, customer-specific rules — all still run and still matter. AgentPKI just adds the one thing nobody could measure before: <strong>"this traffic carries a verifiable claim of legitimacy from a known issuer."</strong>
+        </p>
 
-  <!-- ─────────── API TIER SECTION ─────────── -->
-  <section id="for-api" class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What this gives an API with tiered access</h2>
-      <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-6">If you run an API that wants to apply different limits to different agents (Stripe, Shopify, Reddit, anyone with a developer tier), AgentPKI gives you a verifiable answer to <em>"whose agent is this and what are they authorized to do?"</em></p>
-      <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-5 lg:p-6">
-        <pre class="text-xs font-mono text-[color:var(--color-text-muted)] overflow-x-auto leading-relaxed">{`// Your API gateway, after AgentPKI verification:
+        <p class="demo-muted" style="margin-top: 0.75rem; font-size: 0.875rem;">
+          Reference 30-line integration on GitHub: <a href="https://github.com/agentpki/bot-defense-reference"><code>github.com/agentpki/bot-defense-reference</code></a> — drops into Cloudflare Workers, DataDome's API hook, hCaptcha's enterprise endpoint, Arkose's signal-API, or your own edge.
+        </p>
+      </section>
+
+      <!-- API-tier specific section -->
+      <section class="demo-section" id="for-api">
+        <h2>What this gives an API with tiered access</h2>
+        <p class="lead">If you run an API that wants to apply different limits to different agents (Stripe, Shopify, Reddit, anyone with a developer tier), AgentPKI gives you a verifiable answer to <em>"whose agent is this and what are they authorized to do?"</em></p>
+        <pre class="demo-code" style="margin-top: 1rem;">{`// Your API gateway, after AgentPKI verification:
 const passport = await verifyAgentPKI(req);
 
 // 1. Rate-limit by issuer, not just IP
@@ -388,346 +676,200 @@ billing.charge(passport.iss, calculateUsage(req));
 
 // 4. Audit-log who did what
 audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: passport.tier });`}</pre>
-      </div>
-      <p class="mt-5 text-sm text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
-        Without AgentPKI, the API can only see <code class="text-xs">User-Agent</code> headers (which lie) and IP addresses (which rotate). With AgentPKI, the API gets a <strong class="text-[color:var(--color-text)]">cryptographically signed, revocable, auditable claim</strong> of who's calling and what they're authorized to do &mdash; without needing every agent operator to register an API key with you in advance.
-      </p>
-    </div>
-  </section>
+        <p class="demo-muted" style="margin-top: 1rem; font-size: 0.875rem;">Without AgentPKI, the API can only see <code>User-Agent</code> headers (which lie) and IP addresses (which rotate). With AgentPKI, the API gets a <strong>cryptographically signed, revocable, auditable claim</strong> of who's calling and what they're authorized to do — without needing every agent operator to register an API key with you in advance.</p>
+      </section>
 
-  <!-- ─────────── WHAT HAPPENS UNDER THE HOOD ─────────── -->
-  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-[1400px] mx-auto px-8 py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">Under the hood</h2>
-      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-2xl">A click of <em>Run</em> kicks off three real network calls — to two different production-deployed Cloudflare Workers.</p>
-
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">step 1</div>
-          <h3 class="font-semibold tracking-tight mb-2">Mint request</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Your browser GETs <code class="text-xs">demo.agentpki.dev/mint</code> with a sub, scope, and lifetime. The issuer Worker signs a PASETO v4.public token with its Ed25519 private key.</p>
+      <!-- STEP 5: lifecycle -->
+      <section class="demo-section">
+        <h2><span class="step">5</span>What just happened, end-to-end</h2>
+        <div class="lifecycle">
+          <ol>
+            <li><b>Anthropic's research-bot SDK</b> signed a passport with their Ed25519 private key, scoped to <code>read:articles</code>, valid for 5 minutes.</li>
+            <li><b>The SDK attached the passport</b> as a header to the outbound HTTP request to <code>reuters.com/api/article/123</code>.</li>
+            <li><b>Reuters' Cloudflare edge</b> received the request, extracted the passport, sent it to <code>verify.agentpki.dev/v1/verify</code>.</li>
+            <li><b>The verifier</b> fetched Anthropic's public key from <code>anthropic.com/.well-known/agentpki-issuer.json</code> (cached at edge), validated the Ed25519 signature, consulted Anthropic's CRL (also cached), returned <code>verdict: allow</code> + passport metadata.</li>
+            <li><b>Cloudflare's bot-defense</b> fed the verdict into its existing score: signed passport from a tier-2 verified issuer dropped risk_score from 0.65 &rarr; 0.02.</li>
+            <li><b>Reuters allowed the request</b>, served the article, and logged "anthropic.com &rarr; research-bot-v3 &rarr; /api/article/123" in their bot-traffic audit.</li>
+          </ol>
+          <p class="demo-muted" style="margin-top: 1rem;">No shared secrets between Reuters and Anthropic. No central authority. No blockchain. Just standards-grade cryptography (PASETO v4 + Ed25519 + RFC 9421) over a public protocol that any verifier on the web can check.</p>
         </div>
-        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">step 2</div>
-          <h3 class="font-semibold tracking-tight mb-2">Verify request</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Your browser POSTs the token to <code class="text-xs">verify.agentpki.dev/v1/verify</code>. The verifier Worker fetches the issuer's public key from <code class="text-xs">/.well-known/agentpki-issuer.json</code>, validates the Ed25519 signature, consults the CRL, and returns a verdict.</p>
-        </div>
-        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)] mb-2">step 3</div>
-          <h3 class="font-semibold tracking-tight mb-2">Verdict</h3>
-          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">Returned as JSON: <code class="text-xs">&#123;"verdict":"allow", ...&#125;</code> with elapsed Worker compute time. In a real deployment this verdict tells your edge whether to serve the request.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ──────────── CODE ──────────── -->
-  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-[1400px] mx-auto px-8 py-24">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Drop-in on every side.</h2>
-      <p class="mt-3 text-[color:var(--color-text-muted)] text-lg max-w-2xl">
-        Agents sign with the SDK. Sites verify with one POST. Bot-defense vendors slot in 30 lines of middleware.
-      </p>
-
-      <!-- Equal-height cards (grid-stretch + flex-column).
-           Outer card has a subtle violet tint that pops on the dark page;
-           inner body uses the page bg so the code block sits in the darkest layer. -->
-      <div class="mt-10 grid lg:grid-cols-3 gap-5 items-stretch">
-        <div class="code-card">
-          <div class="code-card-header">
-            <span class="code-card-dot"></span>
-            <span>Agent side &middot; TypeScript</span>
-            <span class="code-card-badge">npm: @agentpki/sdk</span>
-          </div>
-          <div class="code-card-body">
-            <pre class="astro-code"><code>{`import { AgentPKI } from '@agentpki/sdk';
-
-const agent = new AgentPKI({
-  issuer: 'anthropic.com',
-  agentId: 'agent:anthropic.com/research-bot-v3',
-  scope: ['read:articles', 'read:public-data'],
-});
-
-// Auto-signs every outbound request
-// (RFC 9421 Mode B by default)
-const res = await agent.fetch(
-  'https://reuters.com/api/article/123'
-);`}</code></pre>
-          </div>
-        </div>
-
-        <div class="code-card">
-          <div class="code-card-header">
-            <span class="code-card-dot"></span>
-            <span>Site side &middot; POST to verifier</span>
-            <span class="code-card-badge">verify.agentpki.dev</span>
-          </div>
-          <div class="code-card-body">
-            <pre class="astro-code"><code>{`POST https://verify.agentpki.dev/v1/verify
-Content-Type: application/json
-
-{
-  "token": "v4.public.eyJpc3M...",
-  "mode": "B",
-  "request": {
-    "method": "GET",
-    "url": "https://reuters.com/..."
-  }
-}
-
-→ HTTP 200  (21ms warm · 50ms cold)
-{
-  "verdict": "allow",
+      <!-- STEP 6: under the hood (cards) -->
+      <section class="demo-section">
+        <h2><span class="step">6</span>Under the hood</h2>
+        <p class="lead">Three real network calls to two different production-deployed Workers. Click to expand the raw responses.</p>
+        <div class="compare">
+          <div class="col">
+            <div class="col-label">Mint</div>
+            <div class="col-title">demo.agentpki.dev/mint</div>
+            <p class="demo-muted" style="font-size: 0.875rem; margin: 0;">Issuer signs a PASETO v4 token with Ed25519. Returns the token + decoded passport metadata.</p>
+            <details style="margin-top: 0.875rem;">
+              <summary>Show response</summary>
+              <pre>{`{
+  "token": "v4.public.eyJpc3M…",
   "passport": {
-    "issuer": "anthropic.com",
+    "iss": "demo.agentpki.dev",
+    "sub": "agent:browser-demo/visitor",
+    "scope": ["read:articles"],
     "tier": 2,
-    "scopes": ["read:articles"]
+    "kid": "demo-2026-q2"
   },
-  "abuse_score": 0.02,
+  "expires_in": 300
+}`}</pre>
+            </details>
+          </div>
+          <div class="col">
+            <div class="col-label">Verify</div>
+            <div class="col-title">verify.agentpki.dev/v1/verify</div>
+            <p class="demo-muted" style="font-size: 0.875rem; margin: 0;">Verifier fetches the issuer's public key, validates signature, consults CRL, returns verdict.</p>
+            <details style="margin-top: 0.875rem;">
+              <summary>Show response</summary>
+              <pre>{`{
+  "verified": true,
+  "verdict": "allow",
+  "passport": { "issuer": "demo.agentpki.dev", … },
   "crl_fresh": true,
-  "replay_checked": true
-}`}</code></pre>
+  "abuse_score": 0.02,
+  "elapsed_ms": 21
+}`}</pre>
+            </details>
           </div>
         </div>
+      </section>
 
-        <div class="code-card">
-          <div class="code-card-header">
-            <span class="code-card-dot"></span>
-            <span>Bot-defense middleware</span>
-            <span class="code-card-badge">~30 LOC drop-in</span>
-          </div>
-          <div class="code-card-body">
-            <pre class="astro-code"><code>{`// Slot into Cloudflare / DataDome /
-// hCaptcha / Arkose decision pipelines.
-// SIGNAL-only — never overrides yours.
-
-const apkiSignal = async (req) => {
-  const token = req.headers
-    .get('AgentPKI-Token');
-  if (!token) return null;
-
-  const r = await fetch(
-    'https://verify.agentpki.dev/v1/verify',
-    { method: 'POST',
-      body: JSON.stringify({ token }) }
-  );
-  const v = await r.json();
-  return { verdict: v.verdict,
-           tier: v.passport?.tier };
-};
-
-// → feeds your existing score
-score -= (await apkiSignal(req))
-  ?.verdict === 'allow' ? 30 : 0;`}</code></pre>
-          </div>
+      <!-- CTAs at bottom -->
+      <section class="demo-section">
+        <h2>Want to run your own?</h2>
+        <p class="lead">Two paths, both walked through in the dashboard:</p>
+        <div class="btn-row" style="grid-template-columns: 1fr 1fr;">
+          <a class="demo-btn primary" href="https://dashboard.agentpki.dev" style="text-decoration: none;">Spin up your own issuer &rarr;</a>
+          <a class="demo-btn" href="https://github.com/agentpki/real-issuer" style="text-decoration: none; border-color: var(--demo-border-bright); color: var(--demo-text);">Fork the Worker template</a>
         </div>
-      </div>
+      </section>
+
+      <div style="height: 4rem;"></div>
     </div>
-  </section>
-  <!-- ─────────── ADJACENT CTAs ─────────── -->
-  <section class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-[1400px] mx-auto px-8 py-20 text-center">
-      <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Want to mint passports from your own domain?</h2>
-      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
-        The demo's the easy part. Get your own DNS-verified issuer up in 3 minutes via the dashboard, or fork the production-grade real-issuer Worker template.
-      </p>
-      <div class="mt-10 flex flex-wrap gap-3 justify-center">
-        <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-medium text-base hover:bg-[color:var(--color-accent-bright)] transition">
-          Spin up your own issuer &mdash; free
-          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a href="https://github.com/agentpki/real-issuer" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
-          Fork the Worker template
-        </a>
-      </div>
-    </div>
-  </section>
+  </div>
 
   <script is:inline>
     (function () {
       const DEMO_ISSUER = 'https://demo.agentpki.dev';
       const VERIFIER    = 'https://verify.agentpki.dev';
 
-      const $ = (id) => document.getElementById(id);
-      const button         = $('try-run');
-      const tamperButton   = $('try-tamper');
-      const revokedButton  = $('try-revoked');
-      const label          = $('try-label');
-      const tamperLabel    = $('try-tamper-label');
-      const revokedLabel   = $('try-revoked-label');
-      const iconPlay       = $('try-icon-play');
-      const iconSpin       = $('try-icon-spin');
-      const results        = $('try-results');
-      const stepsContainer = $('try-steps');
-      const stepsList      = $('try-steps-list');
-      const mintBlock      = $('try-mint');
-      const mintOutput     = $('try-mint-output');
-      const mintNarrative  = $('try-mint-narrative');
-      const mintTime       = $('try-mint-time');
-      const verifyBlock    = $('try-verify');
-      const verifyOutput   = $('try-verify-output');
-      const verifyNarrative = $('try-verify-narrative');
-      const verifyTime     = $('try-verify-time');
-      const verdictBadge   = $('try-verdict-badge');
-      const summaryBlock   = $('try-summary');
-      const errorBlock     = $('try-error');
-      const errorOutput    = $('try-error-output');
-
-      if (!button) return;
-
-      const setLoading = (loading, mode) => {
-        button.disabled = loading;
-        tamperButton.disabled = loading;
-        if (revokedButton) revokedButton.disabled = loading;
-        iconPlay.classList.toggle('hidden', loading && mode === 'clean');
-        iconSpin.classList.toggle('hidden', !(loading && mode === 'clean'));
-        label.textContent = loading && mode === 'clean' ? 'Running…' : 'Run mint → verify';
-        tamperLabel.textContent = loading && mode === 'tamper' ? 'Tampering…' : 'Tamper signature';
-        if (revokedLabel) {
-          revokedLabel.textContent = loading && mode === 'revoked' ? 'Minting w/ revoked kid…' : 'Use revoked key';
-        }
+      // ─── Scenario metadata (text/translation copy mirrors demo-v2-preview.html)
+      const scenarios = {
+        anthropic: {
+          mintPath: '/mint?sub=' + encodeURIComponent('agent:browser-demo/visitor') + '&scope=read:articles&lifetime=300',
+          tamper: false,
+          translation: 'A site using AgentPKI <b>lets this agent through</b>. The site logs <b>demo.agentpki.dev</b> as the issuer, sees <b>scope: read:articles</b>, grants <b>tier-based trust</b>. Reuters serves the article; Cloudflare\'s bot-defense drops the risk_score from 0.65 to 0.02. Anthropic gets attributed; Reuters gets confidence; the user gets the answer they wanted from Claude.',
+          steps: [
+            'Issuer SDK signs a PASETO v4 token with its Ed25519 key…',
+            'Token attached as an Authorization header on the outbound request to reuters.com/api/article/123',
+            'Cloudflare edge at reuters.com forwarded the token to verify.agentpki.dev/v1/verify',
+            'Verifier fetched demo.agentpki.dev/.well-known/agentpki-issuer.json (cached), validated signature, checked CRL (fresh)',
+            'Verifier returned: verdict ALLOW',
+          ],
+        },
+        tampered: {
+          mintPath: '/mint?sub=' + encodeURIComponent('agent:browser-demo/visitor') + '&scope=read:articles&lifetime=300',
+          tamper: true,
+          translation: 'A site using AgentPKI <b>rejects this request</b>. The signature on the passport is mathematically invalid — the token claims to be from the issuer but the cryptography says otherwise. Cloudflare\'s bot-defense treats this as a strong negative signal: someone is trying to impersonate the issuer. Reuters either serves a CAPTCHA or outright blocks. The imposter learns nothing about Reuters\' content.',
+          steps: [
+            'Imposter took a real issuer-issued token and flipped one character in the base64 signature…',
+            'Sent the modified token to reuters.com (same path as the real bot)',
+            'Cloudflare forwarded to verify.agentpki.dev',
+            'Verifier fetched issuer\'s public key, ran Ed25519 verify(signature, payload, pubkey)…',
+            'verify() returned false. Verdict: NOT_ALLOWED. Reason: signature_invalid.',
+          ],
+        },
+        revoked: {
+          mintPath: '/mint?sub=' + encodeURIComponent('agent:browser-demo/visitor') + '&scope=read:articles&lifetime=300&revoked=1',
+          tamper: false,
+          translation: 'A site using AgentPKI <b>rejects this request</b> even though the signature is mathematically valid. The issuer rotated keys (maybe an employee left, maybe an audit caught something) and listed the old <code>kid</code> in the directory\'s <code>revoked_keys</code> list. The signature on the old token still verifies — Ed25519 doesn\'t care that the key is "supposed to be" retired — but AgentPKI verifiers check the revoked-keys list on every request. The token gets rejected without the issuer having to coordinate with every verifier on the web. This is why short lifetimes + a CRL matter.',
+          steps: [
+            'Issuer signed a token with a <code>kid</code> it has listed in its <code>revoked_keys</code> directory entry…',
+            'Token attached to a fresh request to reuters.com',
+            'Cloudflare forwarded to verify.agentpki.dev',
+            'Verifier fetched the issuer directory, selected key by kid — found it in <code>revoked_keys</code>',
+            'Verdict: NOT_ALLOWED. Reason: revoked_key. Signature was valid — the directory killed it.',
+          ],
+        },
       };
 
-      // Append a live status line. status: 'pending' | 'done' | 'fail'
-      const addStep = (text, status) => {
-        const li = document.createElement('li');
-        li.className = 'flex items-start gap-2';
-        const color = status === 'done'
-          ? 'text-green-400'
-          : status === 'fail'
-            ? 'text-red-400'
-            : 'text-[color:var(--color-accent-bright)]';
-        const icon = status === 'done'
-          ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
-          : status === 'fail'
-            ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
-            : '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 animate-spin ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke-linecap="round"/></svg>';
-        li.innerHTML = icon + '<span class="text-[color:var(--color-text-muted)] leading-snug">' + text + '</span>';
-        stepsList.appendChild(li);
-        return li;
-      };
-      const markLastStep = (status, newText) => {
-        const li = stepsList.lastElementChild;
-        if (!li) return;
-        const color = status === 'done' ? 'text-green-400' : 'text-red-400';
-        const icon = status === 'done'
-          ? '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
-          : '<svg class="w-3.5 h-3.5 mt-0.5 shrink-0 ' + color + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        const textSpan = li.lastElementChild;
-        li.innerHTML = icon + (textSpan ? textSpan.outerHTML : '');
-        if (newText) {
-          li.lastElementChild.innerHTML = newText;
-        }
-      };
-      const resetSteps = () => {
-        stepsList.innerHTML = '';
-        stepsContainer.classList.remove('hidden');
-      };
+      // ─── Scenario picker (highlights when clicked)
+      document.querySelectorAll('.scenario').forEach(el => {
+        el.addEventListener('click', () => {
+          document.querySelectorAll('.scenario').forEach(c => c.classList.remove('active'));
+          el.classList.add('active');
+        });
+      });
 
-      // Tamper helper: PASETO tokens have 4 dot-separated parts.
-      // The 3rd part is base64url(payload || signature) — flipping a single char
-      // in the last 8 chars of part 3 lands inside the signature with very high
-      // probability, producing a `verdict: not_allowed` with reason `signature_invalid`.
+      // ─── Run button handlers
+      const btns = document.querySelectorAll('button[data-run]');
+      btns.forEach(btn => {
+        btn.addEventListener('click', () => run(btn.dataset.run));
+      });
+
+      // Tamper a PASETO token by flipping a char in part-3 (payload+signature).
       const tamperToken = (token) => {
         const parts = token.split('.');
-        if (parts.length < 3) return token; // unexpected shape; pass through
+        if (parts.length < 3) return token;
         const p = parts[2];
         if (p.length < 4) return token;
-        // Flip a char near the end (signature is at the end of part 3).
         const idx = p.length - 4;
         const orig = p[idx];
-        // Swap to a different alphanumeric so we don't accidentally land on '=' (padding).
         const swap = orig === 'A' ? 'B' : 'A';
         parts[2] = p.slice(0, idx) + swap + p.slice(idx + 1);
         return parts.join('.');
       };
 
-      const run = async (mode) => {
-        setLoading(true, mode);
-        resetSteps();
-        results.classList.remove('hidden');
-        mintBlock.classList.add('hidden');
-        verifyBlock.classList.add('hidden');
-        summaryBlock.classList.add('hidden');
-        errorBlock.classList.add('hidden');
-        verdictBadge.classList.add('hidden');
+      const $ = (id) => document.getElementById(id);
+
+      async function run(scenarioId) {
+        const s = scenarios[scenarioId];
+        if (!s) return;
+
+        // Highlight scenario card
+        document.querySelectorAll('.scenario').forEach(c => {
+          c.classList.toggle('active', c.dataset.id === scenarioId);
+        });
+
+        // Disable all buttons
+        btns.forEach(b => b.disabled = true);
+
+        const statusEl = $('status');
+        const stepListEl = $('step-list');
+        const verdictEl = $('verdict');
+        const verdictSvg = $('verdict-svg');
+        const translationEl = $('translation');
+        statusEl.classList.remove('demo-hidden');
+        verdictEl.classList.add('demo-hidden');
+        translationEl.classList.add('demo-hidden');
+        stepListEl.innerHTML = '';
 
         try {
-          // ── Step 1: mint a passport
-          // For mode === 'revoked', ask the issuer to sign with a kid that
-          // it has listed in revoked_keys — real cryptography, real CRL story.
-          const mintStepText =
-            mode === 'revoked'
-              ? 'Calling <code>demo.agentpki.dev/mint?revoked=1</code> — issuer signs with a deliberately-rotated <em>kid</em> that\'s in its <code>revoked_keys</code> directory entry…'
-              : 'Calling <code>demo.agentpki.dev/mint</code> — issuer Worker signs a fresh PASETO v4.public token with its Ed25519 key…';
-          addStep(mintStepText, 'pending');
-          const t0 = performance.now();
-          const mintUrl =
-            DEMO_ISSUER + '/mint?sub=' +
-            encodeURIComponent('agent:browser-demo/visitor') +
-            '&scope=read:articles,read:public-data&lifetime=300' +
-            (mode === 'revoked' ? '&revoked=1' : '');
-          const mintRes = await fetch(mintUrl);
-          if (!mintRes.ok) {
-            markLastStep('fail');
-            throw new Error('mint failed: HTTP ' + mintRes.status + ' ' + (await mintRes.text()));
+          // Pre-step animations for the 3 lead-in steps (visual narrative)
+          for (let i = 0; i < 3; i++) {
+            const li = document.createElement('li');
+            li.innerHTML = '<svg class="step-icon pending" viewBox="0 0 24 24"></svg><span>' + s.steps[i] + '</span>';
+            stepListEl.appendChild(li);
+            await sleep(180 + Math.random() * 220);
+            const icon = li.querySelector('.step-icon');
+            icon.outerHTML = '<svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
           }
+
+          // ── REAL CALL: mint
+          const t0 = performance.now();
+          const mintRes = await fetch(DEMO_ISSUER + s.mintPath);
+          if (!mintRes.ok) throw new Error('mint failed: HTTP ' + mintRes.status);
           const minted = await mintRes.json();
           const t1 = performance.now();
-          const mintMs = Math.round(t1 - t0);
-          const mintDoneText =
-            mode === 'revoked'
-              ? 'Mint succeeded in ' + mintMs + 'ms. Token signed by kid <code>' + minted.passport.kid + '</code> — listed as revoked in the issuer\'s directory.'
-              : 'Mint succeeded in ' + mintMs + 'ms — got back a signed PASETO v4.public token (passport payload + Ed25519 signature, encoded as one string).';
-          markLastStep('done', mintDoneText);
 
-          mintTime.textContent = mintMs + 'ms';
-          mintNarrative.innerHTML =
-            '<code class="text-[color:var(--color-accent-bright)]">demo.agentpki.dev</code> just signed a fresh <strong class="text-[color:var(--color-text)]">PASETO v4.public</strong> token for an agent called <code class="text-xs">' +
-            minted.passport.sub +
-            '</code>, scoped to <code class="text-xs">' +
-            (minted.passport.scope || []).join(', ') +
-            '</code>. Token signed with Ed25519 key <code class="text-[10px]">' +
-            minted.passport.kid +
-            '</code>, valid for ' +
-            minted.expires_in +
-            ' seconds.';
-          mintOutput.textContent = JSON.stringify(
-            {
-              token: minted.token.slice(0, 64) + '…',
-              passport: {
-                iss: minted.passport.iss,
-                sub: minted.passport.sub,
-                scope: minted.passport.scope,
-                tier: minted.passport.tier,
-                kid: minted.passport.kid,
-                expires_in: minted.expires_in + 's',
-              },
-            },
-            null,
-            2
-          );
-          mintBlock.classList.remove('hidden');
-
-          await new Promise((r) => setTimeout(r, 350));
-
-          // ── Tamper step (only in tampered mode)
+          // ── REAL CALL: verify
           let tokenToVerify = minted.token;
-          if (mode === 'tamper') {
-            addStep('Tampering with the signature — flipping one character in the base64-encoded Ed25519 signature portion of the token…', 'pending');
-            tokenToVerify = tamperToken(minted.token);
-            markLastStep('done', 'Tampered. The payload is intact but the Ed25519 signature no longer matches. A standards-compliant verifier MUST reject this.');
-            await new Promise((r) => setTimeout(r, 300));
-          }
+          if (s.tamper) tokenToVerify = tamperToken(minted.token);
 
-          // ── Step 2: verify
-          const verifyStepText =
-            mode === 'tamper'
-              ? 'POSTing the <strong class="text-red-300">tampered</strong> token to <code>verify.agentpki.dev/v1/verify</code>…'
-              : mode === 'revoked'
-                ? 'POSTing token (signed by <strong class="text-amber-300">revoked kid</strong>) to <code>verify.agentpki.dev/v1/verify</code> — verifier will fetch the issuer\'s directory, find the kid in <code>revoked_keys</code>, and reject…'
-                : 'POSTing token to <code>verify.agentpki.dev/v1/verify</code> — verifier fetches issuer pubkey from <code>/.well-known/agentpki-issuer.json</code>, checks signature, consults CRL…';
-          addStep(verifyStepText, 'pending');
           const verifyRes = await fetch(VERIFIER + '/v1/verify', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -736,74 +878,58 @@ score -= (await apkiSignal(req))
           const verdict = await verifyRes.json();
           const t2 = performance.now();
           const workerMs = verdict.elapsed_ms ?? '?';
-          const wallMs = Math.round(t2 - t1);
+          const wallMs = Math.round(t2 - t0);
+
           const isAllow = verdict.verdict === 'allow';
-          markLastStep(
-            isAllow ? 'done' : 'fail',
-            (isAllow
-              ? '<strong class="text-green-300">Verifier returned allow</strong>'
-              : '<strong class="text-red-300">Verifier returned ' + (verdict.verdict || 'not_allowed') + '</strong>' +
-                (verdict.failure_reason ? ' — reason: <code class="text-xs">' + verdict.failure_reason + '</code>' : '')
-            ) + ' in ' + workerMs + 'ms (edge compute), ' + wallMs + 'ms wall-clock.'
-          );
 
-          verifyTime.textContent = 'worker ' + workerMs + 'ms · wall ' + wallMs + 'ms';
+          // Final 2 steps (verify + verdict)
+          for (let i = 3; i < s.steps.length; i++) {
+            const li = document.createElement('li');
+            li.innerHTML = '<svg class="step-icon pending" viewBox="0 0 24 24"></svg><span>' + s.steps[i] + '</span>';
+            stepListEl.appendChild(li);
+            await sleep(160 + Math.random() * 180);
+            const icon = li.querySelector('.step-icon');
+            const isLast = i === s.steps.length - 1;
+            const fail = isLast && !isAllow;
+            if (fail) {
+              icon.outerHTML = '<svg class="step-icon fail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+            } else {
+              icon.outerHTML = '<svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+            }
+          }
 
-          const verdictColor = isAllow
-            ? { fg: 'text-green-300', bg: 'bg-green-500/10', border: 'border-green-500/40', icon: 'text-green-400' }
-            : { fg: 'text-red-300',   bg: 'bg-red-500/10',   border: 'border-red-500/40',   icon: 'text-red-400'   };
-          const checkSvg = isAllow
-            ? '<svg class="w-7 h-7 ' + verdictColor.icon + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>'
-            : '<svg class="w-7 h-7 ' + verdictColor.icon + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-          verdictBadge.className =
-            'mb-4 flex items-center gap-3 px-4 py-3 rounded-lg border ' +
-            verdictColor.bg + ' ' + verdictColor.border;
-          verdictBadge.innerHTML =
-            checkSvg +
-            '<div class="flex-1">' +
-            '<div class="font-mono text-xl font-semibold ' + verdictColor.fg + ' uppercase tracking-wide">verdict: ' + (verdict.verdict || 'unknown') + '</div>' +
-            '<div class="text-xs ' + verdictColor.fg + '/70 font-mono mt-0.5">' + workerMs + 'ms edge compute · ' + wallMs + 'ms wall-clock</div>' +
-            '</div>';
-          verdictBadge.classList.remove('hidden');
+          // Verdict badge
+          verdictEl.classList.remove('demo-hidden', 'allow', 'deny');
+          verdictEl.classList.add(isAllow ? 'allow' : 'deny');
+          $('verdict-text').textContent =
+            'VERDICT: ' + (verdict.verdict || 'unknown') + (verdict.failure_reason ? ' · ' + verdict.failure_reason : '');
+          $('verdict-time').textContent =
+            workerMs + 'ms edge compute · ' + wallMs + 'ms wall-clock';
+          verdictSvg.innerHTML = isAllow
+            ? '<circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path>'
+            : '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
 
-          verifyNarrative.innerHTML = isAllow
-            ? '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> fetched the issuer\'s public key from <code class="text-xs">/.well-known/agentpki-issuer.json</code>, verified the Ed25519 signature against the passport payload, confirmed the token is not expired and not revoked (CRL fresh: <code class="text-xs">' +
-              (verdict.crl_fresh ? 'true' : 'false') +
-              '</code>), then returned <strong class="text-green-300">allow</strong>.'
-            : '<code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code> received the token but rejected it. Reason: <code class="text-xs">' +
-              (verdict.failure_reason || 'unknown') +
-              '</code>. ' + (verdict.failure_detail ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">' + verdict.failure_detail + '</span>' : '') +
-              (mode === 'tamper' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Exactly the outcome you want: a tampered token is mathematically impossible to validate without the issuer\'s private key.</span>' : '') +
-              (mode === 'revoked' ? '<br><span class="text-[color:var(--color-text-dim)] text-xs">Even though the Ed25519 signature is mathematically valid, the verifier checked the issuer\'s directory and found the <em>kid</em> listed in <code>revoked_keys</code>. This is why short lifetimes + CRL matter — Anthropic can rotate a key and every verifier on the web honors it without coordinating with anyone.</span>' : '');
-
-          verifyOutput.textContent = JSON.stringify(verdict, null, 2);
-          verifyBlock.classList.remove('hidden');
-
-          await new Promise((r) => setTimeout(r, 200));
-          if (isAllow) summaryBlock.classList.remove('hidden');
+          // Translation
+          translationEl.classList.remove('demo-hidden');
+          $('translation-text').innerHTML = ' ' + s.translation;
         } catch (e) {
-          errorOutput.textContent = (e && e.message) || String(e);
-          errorBlock.classList.remove('hidden');
+          const li = document.createElement('li');
+          li.innerHTML = '<svg class="step-icon fail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="color:#f87171;">Error: ' + ((e && e.message) || String(e)) + '</span>';
+          stepListEl.appendChild(li);
         } finally {
-          setLoading(false, mode);
+          btns.forEach(b => b.disabled = false);
         }
-      };
+      }
 
-      button.addEventListener('click', () => run('clean'));
-      tamperButton.addEventListener('click', () => run('tamper'));
-      if (revokedButton) revokedButton.addEventListener('click', () => run('revoked'));
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-      // Auto-run on page load if ?run=1 is in URL (used by landing's hero CTA).
-      // Strip the param from the URL immediately so a subsequent refresh
-      // doesn't re-trigger the run — common annoyance: user navigates here
-      // from the hero CTA, demo runs, they refresh to try again, and it
-      // self-clicks before they can press anything.
+      // Strip ?run=1 to prevent refresh-loop self-clicks
       const params = new URLSearchParams(window.location.search);
       if (params.get('run') === '1') {
         params.delete('run');
         const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
         window.history.replaceState(null, '', newUrl);
-        setTimeout(() => button.click(), 800);
+        setTimeout(() => $('btn-anthropic')?.click(), 800);
       }
     })();
   </script>
