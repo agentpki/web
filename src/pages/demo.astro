@@ -435,40 +435,50 @@ import ContactModal from '../components/ContactModal.astro';
     /* "Watch live demo" wayfinder label between top CTAs and the role cards */
     .demo-page .watch-label-wrap {
       text-align: center;
-      padding: 2.25rem 0 1.75rem;
+      padding: 3rem 0 2.25rem;
       border-top: 1px solid var(--demo-border);
     }
     .demo-page .watch-label {
       display: inline-flex;
       align-items: center;
-      gap: 0.625rem;
-      padding: 0.625rem 1.125rem;
+      gap: 0.875rem;
+      padding: 1rem 1.875rem;
       border-radius: 999px;
-      background: rgba(167, 139, 250, 0.1);
-      border: 1px solid rgba(167, 139, 250, 0.35);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1.5px solid rgba(167, 139, 250, 0.45);
       color: var(--demo-text);
-      font-size: 1rem;
-      letter-spacing: -0.005em;
+      font-size: 1.375rem;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      line-height: 1.3;
     }
     .demo-page .watch-label .watch-eye {
       color: var(--demo-accent-bright);
-      font-size: 1.125rem;
+      font-size: 1.625rem;
       line-height: 1;
     }
     .demo-page .watch-label .watch-text strong {
       color: var(--demo-accent-bright);
-      font-weight: 600;
+      font-weight: 700;
     }
     .demo-page .watch-arrow {
-      margin-top: 0.5rem;
+      margin-top: 0.875rem;
       color: var(--demo-accent);
-      font-size: 1.5rem;
+      font-size: 2.25rem;
       line-height: 1;
       animation: watchBob 2s ease-in-out infinite;
     }
+    @media (max-width: 760px) {
+      .demo-page .watch-label {
+        font-size: 1.125rem;
+        padding: 0.875rem 1.375rem;
+      }
+      .demo-page .watch-label .watch-eye { font-size: 1.375rem; }
+      .demo-page .watch-arrow { font-size: 1.875rem; }
+    }
     @keyframes watchBob {
       0%, 100% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(4px); opacity: 1; }
+      50% { transform: translateY(6px); opacity: 1; }
     }
   </style>
 
