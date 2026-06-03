@@ -1,0 +1,151 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <main class="max-w-3xl mx-auto px-6 py-20 prose prose-invert text-[color:var(--color-text)]">
+    <h1 class="text-3xl font-semibold tracking-tight">Privacy policy</h1>
+    <p class="text-sm text-[color:var(--color-text-muted)]">Last updated: 2026-06-03</p>
+
+    <p>
+      This policy covers what data the AgentPKI Chrome extension and the
+      <code>verify.agentpki.dev</code> verifier service handle. The short
+      version: as little as possible, and never sold.
+    </p>
+
+    <h2>1. What the AgentPKI extension does</h2>
+    <p>
+      The extension watches webpages you visit for signals that an AI agent
+      is present — a <code>&lt;meta name="agentpki-passport"&gt;</code> tag,
+      an <code>AgentPKI-Token:</code> response header, an RFC 9421 outbound
+      signature, or known agent-framework JavaScript globals — and shows a
+      coloured toolbar badge that tells you whether the agent is verified.
+    </p>
+
+    <h2>2. What we send across the network</h2>
+    <p>The extension makes network requests to exactly one place: <code>verify.agentpki.dev</code>. The payload of each request is:</p>
+    <ul>
+      <li>
+        <strong>Verification</strong> (<code>POST /v1/verify</code>) — the
+        opaque PASETO token that the agent itself published on the page.
+        We do not send the page URL, the page content, or any other context
+        about your browsing.
+      </li>
+      <li>
+        <strong>Trusted-issuer list</strong> (<code>GET /v1/trusted-issuers</code>)
+        — fetched at most once every five minutes. No request body.
+      </li>
+      <li>
+        <strong>Reputation lookup</strong> (<code>GET /v1/passport/:id/reputation</code>)
+        — sent only when a verified token is present. The "id" is the
+        passport's <code>jti</code> (claim ID), which is itself a random
+        identifier minted by the issuer; it is not derived from your
+        identity.
+      </li>
+      <li>
+        <strong>Abuse report</strong> (<code>POST /v1/abuse/report</code>)
+        — sent only when you explicitly click <em>Report abuse</em> in the
+        popup. Includes the passport's <code>jti</code>, the agent's
+        <code>agent_id</code>, your category/severity/description, the
+        page URL (only if you check the "include evidence" box), and a
+        random UUID generated once per install that identifies the
+        <em>extension installation</em> (not you).
+      </li>
+    </ul>
+
+    <h2>3. What we store on your device</h2>
+    <p>
+      All of these live in <code>chrome.storage</code> on your machine and
+      never leave it:
+    </p>
+    <ul>
+      <li><strong>Installation UUID</strong> — generated on first run, used as the <code>reporter</code> field on abuse reports.</li>
+      <li><strong>Your own / blocked / whitelisted agents and issuers</strong> — managed through the popup and Activity & Settings page.</li>
+      <li><strong>Activity log</strong> — a rolling 200-entry buffer of detection events for your reference.</li>
+      <li><strong>Settings</strong> — your optional verifier-base override, if you set one.</li>
+    </ul>
+    <p>
+      Use the <strong>Clear all local data</strong> button on the Activity
+      & Settings page to wipe these at any time.
+    </p>
+
+    <h2>4. What we store server-side</h2>
+    <ul>
+      <li>
+        <strong>Public issuer directory.</strong> When an issuer registers
+        with AgentPKI, their public key and metadata are cached on the
+        verifier for fast verification. No user data.
+      </li>
+      <li>
+        <strong>Abuse reports.</strong> Reports you submit are stored for
+        14 days in Cloudflare KV under <code>verify.agentpki.dev</code>,
+        keyed by passport <code>jti</code> and report ID. They include the
+        UUID you sent (which we cannot link to you) and the page URL only
+        if you opted to include it as evidence.
+      </li>
+      <li>
+        <strong>No request logs.</strong> Cloudflare Workers retains
+        edge-level access logs for ~30 days for abuse/security purposes
+        per Cloudflare's standard policy. We do not run additional logging
+        or analytics on these requests.
+      </li>
+    </ul>
+
+    <h2>5. What we never collect</h2>
+    <ul>
+      <li>Your name, email, or any account information — the extension has no login.</li>
+      <li>Page content, page URLs (except via your explicit "include evidence" opt-in), DOM contents, or form data.</li>
+      <li>Browsing history.</li>
+      <li>Persistent cross-site identifiers beyond the per-install UUID.</li>
+      <li>Telemetry. Anonymous telemetry is permanently disabled in v0.1 and the toggle is greyed out.</li>
+    </ul>
+
+    <h2>6. Third parties</h2>
+    <p>
+      The verifier runs on Cloudflare Workers. Cloudflare may retain edge
+      logs as described above. We do not share data with anyone else.
+    </p>
+
+    <h2>7. Children</h2>
+    <p>The extension is not directed at children under 13. We do not knowingly collect data from anyone.</p>
+
+    <h2>8. Open source</h2>
+    <p>
+      Every line of the extension and verifier is MIT-licensed and visible:
+    </p>
+    <ul>
+      <li><a href="https://github.com/agentpki/extension">github.com/agentpki/extension</a></li>
+      <li><a href="https://github.com/agentpki/verifier">github.com/agentpki/verifier</a></li>
+    </ul>
+
+    <h2>9. Changes</h2>
+    <p>
+      We will date this page each time it changes. Material changes will
+      be announced in the GitHub repository's <code>CHANGELOG.md</code>
+      and on <a href="/why">/why</a>.
+    </p>
+
+    <h2>10. Contact</h2>
+    <p>
+      Privacy questions:{' '}
+      <a href="mailto:hello@agentpki.dev">hello@agentpki.dev</a>.
+    </p>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  main h2 { margin-top: 2rem; font-size: 1.25rem; font-weight: 600; }
+  main h2 + p, main h2 + ul { margin-top: 0.5rem; }
+  main ul { margin-left: 1.25rem; list-style: disc; }
+  main li { margin-top: 0.35rem; line-height: 1.55; }
+  main p { line-height: 1.65; }
+  main code { background: rgba(255,255,255,0.06); padding: 0 0.3em; border-radius: 3px; font-size: 0.9em; }
+</style>
