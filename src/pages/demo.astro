@@ -12,7 +12,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── HEADER ─────────── -->
   <section class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-4xl mx-auto px-6 pt-16 pb-12 lg:pt-20 lg:pb-16 text-center">
+    <div class="max-w-[1400px] mx-auto px-8 pt-16 pb-12 lg:pt-20 lg:pb-16 text-center">
       <p class="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur text-xs text-[color:var(--color-text-muted)]">
         <span class="relative flex w-1.5 h-1.5">
           <span class="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping"></span>
@@ -29,7 +29,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── WHO THIS IS FOR (role cards) ─────────── -->
   <section class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30">
-    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Who this is for</h2>
       <p class="text-[color:var(--color-text-muted)] max-w-2xl mb-8">If you operate one of these, the demo below is going to look immediately useful. Click for a tailored explanation later on the page.</p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -57,7 +57,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── WHAT THE PUBLISHER'S EDGE SEES (comparison) ─────────── -->
   <section id="for-publishers" class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What the publisher's edge sees</h2>
       <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">Without AgentPKI, bot-defense vendors have to guess. With AgentPKI, the request carries a verifiable claim.</p>
 
@@ -105,7 +105,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── DEMO CARD ─────────── -->
   <section>
-    <div class="max-w-5xl mx-auto px-6 py-12">
+    <div class="max-w-[1400px] mx-auto px-8 py-12">
       <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 backdrop-blur-sm p-6 sm:p-8 lg:p-10">
         <!-- Header row -->
         <div class="flex flex-col gap-5">
@@ -261,7 +261,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── WHAT HAPPENS UNDER THE HOOD ─────────── -->
   <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-5xl mx-auto px-6 py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">Under the hood</h2>
       <p class="text-[color:var(--color-text-muted)] mb-10 max-w-2xl">A click of <em>Run</em> kicks off three real network calls — to two different production-deployed Cloudflare Workers.</p>
 
@@ -287,7 +287,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── LIFECYCLE TRACE ─────────── -->
   <section class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What just happened, end-to-end</h2>
       <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The whole agent &harr; site &harr; bot-defense flow, step by step. Six numbered moments. Most of them are invisible to the user; that's the point.</p>
       <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-6 lg:p-8">
@@ -306,7 +306,7 @@ import ContactModal from '../components/ContactModal.astro';
 
   <!-- ─────────── VENDOR INTEGRATION ─────────── -->
   <section id="for-vendors" class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">How a bot-defense vendor consumes the verdict</h2>
       <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-8">The verifier's verdict isn't the final answer &mdash; it's <strong class="text-[color:var(--color-text)]">one signal</strong> that flows into the vendor's existing scoring pipeline. AgentPKI never overrides; it only adds. Same shape as how vendors already consume third-party threat-intel feeds.</p>
 
@@ -366,7 +366,7 @@ if (apki?.verdict === 'allow') {
 
   <!-- ─────────── API TIER SECTION ─────────── -->
   <section id="for-api" class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    <div class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
       <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">What this gives an API with tiered access</h2>
       <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-6">If you run an API that wants to apply different limits to different agents (Stripe, Shopify, Reddit, anyone with a developer tier), AgentPKI gives you a verifiable answer to <em>"whose agent is this and what are they authorized to do?"</em></p>
       <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-5 lg:p-6">
@@ -395,7 +395,7 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
 
   <!-- ──────────── CODE ──────────── -->
   <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-6xl mx-auto px-6 py-24">
+    <div class="max-w-[1400px] mx-auto px-8 py-24">
       <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">Drop-in on every side.</h2>
       <p class="mt-3 text-[color:var(--color-text-muted)] text-lg max-w-2xl">
         Agents sign with the SDK. Sites verify with one POST. Bot-defense vendors slot in 30 lines of middleware.
@@ -498,7 +498,7 @@ score -= (await apkiSignal(req))
   </section>
   <!-- ─────────── ADJACENT CTAs ─────────── -->
   <section class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <div class="max-w-[1400px] mx-auto px-8 py-20 text-center">
       <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Want to mint passports from your own domain?</h2>
       <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
         The demo's the easy part. Get your own DNS-verified issuer up in 3 minutes via the dashboard, or fork the production-grade real-issuer Worker template.
