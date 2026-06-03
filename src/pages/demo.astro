@@ -431,6 +431,45 @@ import ContactModal from '../components/ContactModal.astro';
 
     .demo-page .demo-hidden { display: none !important; }
     .demo-page .demo-muted { color: var(--demo-text-muted); }
+
+    /* "Watch live demo" wayfinder label between top CTAs and the role cards */
+    .demo-page .watch-label-wrap {
+      text-align: center;
+      padding: 2.25rem 0 1.75rem;
+      border-top: 1px solid var(--demo-border);
+    }
+    .demo-page .watch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.625rem 1.125rem;
+      border-radius: 999px;
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      color: var(--demo-text);
+      font-size: 1rem;
+      letter-spacing: -0.005em;
+    }
+    .demo-page .watch-label .watch-eye {
+      color: var(--demo-accent-bright);
+      font-size: 1.125rem;
+      line-height: 1;
+    }
+    .demo-page .watch-label .watch-text strong {
+      color: var(--demo-accent-bright);
+      font-weight: 600;
+    }
+    .demo-page .watch-arrow {
+      margin-top: 0.5rem;
+      color: var(--demo-accent);
+      font-size: 1.5rem;
+      line-height: 1;
+      animation: watchBob 2s ease-in-out infinite;
+    }
+    @keyframes watchBob {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(4px); opacity: 1; }
+    }
   </style>
 
   <div class="demo-page">
@@ -451,6 +490,15 @@ import ContactModal from '../components/ContactModal.astro';
           <a class="demo-btn" href="https://github.com/agentpki/real-issuer" style="text-decoration: none; border-color: var(--demo-border-bright); color: var(--demo-text);">Fork the Worker template</a>
         </div>
       </section>
+
+      <!-- WATCH LIVE DEMO — pre-section title to direct users to view the demo first -->
+      <div class="watch-label-wrap">
+        <div class="watch-label">
+          <span class="watch-eye" aria-hidden="true">&#9655;</span>
+          <span class="watch-text">Before you spin up your own &mdash; <strong>watch the live demo below</strong></span>
+        </div>
+        <div class="watch-arrow" aria-hidden="true">&darr;</div>
+      </div>
 
       <!-- WHO THIS IS FOR — role cards -->
       <section class="demo-section">
