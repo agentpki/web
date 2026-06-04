@@ -95,7 +95,7 @@ import ContactModal from '../components/ContactModal.astro';
       <div class="max-w-3xl mb-10">
         <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Built across the stack</p>
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
-          One open protocol. <span class="hero-accent-text">Four audiences.</span> All shipping today.
+          One open protocol. <span class="hero-accent-text">Four audiences.</span> All live today.
         </h2>
       </div>
 
@@ -243,17 +243,27 @@ import ContactModal from '../components/ContactModal.astro';
         </div>
       </div>
 
-      <!-- LAYER 05+ teaser — VC inbound hook -->
-      <div class="mt-8 rounded-xl border border-[color:var(--color-accent)]/35 bg-gradient-to-br from-violet-950/30 to-violet-900/5 p-6 sm:p-8">
-        <div class="flex items-start gap-4 flex-wrap">
+      <!-- LAYER 05+ teaser — VC / investor inbound hook, intentionally attention-grabbing -->
+      <div class="layer-five-plus mt-10 relative rounded-2xl p-6 sm:p-8 overflow-hidden">
+        <!-- Animated border glow -->
+        <div class="layer-five-plus-glow" aria-hidden="true"></div>
+        <div class="relative flex items-start gap-5 flex-wrap">
           <div class="flex-1 min-w-[16rem]">
-            <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-2">Layer 05+ &middot; not pictured</p>
-            <h3 class="text-xl font-semibold mb-2">We've built more layers. We're not talking about them yet.</h3>
-            <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            <div class="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full bg-violet-500/15 border border-violet-400/40">
+              <span class="layer-five-plus-pulse-dot" aria-hidden="true"></span>
+              <span class="text-[11px] font-mono tracking-widest uppercase font-bold text-violet-200">
+                For investors &amp; partners &middot; Layer 05+
+              </span>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-semibold mb-3 leading-tight">
+              We&rsquo;ve built more layers.<br />
+              <span class="text-[color:var(--color-text-muted)]">We&rsquo;re not talking about them yet.</span>
+            </h3>
+            <p class="text-base text-[color:var(--color-text-muted)] leading-relaxed">
               The four shipped above are the open, public, no-strings-attached stack &mdash; everything anyone needs to verify AI agents today. We have additional layers in development that compound on these and form the next chapters. Get in touch for the brief.
             </p>
           </div>
-          <a href="mailto:hello@agentpki.dev?subject=Roadmap%20brief" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition flex-shrink-0">
+          <a href="mailto:hello@agentpki.dev?subject=Roadmap%20brief" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition flex-shrink-0 shadow-lg shadow-violet-500/30">
             Ask for the brief &rarr;
           </a>
         </div>
@@ -324,15 +334,15 @@ import ContactModal from '../components/ContactModal.astro';
 
       <!-- Section header -->
       <div class="max-w-3xl mb-12">
-        <p class="inline-flex items-center gap-2 mb-4 text-xs font-mono tracking-widest uppercase">
+        <div class="coming-soon-flash inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border mb-4 text-xs font-mono tracking-widest uppercase font-bold">
           <span class="relative flex w-1.5 h-1.5">
             <span class="absolute inset-0 rounded-full bg-amber-400 opacity-75 animate-ping"></span>
             <span class="relative w-1.5 h-1.5 rounded-full bg-amber-400"></span>
           </span>
-          <span class="text-amber-400">Coming soon</span>
-          <span class="text-[color:var(--color-text-dim)]">·</span>
-          <span class="text-[color:var(--color-text-muted)]">The Chrome extension &mdash; pending Chrome Web Store review</span>
-        </p>
+          <span class="text-amber-200">Coming soon</span>
+          <span class="text-amber-200/60">&middot;</span>
+          <span class="text-amber-100">The Chrome extension &mdash; pending Chrome Web Store review</span>
+        </div>
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
           See whether an AI agent on the page is who it claims to be &mdash; <span class="hero-accent-text">in your toolbar</span>.
         </h2>
@@ -488,9 +498,9 @@ import ContactModal from '../components/ContactModal.astro';
 
       <!-- CTA strip — replaced 'install for Chrome' with 'pending review' / 'check the web verifier instead' -->
       <div class="mt-4 rounded-xl border border-[color:var(--color-accent)]/35 bg-gradient-to-br from-violet-950/40 to-violet-900/10 p-8 text-center">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/40 border border-amber-700/40 text-amber-300 text-xs font-mono tracking-widest uppercase mb-4">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" aria-hidden="true"></span>
-          Pending Chrome Web Store review
+        <div class="coming-soon-flash inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-amber-200 text-xs font-mono tracking-widest uppercase font-bold mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-ping" aria-hidden="true"></span>
+          Coming soon &middot; pending Chrome Web Store review
         </div>
         <h3 class="text-2xl font-semibold mb-2">Coming soon. Open source. Audit before you install.</h3>
         <p class="text-[color:var(--color-text-muted)] mb-6 max-w-2xl mx-auto">
@@ -1074,6 +1084,64 @@ import ContactModal from '../components/ContactModal.astro';
     font-size: 1.8rem; font-weight: 800;
     background: linear-gradient(135deg, var(--color-accent-bright), var(--color-accent));
     -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* ══════ Layer 05+ teaser — must stand out from the four shipped layers ══════ */
+  .layer-five-plus {
+    background:
+      linear-gradient(135deg, rgba(124, 58, 237, 0.20), rgba(167, 139, 250, 0.08) 40%, rgba(167, 139, 250, 0.02));
+    border: 2px solid rgba(167, 139, 250, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(167, 139, 250, 0.1),
+      0 12px 40px -10px rgba(124, 58, 237, 0.3);
+    animation: lfp-pulse 3.4s ease-in-out infinite;
+  }
+  @keyframes lfp-pulse {
+    0%, 100% {
+      border-color: rgba(167, 139, 250, 0.55);
+      box-shadow:
+        0 0 0 1px rgba(167, 139, 250, 0.1),
+        0 12px 40px -10px rgba(124, 58, 237, 0.3);
+    }
+    50% {
+      border-color: rgba(196, 181, 253, 0.85);
+      box-shadow:
+        0 0 0 2px rgba(196, 181, 253, 0.2),
+        0 18px 60px -8px rgba(124, 58, 237, 0.5);
+    }
+  }
+  .layer-five-plus-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 0% 50%, rgba(167, 139, 250, 0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .layer-five-plus-pulse-dot {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #c4b5fd;
+    box-shadow: 0 0 0 0 rgba(196, 181, 253, 0.7);
+    animation: lfp-dot-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes lfp-dot-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(196, 181, 253, 0.7); transform: scale(1); }
+    50%      { box-shadow: 0 0 0 8px rgba(196, 181, 253, 0); transform: scale(1.15); }
+  }
+
+  /* ══════ Flashing 'Coming soon' tag on the Chrome-extension section ══════ */
+  .coming-soon-flash {
+    animation: coming-soon-flash 1.8s ease-in-out infinite;
+  }
+  @keyframes coming-soon-flash {
+    0%, 100% {
+      background-color: rgba(120, 53, 15, 0.4);
+      border-color: rgba(251, 191, 36, 0.5);
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+    }
+    50% {
+      background-color: rgba(180, 83, 9, 0.5);
+      border-color: rgba(252, 211, 77, 0.9);
+      box-shadow: 0 0 24px 2px rgba(251, 191, 36, 0.35);
+    }
   }
 
   /* ── Faux Chrome browser frame (animated extension demo) ── */
