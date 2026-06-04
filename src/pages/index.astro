@@ -104,7 +104,7 @@ import ContactModal from '../components/ContactModal.astro';
 
         <!-- LAYER 1 — Protocol -->
         <div class="layer-card layer-protocol">
-          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+          <div class="layer-card-head mb-3">
             <div>
               <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-1">Layer 01</p>
               <h3 class="text-xl font-semibold text-[color:var(--color-text)]">The open protocol</h3>
@@ -139,7 +139,7 @@ import ContactModal from '../components/ContactModal.astro';
 
         <!-- LAYER 2 — Edge security -->
         <div class="layer-card layer-edge">
-          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+          <div class="layer-card-head mb-3">
             <div>
               <p class="text-xs font-mono tracking-widest uppercase text-blue-300 mb-1">Layer 02</p>
               <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For edge security</h3>
@@ -174,7 +174,7 @@ import ContactModal from '../components/ContactModal.astro';
 
         <!-- LAYER 3 — Agent operators -->
         <div class="layer-card layer-ops">
-          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+          <div class="layer-card-head mb-3">
             <div>
               <p class="text-xs font-mono tracking-widest uppercase text-green-300 mb-1">Layer 03</p>
               <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For agent operators</h3>
@@ -209,7 +209,7 @@ import ContactModal from '../components/ContactModal.astro';
 
         <!-- LAYER 4 — Consumers -->
         <div class="layer-card layer-consumer">
-          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+          <div class="layer-card-head mb-3">
             <div>
               <p class="text-xs font-mono tracking-widest uppercase text-amber-300 mb-1">Layer 04</p>
               <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For consumers</h3>
@@ -916,6 +916,33 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- ─────────── "WE'RE JUST STARTING" CTA — VC / investor inbound ─────────── -->
+  <section class="border-t border-[color:var(--color-border)] relative">
+    <div class="max-w-3xl mx-auto px-6 py-20 text-center">
+      <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
+        We&rsquo;re <span class="hero-accent-text">just starting</span>.
+      </h2>
+      <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] leading-relaxed mb-8 max-w-2xl mx-auto">
+        v0.1 shipped 60 days in. v0.2 is in motion. The interesting layers haven&rsquo;t even been mentioned. Talk to us if you want to be early.
+      </p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20%2D%20let%27s%20talk" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
+          hello@agentpki.dev
+        </a>
+        <a href="https://github.com/agentpki" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 transition">
+          <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          github.com/agentpki
+        </a>
+        <a href="/check" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-[color:var(--color-accent)]/40 bg-[color:var(--color-accent)]/10 hover:bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-bright)] transition">
+          Try the verifier &rarr;
+        </a>
+      </div>
+      <p class="mt-6 text-xs text-[color:var(--color-text-dim)]">
+        Apache 2.0 spec &middot; MIT code
+      </p>
+    </div>
+  </section>
+
   <!-- ─────────── FINAL CTA ─────────── -->
   <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
     <div class="max-w-4xl mx-auto px-6 py-28 text-center relative">
@@ -989,15 +1016,25 @@ import ContactModal from '../components/ContactModal.astro';
     border-radius: 4px;
   }
   .layer-card {
+    position: relative;            /* anchor for absolute-positioned ship-pill */
     border: 1.5px solid var(--color-border-bright);
     border-radius: 1rem;
     background: rgba(15, 15, 18, 0.4);
     backdrop-filter: blur(4px);
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
     transition: all 0.2s;
     height: 100%;
   }
   .layer-card:hover { border-color: rgba(167, 139, 250, 0.5); transform: translateY(-2px); }
+  /* Pin the SHIPPED pill to the top-right corner of every layer card
+     so it never wraps below the title regardless of description length */
+  .layer-card .ship-pill {
+    position: absolute; top: 1.4rem; right: 1.4rem;
+    z-index: 2;
+  }
+  /* Reserve horizontal room in the title block so the description
+     can't run under the pinned pill */
+  .layer-card-head { padding-right: 6rem; }
   .layer-card.layer-protocol { border-color: rgba(167, 139, 250, 0.4); background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(167, 139, 250, 0.02)); }
   .layer-card.layer-edge     { border-color: rgba(96, 165, 250, 0.4); background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(96, 165, 250, 0.02)); }
   .layer-card.layer-ops      { border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(74, 222, 128, 0.02)); }
