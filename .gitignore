@@ -7,3 +7,9 @@ dist
 !.env.example
 .DS_Store
 *.log
+
+# Local-only preview files — staged work that ships post-CWS-approval.
+# DO NOT commit. Held until Chrome Web Store approves the extension.
+hero-preview.html
+demo-v2-preview.html
+*-preview.html
