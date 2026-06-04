@@ -66,6 +66,255 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- ══════════════ BUILT ACROSS THE STACK — 4 audiences, all shipped ══════════════ -->
+  <section id="shipped" class="relative">
+
+    <!-- Top stats strip -->
+    <div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-b border-[color:var(--color-border)]">
+      <div class="text-center">
+        <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">60</div>
+        <div class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">Days to v0.1</div>
+      </div>
+      <div class="text-center">
+        <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">8</div>
+        <div class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">Public repos</div>
+      </div>
+      <div class="text-center">
+        <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">&lt;50ms</div>
+        <div class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">Edge verify p99</div>
+      </div>
+      <div class="text-center">
+        <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">$0</div>
+        <div class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">To self-host</div>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 pt-14 pb-20">
+
+      <!-- Section header -->
+      <div class="max-w-3xl mb-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Built across the stack</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+          One open protocol. <span class="hero-accent-text">Four audiences.</span> All shipping today.
+        </h2>
+      </div>
+
+      <!-- 4 layer cards -->
+      <div class="grid lg:grid-cols-2 gap-6">
+
+        <!-- LAYER 1 — Protocol -->
+        <div class="layer-card layer-protocol">
+          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+            <div>
+              <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-1">Layer 01</p>
+              <h3 class="text-xl font-semibold text-[color:var(--color-text)]">The open protocol</h3>
+              <p class="text-sm text-[color:var(--color-text-muted)] mt-1.5">Cryptographic identity for AI agents, as an open standard.</p>
+            </div>
+            <span class="ship-pill">&#10003; shipped</span>
+          </div>
+          <div class="ship-list">
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>AgentPKI Protocol v0.1 specification</strong> &middot; Apache 2.0
+                <div class="ship-item-meta">PASETO v4 + Ed25519 + RFC 9421 &middot; <a href="/spec/v0.1">/spec/v0.1</a></div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>TypeScript SDK</strong> on npm
+                <div class="ship-item-meta">@agentpki/sdk &middot; runs in Node, Workers, browsers</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Python SDK</strong> on PyPI
+                <div class="ship-item-meta">agentpki &middot; Django/Flask/FastAPI compatible</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 2 — Edge security -->
+        <div class="layer-card layer-edge">
+          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+            <div>
+              <p class="text-xs font-mono tracking-widest uppercase text-blue-300 mb-1">Layer 02</p>
+              <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For edge security</h3>
+              <p class="text-sm text-[color:var(--color-text-muted)] mt-1.5">Distinguish legitimate agents from abuse, at the edge, in milliseconds.</p>
+            </div>
+            <span class="ship-pill">&#10003; shipped</span>
+          </div>
+          <div class="ship-list">
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Public verification API</strong> at verify.agentpki.dev
+                <div class="ship-item-meta">Sub-50ms p99, free + open source, no API key required</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>30-line drop-in middleware</strong> for any HTTP framework
+                <div class="ship-item-meta">Express, Hono, Cloudflare Workers, Fastify recipes shipped</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Open-source reference verifier</strong>
+                <div class="ship-item-meta">Run your own &middot; <a href="https://github.com/agentpki/verifier">github.com/agentpki/verifier</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 3 — Agent operators -->
+        <div class="layer-card layer-ops">
+          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+            <div>
+              <p class="text-xs font-mono tracking-widest uppercase text-green-300 mb-1">Layer 03</p>
+              <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For agent operators</h3>
+              <p class="text-sm text-[color:var(--color-text-muted)] mt-1.5">Issue, manage, and revoke identities for the agents you operate.</p>
+            </div>
+            <span class="ship-pill">&#10003; shipped</span>
+          </div>
+          <div class="ship-list">
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Self-serve issuer onboarding</strong> at dashboard.agentpki.dev
+                <div class="ship-item-meta">Magic-link auth, DNS-verified domain ownership</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Production-grade issuer template</strong>
+                <div class="ship-item-meta">Cloudflare Worker, fork-and-deploy &middot; <a href="https://github.com/agentpki/real-issuer">github.com/agentpki/real-issuer</a></div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Issuer dashboard with key management</strong>
+                <div class="ship-item-meta">Key rotation, CRL publishing, issuer health</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 4 — Consumers -->
+        <div class="layer-card layer-consumer">
+          <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+            <div>
+              <p class="text-xs font-mono tracking-widest uppercase text-amber-300 mb-1">Layer 04</p>
+              <h3 class="text-xl font-semibold text-[color:var(--color-text)]">For consumers</h3>
+              <p class="text-sm text-[color:var(--color-text-muted)] mt-1.5">See whether the AI agents you encounter are verified, on any device.</p>
+            </div>
+            <span class="ship-pill">&#10003; shipped</span>
+          </div>
+          <div class="ship-list">
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>AgentPKI Guardian</strong> &mdash; Chrome extension
+                <div class="ship-item-meta">Pending Chrome Web Store approval &middot; the HTTPS padlock for AI</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Web verifier</strong> at <a href="/check" class="underline text-[color:var(--color-accent-bright)]">agentpki.dev/check</a>
+                <div class="ship-item-meta">No install &middot; 5,000+ phishing domains tracked &middot; abuse-report flow</div>
+              </div>
+            </div>
+            <div class="ship-item">
+              <span class="ship-item-mark">&check;</span>
+              <div class="ship-item-text">
+                <strong>Free, open source, no tracking</strong>
+                <div class="ship-item-meta">MIT licensed &middot; anonymous UUID for abuse reports &middot; no telemetry</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 05+ teaser — VC inbound hook -->
+      <div class="mt-8 rounded-xl border border-[color:var(--color-accent)]/35 bg-gradient-to-br from-violet-950/30 to-violet-900/5 p-6 sm:p-8">
+        <div class="flex items-start gap-4 flex-wrap">
+          <div class="flex-1 min-w-[16rem]">
+            <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-2">Layer 05+ &middot; not pictured</p>
+            <h3 class="text-xl font-semibold mb-2">We've built more layers. We're not talking about them yet.</h3>
+            <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              The four shipped above are the open, public, no-strings-attached stack &mdash; everything anyone needs to verify AI agents today. We have additional layers in development that compound on these and form the next chapters. Get in touch for the brief.
+            </p>
+          </div>
+          <a href="mailto:hello@agentpki.dev?subject=Roadmap%20brief" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition flex-shrink-0">
+            Ask for the brief &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Why now / TAM (no "billion dollar wedge" line, no funding posture) -->
+      <div class="mt-16 max-w-3xl">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Why now</p>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight">
+          AI agents are <span class="hero-accent-text">the next 10 billion users</span>. They need identity infrastructure.
+        </h2>
+      </div>
+
+      <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="reason-card">
+          <div class="reason-num">01</div>
+          <h4 class="text-base font-semibold mt-2 mb-2">2026 = the agent year</h4>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Anthropic, OpenAI, Google all shipped autonomous browsing in 2025. Most websites cannot yet distinguish a real agent from a scraper or scammer. The trust gap widens daily.
+          </p>
+        </div>
+        <div class="reason-card">
+          <div class="reason-num">02</div>
+          <h4 class="text-base font-semibold mt-2 mb-2">HTTPS in 1995</h4>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Same shape: a new cryptographic primitive solving the next layer of trust on the internet. Adoption took a decade; the protocol owner shaped the next 20 years of the web.
+          </p>
+        </div>
+        <div class="reason-card">
+          <div class="reason-num">03</div>
+          <h4 class="text-base font-semibold mt-2 mb-2">Two-sided network</h4>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            Every issuer makes the consumer side more valuable. Every consumer install makes the issuer side more valuable. Classic compounding flywheel.
+          </p>
+        </div>
+        <div class="reason-card">
+          <div class="reason-num">04</div>
+          <h4 class="text-base font-semibold mt-2 mb-2">Open beats proprietary</h4>
+          <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+            The standard wins. Apache-licensed protocol means every other player is a potential customer of the reference infra, not a competitor.
+          </p>
+        </div>
+      </div>
+
+      <!-- Market sizing — just two stats, no funding posture -->
+      <div class="mt-10 rounded-xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/40 p-6 sm:p-8">
+        <div class="grid sm:grid-cols-2 gap-6 items-center text-center sm:text-left">
+          <div>
+            <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">$30B+</div>
+            <p class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">Bot-defense market today</p>
+          </div>
+          <div>
+            <div class="big-stat text-3xl sm:text-4xl font-semibold hero-accent-text">10x</div>
+            <p class="text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mt-1">Projected agent traffic 2026 &rarr; 2028</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- ══════════════ CHROME EXTENSION SHOWCASE — pending CWS review ══════════════ -->
   <section id="extension" class="relative overflow-hidden pb-24">
     <!-- ambient violet glow behind section -->
@@ -723,6 +972,73 @@ import ContactModal from '../components/ContactModal.astro';
   <Footer />
   <ContactModal />
 <style is:global>
+  /* ══════ "Built across the stack" section — layer cards, ship pills, reason cards ══════ */
+  .big-stat {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+  .ship-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.18rem 0.55rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.62rem; font-weight: 800;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    background: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 4px;
+  }
+  .layer-card {
+    border: 1.5px solid var(--color-border-bright);
+    border-radius: 1rem;
+    background: rgba(15, 15, 18, 0.4);
+    backdrop-filter: blur(4px);
+    padding: 1.5rem;
+    transition: all 0.2s;
+    height: 100%;
+  }
+  .layer-card:hover { border-color: rgba(167, 139, 250, 0.5); transform: translateY(-2px); }
+  .layer-card.layer-protocol { border-color: rgba(167, 139, 250, 0.4); background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(167, 139, 250, 0.02)); }
+  .layer-card.layer-edge     { border-color: rgba(96, 165, 250, 0.4); background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(96, 165, 250, 0.02)); }
+  .layer-card.layer-ops      { border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(74, 222, 128, 0.02)); }
+  .layer-card.layer-consumer { border-color: rgba(251, 191, 36, 0.4); background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(251, 191, 36, 0.02)); }
+
+  .ship-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ship-item {
+    display: flex; align-items: flex-start; gap: 0.55rem;
+    padding: 0.55rem 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.45rem;
+    font-size: 0.875rem;
+  }
+  .ship-item-mark {
+    color: #86efac; font-weight: 800;
+    flex-shrink: 0; font-family: ui-monospace, monospace;
+  }
+  .ship-item-text { flex: 1; color: var(--color-text); line-height: 1.4; }
+  .ship-item-text strong { color: #ffffff; }
+  .ship-item-meta {
+    font-size: 0.7rem; color: var(--color-text-dim);
+    font-family: ui-monospace, monospace;
+    margin-top: 0.2rem;
+  }
+  .ship-item-meta a { color: var(--color-accent-bright); text-decoration: underline; }
+  .ship-item-meta a:hover { color: #fff; }
+
+  .reason-card {
+    border: 1px solid var(--color-border-bright);
+    background: rgba(15, 15, 18, 0.5);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+  .reason-num {
+    font-family: ui-monospace, monospace;
+    font-size: 1.8rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--color-accent-bright), var(--color-accent));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
   /* ── Faux Chrome browser frame (animated extension demo) ── */
   .browser-frame {
     background: #18181b;
