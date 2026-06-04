@@ -92,38 +92,148 @@ import ContactModal from '../components/ContactModal.astro';
         </p>
       </div>
 
-      <!-- 4 badge state cards -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-        <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-5">
-          <p class="text-xs font-mono tracking-widest uppercase mb-2 text-[color:var(--color-text-dim)]">&#9633; Gray</p>
-          <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">No agent detected</div>
-          <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
-            The badge starts gray. Page loaded, nothing examined yet.
+      <!-- ── Animated browser demo + side narration ── -->
+      <div class="grid lg:grid-cols-5 gap-8 items-center mb-12">
+
+        <!-- Stage indicator + browser mock (3/5 of width) -->
+        <div class="lg:col-span-3 relative">
+
+          <!-- Stage indicator dots above the browser -->
+          <div class="flex items-center justify-center gap-4 mb-4">
+            <div class="flex items-center gap-2">
+              <span id="dot-1" class="stage-dot active"></span>
+              <span id="label-1" class="stage-label active">Load</span>
+            </div>
+            <span class="text-[color:var(--color-text-dim)]">&rarr;</span>
+            <div class="flex items-center gap-2">
+              <span id="dot-2" class="stage-dot"></span>
+              <span id="label-2" class="stage-label">Detect</span>
+            </div>
+            <span class="text-[color:var(--color-text-dim)]">&rarr;</span>
+            <div class="flex items-center gap-2">
+              <span id="dot-3" class="stage-dot"></span>
+              <span id="label-3" class="stage-label">Verify</span>
+            </div>
+            <span class="text-[color:var(--color-text-dim)]">&rarr;</span>
+            <div class="flex items-center gap-2">
+              <span id="dot-4" class="stage-dot"></span>
+              <span id="label-4" class="stage-label">Trust</span>
+            </div>
+          </div>
+
+          <!-- Faux Chrome window -->
+          <div class="browser-frame">
+            <div class="browser-titlebar">
+              <span class="browser-dot" style="background:#ef4444"></span>
+              <span class="browser-dot" style="background:#fbbf24"></span>
+              <span class="browser-dot" style="background:#22c55e"></span>
+              <div class="ml-3 browser-tab">
+                <span class="w-2 h-2 rounded-full bg-violet-400"></span>
+                support.acme-bank.example
+              </div>
+            </div>
+
+            <div class="browser-toolbar">
+              <span class="text-[color:#71717a] text-xs">&larr;</span>
+              <span class="text-[color:#71717a] text-xs">&rarr;</span>
+              <span class="text-[color:#71717a] text-xs">&#10227;</span>
+              <div class="browser-addressbar">
+                <span class="text-green-400">&#128274;</span>
+                <span>https://support.acme-bank.example</span>
+              </div>
+              <div class="relative">
+                <div id="extIcon" class="ext-icon">
+                  A
+                  <div id="extBadge" class="ext-badge" data-color="gray">!</div>
+                </div>
+                <!-- Popup that opens on the 'verified' stage -->
+                <div id="extPopup" class="ext-popup">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+                    <span class="text-sm font-semibold">AgentPKI</span>
+                    <span class="text-xs text-zinc-500 ml-auto">AI Agent Verification</span>
+                  </div>
+                  <div id="popupPill" class="pill pill-green">&#10003; Verified</div>
+                  <div class="mt-3 space-y-2 text-xs">
+                    <div>
+                      <div class="text-[10px] uppercase tracking-widest text-zinc-500">Issuer</div>
+                      <div class="text-violet-300 font-mono">acme-bank.example <span class="pill-trusted">&#10003; Verified</span></div>
+                    </div>
+                    <div>
+                      <div class="text-[10px] uppercase tracking-widest text-zinc-500">Agent</div>
+                      <div class="text-zinc-200 font-mono">agent:acme/support-v2</div>
+                    </div>
+                    <div>
+                      <div class="text-[10px] uppercase tracking-widest text-zinc-500">Scopes</div>
+                      <div class="text-zinc-300 font-mono">read:account, send:message</div>
+                    </div>
+                    <div>
+                      <div class="text-[10px] uppercase tracking-widest text-zinc-500">Reputation</div>
+                      <div class="flex items-center gap-2"><span class="text-green-300">Clean</span><span class="text-zinc-500">&middot; 0 reports filed</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="browser-page">
+              <div class="text-2xl font-semibold mb-4" style="color: #18181b;">Acme Bank &middot; Support</div>
+              <div class="bg-zinc-100 rounded-lg p-4 max-w-md">
+                <div class="flex items-start gap-3 mb-3">
+                  <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-semibold">A</div>
+                  <div class="flex-1">
+                    <div class="text-xs text-zinc-500 mb-1">Acme AI Assistant</div>
+                    <div class="text-sm">Hi! I can help you check balances or transfer funds. How can I help today?</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-zinc-500 mt-3 pt-3 border-t border-zinc-200">
+                  <span class="pulse-dot"></span>
+                  <span id="pageCaption">AI agent is responding&hellip;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caption beneath the browser, updates per stage -->
+          <p id="stageCaption" class="mt-4 text-center text-sm text-[color:var(--color-text-muted)] min-h-[2.5em] leading-relaxed">
+            You open a banking site. The agent on the page hasn&rsquo;t been examined yet &mdash; badge is gray.
           </p>
+
         </div>
 
-        <div class="rounded-lg border border-amber-700/40 bg-amber-950/20 p-5">
-          <p class="text-xs font-mono tracking-widest uppercase mb-2 text-amber-300">&#9888; Yellow</p>
-          <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Agent detected &mdash; unverified</div>
-          <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
-            An AI agent is on the page (LangChain, Vercel AI SDK, Anthropic SDK, etc.) but presented no passport. Treat it like an http:// site in 2026.
-          </p>
-        </div>
+        <!-- Narration cards (2/5 of width) -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/60 p-4">
+            <p class="text-xs font-mono tracking-widest uppercase mb-2 text-[color:var(--color-text-dim)]">&#9633; Gray</p>
+            <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">No agent detected</div>
+            <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
+              Badge starts gray. Page loaded, nothing examined yet.
+            </p>
+          </div>
 
-        <div class="rounded-lg border border-green-700/50 bg-green-950/25 p-5">
-          <p class="text-xs font-mono tracking-widest uppercase mb-2 text-green-300">&#10003; Green</p>
-          <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Verified</div>
-          <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
-            Cryptographic passport checked against the AgentPKI verifier. Click for issuer, scopes, reputation, abuse-report form.
-          </p>
-        </div>
+          <div class="rounded-lg border border-amber-700/40 bg-amber-950/20 p-4">
+            <p class="text-xs font-mono tracking-widest uppercase mb-2 text-amber-300">&#9888; Yellow</p>
+            <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Agent detected &mdash; unverified</div>
+            <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
+              An AI agent is on the page (LangChain, Vercel AI SDK, Anthropic SDK&hellip;) but presented no passport.
+            </p>
+          </div>
 
-        <div class="rounded-lg border border-red-700/40 bg-red-950/20 p-5">
-          <p class="text-xs font-mono tracking-widest uppercase mb-2 text-red-300">&#9940; Red</p>
-          <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Revoked or reported</div>
-          <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
-            Passport was revoked, reported for abuse, or you blocked it. Close the tab.
-          </p>
+          <div class="rounded-lg border border-green-700/50 bg-green-950/25 p-4">
+            <p class="text-xs font-mono tracking-widest uppercase mb-2 text-green-300">&#10003; Green</p>
+            <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Verified</div>
+            <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
+              Cryptographic passport checked against the AgentPKI verifier. Click for issuer, scopes, reputation.
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-red-700/40 bg-red-950/20 p-4">
+            <p class="text-xs font-mono tracking-widest uppercase mb-2 text-red-300">&#9940; Red</p>
+            <div class="text-sm text-[color:var(--color-text)] font-medium mb-1">Revoked or reported</div>
+            <p class="text-xs text-[color:var(--color-text-muted)] leading-relaxed">
+              Passport was revoked, reported for abuse, or you blocked it. Close the tab.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -612,4 +722,165 @@ import ContactModal from '../components/ContactModal.astro';
 
   <Footer />
   <ContactModal />
+<style is:global>
+  /* ── Faux Chrome browser frame (animated extension demo) ── */
+  .browser-frame {
+    background: #18181b;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-bright);
+    box-shadow:
+      0 50px 80px -20px rgba(0, 0, 0, 0.5),
+      0 30px 60px -30px rgba(124, 58, 237, 0.3);
+    overflow: hidden;
+  }
+  .browser-titlebar {
+    background: #27272a; padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #3f3f46;
+  }
+  .browser-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .browser-tab {
+    background: #18181b; color: #d4d4d8;
+    padding: 6px 16px 6px 12px;
+    border-radius: 8px 8px 0 0;
+    font-size: 11px;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid #3f3f46; border-bottom: none;
+    margin-bottom: -1px;
+  }
+  .browser-toolbar {
+    background: #1f1f23; padding: 8px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #3f3f46;
+  }
+  .browser-addressbar {
+    flex: 1; background: #0f0f12;
+    border: 1px solid #3f3f46;
+    border-radius: 18px; padding: 6px 14px;
+    font-size: 11px; color: #d4d4d8;
+    font-family: ui-monospace, monospace;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-page {
+    background: #ffffff; min-height: 320px;
+    padding: 24px; color: #18181b;
+    position: relative;
+  }
+
+  /* Extension icon + animated badge */
+  .ext-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    border-radius: 6px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+    cursor: pointer;
+  }
+  .ext-badge {
+    position: absolute; bottom: -3px; right: -3px;
+    min-width: 16px; height: 16px; border-radius: 8px;
+    background: #6b6b78; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 800; line-height: 1;
+    border: 2px solid #1f1f23;
+    transition: all 0.25s ease;
+  }
+  .ext-badge[data-color="gray"]   { background: #6b6b78; color: transparent; }
+  .ext-badge[data-color="white"]  { background: #9c9cab; }
+  .ext-badge[data-color="green"]  { background: #22c55e; box-shadow: 0 0 12px rgba(34, 197, 94, 0.6); }
+  .ext-badge[data-color="yellow"] { background: #fbbf24; box-shadow: 0 0 12px rgba(251, 191, 36, 0.6); }
+  .ext-badge[data-color="red"]    { background: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+
+  /* Popup that appears on the verified stage */
+  .ext-popup {
+    position: absolute; top: 100%; right: -2px; margin-top: 6px;
+    width: 320px; background: #09090b;
+    border: 1px solid #27272a; border-radius: 8px;
+    padding: 14px; color: #e7e7ea;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0; transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 50;
+  }
+  .ext-popup.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 5px;
+    font-family: ui-monospace, monospace; font-size: 12px;
+  }
+  .pill-green { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+  .pill-trusted {
+    background: rgba(34, 197, 94, 0.15); color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 1px 6px; border-radius: 3px; font-size: 10px;
+  }
+
+  /* Stage progress dots above the browser */
+  .stage-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #3f3f46; transition: all 0.3s ease;
+    display: inline-block;
+  }
+  .stage-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+    box-shadow: 0 0 8px var(--color-accent);
+  }
+  .stage-label {
+    font-family: ui-monospace, monospace; font-size: 10px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .stage-label.active { color: var(--color-accent-bright); }
+
+  /* Pulsing dot inside the fake AI chat */
+  .pulse-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #fbbf24;
+    animation: ext-pulse 1.5s ease infinite;
+    display: inline-block;
+  }
+  @keyframes ext-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; box-shadow: 0 0 10px #fbbf24; }
+  }
+</style>
+
+<script is:inline>
+  // ── 4-stage browser-demo loop on the homepage ──
+  (function () {
+    const stages = [
+      { color: 'gray', symbol: '', labelIdx: 1, caption: 'You open a banking site. The agent on the page hasn’t been examined yet — badge is gray.', pageCaption: 'Page just loaded…', popupOpen: false },
+      { color: 'yellow', symbol: '!', labelIdx: 2, caption: 'The extension detects an AI agent framework on the page (e.g. LangChain.js) — badge turns yellow.', pageCaption: 'AI agent is responding…', popupOpen: false },
+      { color: 'white',  symbol: '?', labelIdx: 3, caption: 'A passport token is found. The extension calls verify.agentpki.dev for a verdict (~100 ms).', pageCaption: 'AI agent is responding…', popupOpen: false },
+      { color: 'green',  symbol: '✓', labelIdx: 4, caption: 'Verified ✓ — the passport is real, from a trusted issuer, with the scopes the agent claims.', pageCaption: 'AI agent is responding…', popupOpen: true },
+    ];
+    let cur = 0;
+    const badge = document.getElementById('extBadge');
+    const popup = document.getElementById('extPopup');
+    const caption = document.getElementById('stageCaption');
+    const pageCaption = document.getElementById('pageCaption');
+    const dots = [1,2,3,4].map(n => document.getElementById('dot-' + n));
+    const labels = [1,2,3,4].map(n => document.getElementById('label-' + n));
+    if (!badge || !popup || !caption) return;
+    function paint(idx) {
+      const s = stages[idx];
+      badge.setAttribute('data-color', s.color);
+      badge.textContent = s.symbol;
+      caption.textContent = s.caption;
+      if (pageCaption) pageCaption.textContent = s.pageCaption;
+      popup.classList.toggle('open', s.popupOpen);
+      dots.forEach((d, i) => { if (d) d.classList.toggle('active', i + 1 === s.labelIdx); });
+      labels.forEach((l, i) => { if (l) l.classList.toggle('active', i + 1 === s.labelIdx); });
+    }
+    paint(0);
+    setInterval(() => { cur = (cur + 1) % stages.length; paint(cur); }, 3000);
+    // Click the toolbar icon to manually toggle the popup
+    const icon = document.getElementById('extIcon');
+    if (icon) icon.addEventListener('click', (e) => { e.stopPropagation(); popup.classList.toggle('open'); });
+  })();
+</script>
+
 </Base>
