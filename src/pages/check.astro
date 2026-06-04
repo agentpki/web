@@ -30,7 +30,29 @@ import Footer from '../components/Footer.astro';
       </p>
     </div>
 
-    <!-- Input + verify -->
+    <!-- Example links — ABOVE the input. Click any to auto-fill + verify. -->
+    <div class="example-wrap" role="group" aria-label="Example checks">
+      <p class="example-instruction">
+        New here? <strong>Click one of these to try it now &mdash; no typing required.</strong>
+      </p>
+      <div class="example-row">
+        <button type="button" class="example-link" data-example="verified">
+          <span class="dot dot-green"></span>
+          Try a verified agent
+        </button>
+        <button type="button" class="example-link" data-example="unverified">
+          <span class="dot dot-yellow"></span>
+          Try an unverified agent
+        </button>
+        <button type="button" class="example-link" data-example="revoked">
+          <span class="dot dot-red"></span>
+          Try a revoked agent
+        </button>
+      </div>
+    </div>
+
+    <!-- Input + verify (manual) -->
+    <p class="manual-or">&mdash; or paste your own &mdash;</p>
     <form id="checkForm" class="check-form" novalidate>
       <label for="checkInput" class="sr-only">Agent identifier or passport token</label>
       <div class="input-group">
@@ -57,22 +79,6 @@ import Footer from '../components/Footer.astro';
         Examples: <code>v4.public.eyJpc3M…</code> (passport token) · <code>agent:anthropic/research-bot-v3</code> · <code>example.com</code>
       </p>
     </form>
-
-    <!-- Example links -->
-    <div class="example-row" role="group" aria-label="Example checks">
-      <button type="button" class="example-link" data-example="verified">
-        <span class="dot dot-green"></span>
-        Try a verified agent
-      </button>
-      <button type="button" class="example-link" data-example="unverified">
-        <span class="dot dot-yellow"></span>
-        Try an unverified agent
-      </button>
-      <button type="button" class="example-link" data-example="revoked">
-        <span class="dot dot-red"></span>
-        Try a revoked agent
-      </button>
-    </div>
 
     <!-- Result container -->
     <div id="resultArea" class="result-area" aria-live="polite"></div>
@@ -220,77 +226,131 @@ import Footer from '../components/Footer.astro';
   .input-group button.loading .btn-label { opacity: 0.7; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Example links */
+  /* Example links — prominent, above textarea */
+  .example-wrap {
+    margin: 0 0 1.25rem;
+    padding: 1rem 1.25rem;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    border-radius: 0.75rem;
+  }
+  .example-instruction {
+    margin: 0 0 0.65rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.45;
+  }
+  .example-instruction strong { color: var(--color-accent-bright); font-weight: 600; }
   .example-row {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1rem 0 2rem;
+    display: grid; gap: 0.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .example-row { grid-template-columns: repeat(3, 1fr); }
   }
   .example-link {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border-bright);
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 0.5rem;
+    border: 1.5px solid var(--color-border-bright);
     background: var(--bg-card);
-    color: var(--color-text-muted);
-    font: inherit; font-size: 0.8rem;
+    color: var(--color-text);
+    font: inherit; font-size: 0.85rem; font-weight: 500;
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    transition: all 0.2s;
   }
-  .example-link:hover { color: var(--color-text); border-color: var(--color-accent); }
-  .dot { width: 0.45rem; height: 0.45rem; border-radius: 50%; display: inline-block; }
-  .dot-green { background: #4ade80; }
-  .dot-yellow { background: #fbbf24; }
-  .dot-red { background: #f87171; }
+  .example-link:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    background: rgba(167, 139, 250, 0.12);
+    transform: translateY(-1px);
+  }
+  .example-link:disabled { opacity: 0.6; cursor: wait; }
+  .manual-or {
+    text-align: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-text-dim);
+    margin: 0 0 0.85rem;
+    font-family: ui-monospace, monospace;
+  }
+  .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .dot-green { background: #4ade80; box-shadow: 0 0 6px rgba(74, 222, 128, 0.5); }
+  .dot-yellow { background: #fbbf24; box-shadow: 0 0 6px rgba(251, 191, 36, 0.5); }
+  .dot-red { background: #f87171; box-shadow: 0 0 6px rgba(248, 113, 113, 0.5); }
 
   /* Result card */
   .result-area { margin-top: 1.5rem; }
   .result-card {
     border-radius: 0.85rem;
     border: 1.5px solid;
-    padding: 1.5rem 1.5rem 1.25rem;
-    background: var(--bg-card);
+    padding: 0 1.5rem 1.25rem;     /* header has its own padding inside the band */
     backdrop-filter: blur(4px);
+    overflow: hidden;
   }
-  .result-card.verified { border-color: rgba(74, 222, 128, 0.55); background: rgba(34, 197, 94, 0.05); }
-  .result-card.revoked  { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.05); }
-  .result-card.unverified { border-color: rgba(251, 191, 36, 0.55); background: rgba(251, 191, 36, 0.04); }
-  .result-card.error     { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.04); }
+  /* Stronger tints so the colour reads immediately */
+  .result-card.verified   { border-color: rgba(74, 222, 128, 0.6); background: rgba(34, 197, 94, 0.12); }
+  .result-card.revoked    { border-color: rgba(248, 113, 113, 0.6); background: rgba(239, 68, 68, 0.12); }
+  .result-card.unverified { border-color: rgba(251, 191, 36, 0.6); background: rgba(251, 191, 36, 0.10); }
+  .result-card.error      { border-color: rgba(248, 113, 113, 0.6); background: rgba(239, 68, 68, 0.10); }
 
+  /* HEADER BAND — separates result heading from content visually */
   .result-headline {
+    display: flex; align-items: center; gap: 0.65rem;
+    margin: 0 -1.5rem 1.25rem;         /* extend to card edges */
+    padding: 0.85rem 1.5rem;
     font-family: ui-monospace, monospace;
-    font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em;
+    font-size: 1.3rem;                 /* bigger than content */
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin: 0 0 1rem;
-    display: inline-flex; align-items: center; gap: 0.5rem;
+    border-bottom: 2px solid;
   }
-  .result-card.verified .result-headline { color: #86efac; }
-  .result-card.revoked .result-headline { color: #fca5a5; }
-  .result-card.unverified .result-headline { color: #fcd34d; }
-  .result-card.error .result-headline { color: #fca5a5; }
+  .result-card.verified   .result-headline { color: #bbf7d0; background: rgba(34, 197, 94, 0.25); border-bottom-color: rgba(74, 222, 128, 0.55); }
+  .result-card.revoked    .result-headline { color: #fecaca; background: rgba(239, 68, 68, 0.25); border-bottom-color: rgba(248, 113, 113, 0.55); }
+  .result-card.unverified .result-headline { color: #fde68a; background: rgba(251, 191, 36, 0.22); border-bottom-color: rgba(251, 191, 36, 0.55); }
+  .result-card.error      .result-headline { color: #fecaca; background: rgba(239, 68, 68, 0.22); border-bottom-color: rgba(248, 113, 113, 0.55); }
+  .result-headline-icon { font-size: 1.5rem; line-height: 1; }
 
+  /* Content rows */
   .result-field {
-    display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.5rem 1rem;
-    padding: 0.4rem 0;
+    display: grid; grid-template-columns: 9rem 1fr; gap: 0.5rem 1rem;
+    padding: 0.45rem 0;
     align-items: baseline;
   }
   @media (max-width: 560px) {
-    .result-field { grid-template-columns: 1fr; gap: 0.1rem; }
+    .result-field { grid-template-columns: 1fr; gap: 0.15rem; padding: 0.35rem 0; }
   }
   .result-field .k {
-    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--color-text-dim);
     font-family: ui-monospace, monospace;
+    font-weight: 600;
   }
   .result-field .v {
     color: var(--color-text);
     word-break: break-word; overflow-wrap: anywhere;
     font-size: 0.95rem;
+    line-height: 1.45;
   }
+  .result-field .v strong { font-weight: 700; }
   .result-field code {
     color: var(--color-accent-bright);
     font-size: 0.85em;
-    background: rgba(255,255,255,0.04);
-    padding: 0.05em 0.35em; border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    padding: 0.05em 0.4em; border-radius: 3px;
   }
+
+  /* All links inside the result card render as clear underlined links */
+  .result-card a {
+    color: var(--color-accent-bright);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  .result-card a:hover { color: var(--color-accent); }
 
   .result-actions {
     display: flex; flex-wrap: wrap; gap: 0.6rem;
@@ -551,7 +611,7 @@ import Footer from '../components/Footer.astro';
       : '<code>' + escape(p.issuer || '—') + '</code>';
     return (
       '<div class="result-card verified">' +
-      '<h2 class="result-headline">&#9989; Verified</h2>' +
+      '<h2 class="result-headline"><span class="result-headline-icon">&#9989;</span> Verified</h2>' +
       field('Issuer', issuerLine) +
       field('Tier', escape(String(tier))) +
       field('Identity', '<code>' + escape(p.agent_id || '—') + '</code>') +
@@ -580,7 +640,7 @@ import Footer from '../components/Footer.astro';
     const detail = result.failure_detail || '';
     return (
       '<div class="result-card revoked">' +
-      '<h2 class="result-headline">&#9940; Do not trust</h2>' +
+      '<h2 class="result-headline"><span class="result-headline-icon">&#9940;</span> Do not trust</h2>' +
       field('Status', '<strong style="color:#fca5a5;">REVOKED</strong>') +
       field('Reason', '<code>' + escape(reason) + '</code>' + (detail ? ' · ' + escape(detail) : '')) +
       (p.issuer ? field('Issuer', '<code>' + escape(p.issuer) + '</code>') : '') +
@@ -605,7 +665,7 @@ import Footer from '../components/Footer.astro';
   function buildUnverifiedCard(input) {
     return (
       '<div class="result-card unverified">' +
-      '<h2 class="result-headline">&#9888; Unverified</h2>' +
+      '<h2 class="result-headline"><span class="result-headline-icon">&#9888;</span> Unverified</h2>' +
       '<p style="margin:0 0 1rem; color:var(--color-text);">' +
         'We could not find an AgentPKI passport for this identifier.' +
       '</p>' +
@@ -635,7 +695,7 @@ import Footer from '../components/Footer.astro';
   function buildErrorCard(message) {
     return (
       '<div class="result-card error">' +
-      '<h2 class="result-headline">&#10006; Error</h2>' +
+      '<h2 class="result-headline"><span class="result-headline-icon">&#10006;</span> Error</h2>' +
       '<p style="margin:0; color:var(--color-text-muted);">' + escape(message) + '</p>' +
       '</div>'
     );
@@ -790,9 +850,14 @@ import Footer from '../components/Footer.astro';
   document.querySelectorAll('[data-example]').forEach((el) => {
     el.addEventListener('click', async () => {
       const kind = el.dataset.example;
-      const token = await mintExample(kind);
-      $('checkInput').value = token;
-      $('checkInput').focus();
+      el.disabled = true;
+      try {
+        const token = await mintExample(kind);
+        $('checkInput').value = token;
+        await runVerify(token);
+      } finally {
+        el.disabled = false;
+      }
     });
   });
 
@@ -908,36 +973,65 @@ import Footer from '../components/Footer.astro';
       evidence_urls: shotDataUrl ? [shotDataUrl] : undefined,
     };
 
+    // Safeguard: if we don't have a non-empty input to attach the report
+    // to, the verifier will reject for missing identifier. Fail with a
+    // friendly message instead of a network round-trip.
+    if (!lastInputUsed || lastInputUsed.length < 1) {
+      const out = $('reportResult');
+      $('reportForm').hidden = true;
+      out.hidden = false;
+      out.className = 'report-result error';
+      out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Cannot file report</h3>' +
+        '<p style="font-size:0.85rem;">No agent identifier was attached to your verification result. Run a verification first, then report.</p>' +
+        '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
+      out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
+      submit.disabled = false; submit.textContent = 'Submit report';
+      return;
+    }
+
     try {
       const res = await fetch(VERIFIER + '/v1/abuse/report', {
         method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const body = await res.json();
+      let body;
+      try { body = await res.json(); } catch { body = null; }
       $('reportForm').hidden = true;
       const out = $('reportResult');
       out.hidden = false;
-      if (body && body.accepted) {
+      if (res.ok && body && body.accepted) {
         out.className = 'report-result success';
         out.innerHTML = '<div style="font-size:2.5rem; margin-bottom:0.5rem;">&#9989;</div>' +
           '<h3 style="margin:0 0 0.5rem; font-size:1.05rem;">Report received</h3>' +
           '<p style="margin:0 0 1rem; font-size:0.85rem; color:var(--color-text-muted);">Thank you. Your report has been logged anonymously.</p>' +
           '<p style="font-size:0.7rem; color:var(--color-text-dim);">Report ID: <code>' + escape(body.report_id || 'unknown') + '</code></p>' +
           '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
-        // Re-bind close button (it's now newly-rendered)
         out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
       } else {
         out.className = 'report-result error';
+        const errSummary = body && (body.detail || body.error)
+          ? escape(String(body.detail || body.error))
+          : 'HTTP ' + res.status + ' from verifier';
         out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Report failed</h3>' +
-          '<p style="font-size:0.85rem;">' + escape(body && body.error ? body.error : 'Unknown error') + '</p>' +
-          '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
+          '<p style="font-size:0.85rem; color:var(--color-text-muted);">' + errSummary + '</p>' +
+          '<details style="margin-top:0.65rem; font-size:0.7rem; color:var(--color-text-dim);">' +
+            '<summary style="cursor:pointer;">Show raw response (debug)</summary>' +
+            '<pre style="margin-top:0.4rem; background:#0a0a0f; padding:0.6rem; border-radius:4px; overflow-x:auto; font-size:0.65rem; max-height:160px;">' +
+              escape(JSON.stringify(body || { status: res.status, statusText: res.statusText }, null, 2)) +
+            '</pre>' +
+          '</details>' +
+          '<button type="button" class="btn-ghost" data-close style="margin-top:1.25rem;">Close</button>';
         out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
       }
     } catch (e) {
+      $('reportForm').hidden = true;
       const out = $('reportResult');
       out.hidden = false;
       out.className = 'report-result error';
-      out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Network error</h3><p style="font-size:0.85rem;">' + escape(e && e.message ? e.message : String(e)) + '</p>';
+      out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Network error</h3>' +
+        '<p style="font-size:0.85rem;">' + escape(e && e.message ? e.message : String(e)) + '</p>' +
+        '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
+      out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
     } finally {
       submit.disabled = false; submit.textContent = 'Submit report';
     }
