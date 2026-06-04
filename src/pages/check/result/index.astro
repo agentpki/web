@@ -40,7 +40,9 @@ import Footer from '../../../components/Footer.astro';
   <Footer />
 </Base>
 
-<style>
+<style is:global>
+  /* is:global — same reason as /check.astro: dynamic innerHTML doesn't
+     inherit Astro's component scope attribute. */
   .back-link { margin-bottom: 0.75rem; }
 
   /* Identical card design as /check (kept in sync manually for now) */

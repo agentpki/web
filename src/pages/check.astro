@@ -165,7 +165,10 @@ import Footer from '../components/Footer.astro';
   <Footer />
 </Base>
 
-<style>
+<style is:global>
+  /* `is:global` so the CSS still matches HTML injected by the inline
+     <script> via innerHTML — Astro's default scoping adds a hashed
+     [data-astro-cid-…] attribute selector that dynamic DOM doesn't have. */
   :root { --bg-card: rgba(15, 15, 18, 0.6); }
 
   .hero-accent-text {
