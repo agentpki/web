@@ -75,10 +75,35 @@ import Footer from '../components/Footer.astro';
           </svg>
         </button>
       </div>
-      <p id="inputHelp" class="text-xs text-[color:var(--color-text-dim)] mt-2">
+      <p id="inputHelp" class="text-xs text-[color:var(--color-text-dim)] mt-2 leading-relaxed">
         Examples: <code>v4.public.eyJpc3M…</code> (passport token) · <code>agent:anthropic/research-bot-v3</code> · <code>example.com</code>
+        <br />
+        <strong class="text-[color:var(--color-text-muted)]">Don't have a passport?</strong>
+        Paste any domain or URL — we'll check it against our community-aggregated
+        <strong class="text-[color:var(--color-accent-bright)]">5,000+ known phishing domains</strong>,
+        community-reported abuse, and (when configured) Google Safe Browsing.
       </p>
     </form>
+
+    <!-- For developers — copy-paste curl one-liner -->
+    <details class="dev-curl">
+      <summary>
+        <span class="dev-curl-icon">&lt;/&gt;</span>
+        For developers — verify via curl in 1 line
+      </summary>
+      <div class="dev-curl-body">
+        <p class="dev-curl-line">Run this against the public verifier — no API key required, no rate limit for casual use:</p>
+        <pre id="curlSample"><span class="curl-prompt">$</span> curl -X POST <span class="curl-flag">https://verify.agentpki.dev/v1/verify</span> \
+    -H <span class="curl-arg">'content-type: application/json'</span> \
+    -d <span class="curl-arg">'&#123;"token":"v4.public.eyJpc3M..."&#125;'</span></pre>
+        <button type="button" class="dev-curl-copy" id="copyCurl">Copy</button>
+        <p class="dev-curl-foot">
+          Try the heuristic endpoint too:
+          <code>POST /v1/check-heuristic</code> with <code>&#123;"input":"&lt;anything&gt;"&#125;</code>.
+          Full API at <a href="/spec/v0.1">/spec/v0.1</a>, source at <a href="https://github.com/agentpki/verifier">github.com/agentpki/verifier</a>.
+        </p>
+      </div>
+    </details>
 
     <!-- Result container -->
     <div id="resultArea" class="result-area" aria-live="polite"></div>
@@ -228,6 +253,106 @@ import Footer from '../components/Footer.astro';
   .input-group button.loading .btn-spinner { display: inline-block; }
   .input-group button.loading .btn-label { opacity: 0.7; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Developer curl box — appeals to HN / dev-savvy users */
+  .dev-curl {
+    margin-top: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 0.6rem;
+    overflow: hidden;
+  }
+  .dev-curl summary {
+    padding: 0.65rem 0.95rem;
+    cursor: pointer;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    list-style: none;
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    user-select: none;
+  }
+  .dev-curl summary::-webkit-details-marker { display: none; }
+  .dev-curl summary:hover { color: var(--color-text); }
+  .dev-curl-icon {
+    font-family: ui-monospace, monospace;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .dev-curl[open] summary {
+    border-bottom: 1px solid rgba(167, 139, 250, 0.18);
+  }
+  .dev-curl-body {
+    padding: 0.85rem 0.95rem 1rem;
+    position: relative;
+  }
+  .dev-curl-line {
+    margin: 0 0 0.6rem;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+  }
+  .dev-curl-body pre {
+    margin: 0 0 0.55rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.7rem 0.85rem;
+    border-radius: 0.4rem;
+    overflow-x: auto;
+    line-height: 1.55;
+    color: #e5e7eb;
+    white-space: pre;
+  }
+  .curl-prompt { color: #71717a; }
+  .curl-flag   { color: #c4b5fd; }
+  .curl-arg    { color: #86efac; }
+  .dev-curl-copy {
+    position: absolute; top: 2.4rem; right: 1.4rem;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    padding: 0.25rem 0.6rem; border-radius: 4px;
+    font: inherit; font-size: 0.7rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .dev-curl-copy:hover { background: rgba(167, 139, 250, 0.28); }
+  .dev-curl-foot {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--color-text-dim);
+    line-height: 1.5;
+  }
+  .dev-curl-foot a {
+    color: var(--color-accent-bright);
+    text-decoration: underline; text-underline-offset: 2px;
+  }
+
+  /* Performance badge inside the verified card */
+  .perf-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    margin-left: auto;
+    padding: 0.2rem 0.55rem;
+    background: rgba(74, 222, 128, 0.18);
+    border: 1px solid rgba(74, 222, 128, 0.5);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #bbf7d0;
+    letter-spacing: 0.05em;
+  }
+  .perf-badge .perf-icon {
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    background: #4ade80;
+    animation: perf-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes perf-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; box-shadow: 0 0 6px #4ade80; }
+  }
 
   /* Example links — prominent, above textarea */
   .example-wrap {
@@ -827,12 +952,16 @@ import Footer from '../components/Footer.astro';
     );
   }
 
-  // Build a header band: icon + title
-  function header(icon, title) {
+  // Build a header band: icon + title (+ optional perf badge)
+  function header(icon, title, ms) {
+    const perf = (typeof ms === 'number' && ms > 0)
+      ? '<span class="perf-badge"><span class="perf-icon" aria-hidden="true"></span>' + ms + 'ms</span>'
+      : '';
     return (
       '<header class="result-header">' +
         '<span class="result-icon" aria-hidden="true">' + icon + '</span>' +
         '<h2 class="result-title">' + escape(title) + '</h2>' +
+        perf +
       '</header>'
     );
   }
@@ -845,9 +974,10 @@ import Footer from '../components/Footer.astro';
     const issuerLine = p.issuer_name
       ? '<code>' + escape(p.issuer) + '</code> &middot; ' + escape(p.issuer_name)
       : '<code>' + escape(p.issuer || '—') + '</code>';
+    const elapsed = typeof result.elapsed_ms === 'number' ? result.elapsed_ms : null;
     return (
       '<div class="result-card verified">' +
-        header('&#9989;', 'Verified') +
+        header('&#9989;', 'Verified', elapsed) +
         '<div class="result-body">' +
           field('Issuer', issuerLine) +
           field('Tier', escape(String(tier))) +
@@ -1152,6 +1282,19 @@ import Footer from '../components/Footer.astro';
       openReportModal();
     }
   });
+
+  // Curl-snippet copy button
+  const copyCurlBtn = $('copyCurl');
+  if (copyCurlBtn) {
+    copyCurlBtn.addEventListener('click', async () => {
+      const text = "curl -X POST https://verify.agentpki.dev/v1/verify \\\n    -H 'content-type: application/json' \\\n    -d '{\"token\":\"v4.public.eyJpc3M...\"}'";
+      try {
+        await navigator.clipboard.writeText(text);
+        copyCurlBtn.textContent = '✓ Copied';
+        setTimeout(() => { copyCurlBtn.textContent = 'Copy'; }, 1500);
+      } catch {}
+    });
+  }
 
   // ═══════════════════ INPUT + EXAMPLE LINKS ═══════════════════
   document.querySelectorAll('[data-example]').forEach((el) => {
