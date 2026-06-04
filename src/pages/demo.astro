@@ -614,10 +614,26 @@ import ContactModal from '../components/ContactModal.astro';
       background: rgba(15, 15, 18, 0.4);
       backdrop-filter: blur(4px);
       padding: 0.75rem;
+      /* Smaller, centered — doesn't need to dominate the page */
+      max-width: 720px;
+      margin: 0 auto;
     }
     @media (min-width: 720px) {
       .demo-page .tflow-diagram-wrap { padding: 1.25rem; }
     }
+
+    /* Side-by-side: Live trace (existing) + Live wire log (new) */
+    .demo-page .logs-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    @media (min-width: 900px) {
+      .demo-page .logs-row { grid-template-columns: 1fr 1fr; align-items: start; }
+    }
+    .demo-page .logs-row .status { margin-top: 0; }
+    .demo-page .logs-row .tflow-log { margin-top: 0; }
     .demo-page .tflow-glow {
       position: absolute; inset: -2.5rem;
       background: rgba(167, 139, 250, 0.12);
@@ -870,39 +886,31 @@ import ContactModal from '../components/ContactModal.astro';
         </div>
       </section>
 
-      <!-- ─── Interactive Trust Flow (visual companion to step 3) ─── -->
-      <section class="demo-section tflow" aria-labelledby="tflow-title">
-        <h2 id="tflow-title">The trust flow, live</h2>
-        <p class="lead">Hover any scenario to preview on the diagram below — no API call. Click to run it for real: mint at <code>demo.agentpki.dev</code>, verify at <code>verify.agentpki.dev</code>, watch the verdict animate in.</p>
 
-        <p class="pick-label">Pick a scenario</p>
-        <div class="tflow-buttons" role="group" aria-label="Trust flow scenarios">
-          <button class="tflow-btn" data-tflow="anthropic" type="button">
-            <span class="tflow-icon" aria-hidden="true">&#9654;</span>
-            <span class="tflow-label-text">
-              Run as Anthropic bot
-              <span class="tflow-expected">expected: <span style="color: var(--demo-success-bright);">verdict: allow</span></span>
-            </span>
-          </button>
-          <button class="tflow-btn" data-tflow="tampered" type="button">
-            <span class="tflow-icon" aria-hidden="true">&#10007;</span>
-            <span class="tflow-label-text">
-              Tamper signature
-              <span class="tflow-expected">expected: <span style="color: var(--demo-danger);">verdict: deny</span></span>
-            </span>
-          </button>
-          <button class="tflow-btn" data-tflow="revoked" type="button">
-            <span class="tflow-icon" aria-hidden="true">&#8856;</span>
-            <span class="tflow-label-text">
-              Use revoked key
-              <span class="tflow-expected">expected: <span style="color: var(--demo-danger);">verdict: deny</span></span>
-            </span>
-          </button>
+      <!-- STEP 3: trigger -->
+      <section class="demo-section">
+        <h2><span class="step">3</span>Run the demo</h2>
+        <p class="lead">Each button mints + sends to the production verifier. Verdicts come back in ~150ms. <em>Hover</em> any button to preview the trust flow without firing the API; <em>click</em> to run it for real.</p>
+        <div class="btn-row">
+          <div>
+            <button class="demo-btn primary" data-run="anthropic" id="btn-anthropic">&#9654; Run as Anthropic bot</button>
+            <p class="btn-sub">Expected: <b>verdict: allow</b></p>
+          </div>
+          <div>
+            <button class="demo-btn danger" data-run="tampered" id="btn-tampered">&#10007; Tamper signature</button>
+            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
+          </div>
+          <div>
+            <button class="demo-btn warn" data-run="revoked" id="btn-revoked">&#8856; Use revoked key</button>
+            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
+          </div>
         </div>
+
         <p id="tflowHint" class="tflow-hint">
-          Hover any scenario to preview &mdash; the trust flow updates without firing the API.
+          Hover a button above to preview the diagram &mdash; the trust flow updates without firing the API.
         </p>
 
+        <!-- ─── Trust flow diagram (smaller, centered) ─── -->
         <div class="tflow-bar">
           <span class="label">trust flow</span>
           <span id="tflowPill" class="tflow-pill">ready</span>
@@ -910,7 +918,6 @@ import ContactModal from '../components/ContactModal.astro';
 
         <div class="tflow-diagram-wrap">
           <div class="tflow-glow" aria-hidden="true"></div>
-
           <svg id="tflowDiagram" class="tflow-diagram" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" aria-label="AgentPKI trust flow: issuer mints, agent presents, verifier validates">
             <defs>
               <pattern id="tflowGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
@@ -1023,40 +1030,24 @@ import ContactModal from '../components/ContactModal.astro';
           </svg>
         </div>
 
-        <div class="tflow-log">
-          <div class="tflow-log-head">
-            <span class="label">live wire log</span>
-            <button id="tflowClearLog" type="button">clear</button>
+        <!-- Side-by-side: Live trace (existing) + Live wire log (new) -->
+        <div class="logs-row">
+          <!-- Live status (existing) -->
+          <div class="status demo-hidden" id="status">
+            <div class="head">Live trace</div>
+            <ul class="step-list" id="step-list"></ul>
           </div>
-          <div id="tflowLog" class="tflow-log-body">
-            <div class="tflow-log-empty">Idle &mdash; hover or click a scenario above to start.</div>
-          </div>
-        </div>
-      </section>
 
-      <!-- STEP 3: trigger -->
-      <section class="demo-section">
-        <h2><span class="step">3</span>Run the demo</h2>
-        <p class="lead">Each button mints + sends to the production verifier. Verdicts come back in ~150ms.</p>
-        <div class="btn-row">
-          <div>
-            <button class="demo-btn primary" data-run="anthropic" id="btn-anthropic">&#9654; Run as Anthropic bot</button>
-            <p class="btn-sub">Expected: <b>verdict: allow</b></p>
+          <!-- Live wire log (new) -->
+          <div class="tflow-log">
+            <div class="tflow-log-head">
+              <span class="label">live wire log</span>
+              <button id="tflowClearLog" type="button">clear</button>
+            </div>
+            <div id="tflowLog" class="tflow-log-body">
+              <div class="tflow-log-empty">Idle &mdash; hover or click a button above to start.</div>
+            </div>
           </div>
-          <div>
-            <button class="demo-btn danger" data-run="tampered" id="btn-tampered">&#10007; Tamper signature</button>
-            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
-          </div>
-          <div>
-            <button class="demo-btn warn" data-run="revoked" id="btn-revoked">&#8856; Use revoked key</button>
-            <p class="btn-sub">Expected: <b>verdict: not_allowed</b></p>
-          </div>
-        </div>
-
-        <!-- Live status -->
-        <div class="status demo-hidden" id="status">
-          <div class="head">Live trace</div>
-          <ul class="step-list" id="step-list"></ul>
         </div>
 
         <!-- Verdict badge -->
@@ -1586,7 +1577,7 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
         tflowRunning = true;
         const s = TFLOW_SCENARIOS[name];
         const btn = document.querySelector('[data-tflow="' + name + '"]');
-        document.querySelectorAll('.tflow-btn').forEach(function (b) { b.disabled = true; b.classList.remove('running'); });
+        document.querySelectorAll('.demo-btn[data-run]').forEach(function (b) { b.classList.remove('running'); });
         if (btn) btn.classList.add('running');
 
         tflowResetVerdict();
@@ -1667,8 +1658,14 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
         tflowRunning = false;
       }
 
-      document.querySelectorAll('.tflow-btn').forEach(function (btn) {
-        const name = btn.dataset.tflow;
+      // Bind the existing step-3 buttons (#btn-anthropic / #btn-tampered /
+      // #btn-revoked) to ALSO drive the trust-flow animation. The buttons
+      // already have their own click handler that runs the live trace +
+      // verdict + translation pipeline; we attach additional listeners so
+      // both flows fire from a single click, in parallel.
+      document.querySelectorAll('.demo-btn[data-run]').forEach(function (btn) {
+        const name = btn.dataset.run;
+        if (!name || !TFLOW_SCENARIOS[name]) return;
         btn.addEventListener('mouseenter', function () { tflowApplyPreview(name); });
         btn.addEventListener('focus',      function () { tflowApplyPreview(name); });
         btn.addEventListener('mouseleave', function () { tflowClearPreview(); });
