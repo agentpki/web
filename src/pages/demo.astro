@@ -480,6 +480,252 @@ import ContactModal from '../components/ContactModal.astro';
       0%, 100% { transform: translateY(0); opacity: 0.7; }
       50% { transform: translateY(6px); opacity: 1; }
     }
+
+    /* ═══════════════ Interactive Trust Flow section ═══════════════
+       Hover any scenario to preview on the diagram; click to fire the
+       real mint + verify against demo.agentpki.dev + verify.agentpki.dev */
+    .demo-page .tflow {
+      padding: 2.5rem 0 1rem;
+    }
+    .demo-page .tflow .pick-label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--demo-text-muted);
+      margin-bottom: 0.875rem;
+      text-align: center;
+    }
+    .demo-page .tflow-buttons {
+      display: grid;
+      gap: 0.875rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px) {
+      .demo-page .tflow-buttons { grid-template-columns: repeat(3, 1fr); }
+    }
+    .demo-page .tflow-btn {
+      display: flex; align-items: center; gap: 0.75rem;
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border-radius: 10px;
+      background: var(--demo-bg-card);
+      border: 1.5px solid var(--demo-border-bright);
+      color: var(--demo-text);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      font-family: inherit;
+      min-width: 0;
+    }
+    .demo-page .tflow-btn .tflow-icon {
+      font-size: 1rem; line-height: 1; flex-shrink: 0;
+    }
+    .demo-page .tflow-btn .tflow-label-text {
+      flex: 1; min-width: 0; overflow-wrap: anywhere;
+    }
+    .demo-page .tflow-btn .tflow-expected {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--demo-text-dim);
+      margin-top: 0.2rem;
+      font-family: ui-monospace, monospace;
+      overflow-wrap: anywhere;
+    }
+    .demo-page .tflow-btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .demo-page .tflow-btn[data-tflow="anthropic"] { border-color: rgba(167, 139, 250, 0.5); }
+    .demo-page .tflow-btn[data-tflow="anthropic"]:hover:not(:disabled) {
+      background: rgba(167, 139, 250, 0.08); border-color: rgba(167, 139, 250, 0.9);
+      box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
+    }
+    .demo-page .tflow-btn[data-tflow="tampered"] { border-color: rgba(248, 113, 113, 0.4); }
+    .demo-page .tflow-btn[data-tflow="tampered"]:hover:not(:disabled) {
+      background: rgba(248, 113, 113, 0.06); border-color: rgba(248, 113, 113, 0.8);
+      box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.08);
+    }
+    .demo-page .tflow-btn[data-tflow="revoked"] { border-color: rgba(251, 191, 36, 0.4); }
+    .demo-page .tflow-btn[data-tflow="revoked"]:hover:not(:disabled) {
+      background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.8);
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.08);
+    }
+    .demo-page .tflow-btn[data-tflow="anthropic"] .tflow-icon { color: var(--demo-accent); }
+    .demo-page .tflow-btn[data-tflow="tampered"]  .tflow-icon { color: var(--demo-danger); }
+    .demo-page .tflow-btn[data-tflow="revoked"]   .tflow-icon { color: var(--demo-warn); }
+    .demo-page .tflow-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .demo-page .tflow-btn.running {
+      background: rgba(167, 139, 250, 0.12); border-color: var(--demo-accent);
+    }
+    .demo-page .tflow-hint {
+      font-size: 0.75rem;
+      color: var(--demo-text-dim);
+      font-style: italic;
+      text-align: center;
+      margin-top: 0.875rem;
+      min-height: 2.4em;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .demo-page .tflow-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 1.5rem 0 0.75rem;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    .demo-page .tflow-bar .label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--demo-text-dim);
+    }
+    .demo-page .tflow-pill {
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid;
+      transition: all 0.4s ease;
+      background: rgba(107, 107, 120, 0.1);
+      border-color: rgba(107, 107, 120, 0.3);
+      color: var(--demo-text-muted);
+    }
+    .demo-page .tflow-pill.working {
+      background: rgba(167, 139, 250, 0.12);
+      border-color: rgba(167, 139, 250, 0.4);
+      color: var(--demo-accent-bright);
+    }
+    .demo-page .tflow-pill.allow {
+      background: rgba(74, 222, 128, 0.15);
+      border-color: rgba(74, 222, 128, 0.5);
+      color: var(--demo-success-bright);
+    }
+    .demo-page .tflow-pill.deny {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: rgba(248, 113, 113, 0.5);
+      color: var(--demo-danger);
+    }
+
+    .demo-page .tflow-diagram-wrap {
+      position: relative;
+      border-radius: 1rem;
+      border: 1px solid rgba(31, 31, 37, 0.6);
+      background: rgba(15, 15, 18, 0.4);
+      backdrop-filter: blur(4px);
+      padding: 0.75rem;
+    }
+    @media (min-width: 720px) {
+      .demo-page .tflow-diagram-wrap { padding: 1.25rem; }
+    }
+    .demo-page .tflow-glow {
+      position: absolute; inset: -2.5rem;
+      background: rgba(167, 139, 250, 0.12);
+      filter: blur(120px);
+      border-radius: 3rem;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .demo-page .tflow-diagram {
+      width: 100%; height: auto; display: block;
+    }
+
+    /* ── Diagram animations ── */
+    .demo-page .tflow-diagram .flow-line {
+      stroke-dasharray: 6 6;
+      animation: tflowDash 1.6s linear infinite;
+      transition: stroke 0.4s ease;
+    }
+    .demo-page .tflow-diagram .flow-line.delay { animation-delay: 0.4s; }
+    @keyframes tflowDash { to { stroke-dashoffset: -24; } }
+
+    .demo-page .tflow-diagram .pulse-ring {
+      transform-origin: center; transform-box: fill-box;
+      animation: tflowPulse 2.6s ease-in-out infinite;
+    }
+    @keyframes tflowPulse {
+      0%, 100% { opacity: 0.35; transform: scale(1); }
+      50%      { opacity: 0.75; transform: scale(1.08); }
+    }
+    .demo-page .tflow-diagram .passport-glow { animation: tflowPassPulse 3s ease-in-out infinite; }
+    @keyframes tflowPassPulse {
+      0%, 100% { filter: brightness(1); }
+      50%      { filter: brightness(1.18); }
+    }
+
+    .demo-page .tflow-diagram .node-active rect:first-child {
+      stroke: rgba(196, 181, 253, 1) !important;
+      stroke-width: 2.5 !important;
+      filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.6));
+    }
+    .demo-page .tflow-diagram g.node-faded { opacity: 0.45; transition: opacity 0.3s ease; }
+    .demo-page .tflow-diagram.preview-allow .flow-line { stroke: rgba(74, 222, 128, 0.7); }
+    .demo-page .tflow-diagram.preview-deny  .flow-line { stroke: rgba(248, 113, 113, 0.7); }
+
+    .demo-page .tflow-diagram .traveler {
+      r: 7; opacity: 0;
+      fill: #c4b5fd;
+      filter: drop-shadow(0 0 6px #c4b5fd);
+    }
+
+    /* ── Live wire log ── */
+    .demo-page .tflow-log {
+      margin-top: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--demo-border);
+      background: rgba(15, 15, 18, 0.6);
+      padding: 1rem 1.25rem;
+    }
+    .demo-page .tflow-log-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem; flex-wrap: wrap;
+    }
+    .demo-page .tflow-log-head .label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--demo-text-muted);
+    }
+    .demo-page .tflow-log-head button {
+      font-size: 0.7rem;
+      color: var(--demo-text-dim);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+    .demo-page .tflow-log-head button:hover { color: var(--demo-text); }
+    .demo-page .tflow-log-body {
+      min-height: 80px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .demo-page .tflow-log-empty {
+      font-size: 0.75rem;
+      color: var(--demo-text-dim);
+      font-style: italic;
+    }
+    .demo-page .tflow-log-line {
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem;
+      color: var(--demo-text-muted);
+      padding: 0.25rem 0;
+      opacity: 0; transform: translateY(4px);
+      animation: tflowLogIn 0.35s ease forwards;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .demo-page .tflow-log-line .ts { color: var(--demo-text-dim); margin-right: 0.5rem; }
+    .demo-page .tflow-log-line .tag {
+      display: inline-block; padding: 1px 6px; border-radius: 3px;
+      font-size: 0.55rem; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; margin-right: 0.5rem;
+    }
+    .demo-page .tflow-log-line .tag.mint,
+    .demo-page .tflow-log-line .tag.verify { background: rgba(167,139,250,0.18); color: var(--demo-accent-bright); }
+    .demo-page .tflow-log-line .tag.ok     { background: rgba(74,222,128,0.18); color: var(--demo-success-bright); }
+    .demo-page .tflow-log-line .tag.fail   { background: rgba(248,113,113,0.18); color: var(--demo-danger); }
+    @keyframes tflowLogIn { to { opacity: 1; transform: translateY(0); } }
   </style>
 
   <div class="demo-page">
@@ -620,6 +866,170 @@ import ContactModal from '../components/ContactModal.astro';
             <div class="verdict-line">
               &rarr; Bot-defense vendor: <b>"Anthropic, cryptographically. risk_score 0.02. Allow."</b>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Interactive Trust Flow (visual companion to step 3) ─── -->
+      <section class="demo-section tflow" aria-labelledby="tflow-title">
+        <h2 id="tflow-title">The trust flow, live</h2>
+        <p class="lead">Hover any scenario to preview on the diagram below — no API call. Click to run it for real: mint at <code>demo.agentpki.dev</code>, verify at <code>verify.agentpki.dev</code>, watch the verdict animate in.</p>
+
+        <p class="pick-label">Pick a scenario</p>
+        <div class="tflow-buttons" role="group" aria-label="Trust flow scenarios">
+          <button class="tflow-btn" data-tflow="anthropic" type="button">
+            <span class="tflow-icon" aria-hidden="true">&#9654;</span>
+            <span class="tflow-label-text">
+              Run as Anthropic bot
+              <span class="tflow-expected">expected: <span style="color: var(--demo-success-bright);">verdict: allow</span></span>
+            </span>
+          </button>
+          <button class="tflow-btn" data-tflow="tampered" type="button">
+            <span class="tflow-icon" aria-hidden="true">&#10007;</span>
+            <span class="tflow-label-text">
+              Tamper signature
+              <span class="tflow-expected">expected: <span style="color: var(--demo-danger);">verdict: deny</span></span>
+            </span>
+          </button>
+          <button class="tflow-btn" data-tflow="revoked" type="button">
+            <span class="tflow-icon" aria-hidden="true">&#8856;</span>
+            <span class="tflow-label-text">
+              Use revoked key
+              <span class="tflow-expected">expected: <span style="color: var(--demo-danger);">verdict: deny</span></span>
+            </span>
+          </button>
+        </div>
+        <p id="tflowHint" class="tflow-hint">
+          Hover any scenario to preview &mdash; the trust flow updates without firing the API.
+        </p>
+
+        <div class="tflow-bar">
+          <span class="label">trust flow</span>
+          <span id="tflowPill" class="tflow-pill">ready</span>
+        </div>
+
+        <div class="tflow-diagram-wrap">
+          <div class="tflow-glow" aria-hidden="true"></div>
+
+          <svg id="tflowDiagram" class="tflow-diagram" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" aria-label="AgentPKI trust flow: issuer mints, agent presents, verifier validates">
+            <defs>
+              <pattern id="tflowGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="14" cy="14" r="0.8" fill="rgba(167,139,250,0.18)"/>
+              </pattern>
+              <linearGradient id="tflowNodeFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.20)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.04)"/>
+              </linearGradient>
+              <linearGradient id="tflowCenterFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.36)"/>
+                <stop offset="100%" stop-color="rgba(124,58,237,0.12)"/>
+              </linearGradient>
+              <filter id="tflowCenterGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <radialGradient id="tflowAmbient" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%"  stop-color="rgba(167,139,250,0.22)"/>
+                <stop offset="60%" stop-color="rgba(167,139,250,0.05)"/>
+                <stop offset="100%" stop-color="rgba(167,139,250,0.00)"/>
+              </radialGradient>
+            </defs>
+
+            <rect width="900" height="480" fill="url(#tflowGrid)" />
+            <circle cx="450" cy="240" r="200" fill="url(#tflowAmbient)" />
+
+            <line class="flow-line"       x1="225" y1="240" x2="370" y2="240" stroke="rgba(167,139,250,0.6)" stroke-width="1.8"/>
+            <line class="flow-line delay" x1="530" y1="240" x2="675" y2="240" stroke="rgba(167,139,250,0.6)" stroke-width="1.8"/>
+
+            <circle id="tflowTraveler1" class="traveler" cx="225" cy="240"></circle>
+            <circle id="tflowTraveler2" class="traveler" cx="530" cy="240"></circle>
+
+            <!-- ISSUER -->
+            <g id="tflowIssuerNode" transform="translate(70, 195)">
+              <rect width="155" height="90" rx="12" fill="url(#tflowNodeFill)" stroke="rgba(167,139,250,0.6)" stroke-width="1.2"/>
+              <text x="77" y="32" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">ISSUER</text>
+              <text x="77" y="54" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11">demo.agentpki.dev</text>
+              <text x="77" y="72" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="10">Ed25519 &middot; live</text>
+            </g>
+
+            <!-- PASSPORT -->
+            <g id="tflowPassportNode" transform="translate(370, 130)" filter="url(#tflowCenterGlow)">
+              <rect class="pulse-ring" x="-6" y="-6" width="172" height="222" rx="20" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.2"/>
+              <rect class="passport-glow" width="160" height="210" rx="16" fill="url(#tflowCenterFill)" stroke="rgba(167,139,250,0.95)" stroke-width="2"/>
+              <text x="80" y="30" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">PASSPORT</text>
+
+              <g transform="translate(20, 50)">
+                <rect width="120" height="80" rx="8" fill="rgba(8,8,11,0.7)" stroke="rgba(167,139,250,0.75)" stroke-width="1.2"/>
+                <circle cx="20" cy="22" r="10" fill="none" stroke="rgba(196,181,253,0.9)" stroke-width="1.4"/>
+                <circle cx="20" cy="19" r="3.5" fill="rgba(196,181,253,0.4)"/>
+                <path d="M 12 28 Q 20 22 28 28" fill="none" stroke="rgba(196,181,253,0.4)" stroke-width="1"/>
+                <line x1="38" y1="16" x2="106" y2="16" stroke="rgba(196,181,253,0.7)" stroke-width="1.2"/>
+                <line x1="38" y1="24" x2="92" y2="24" stroke="rgba(196,181,253,0.45)" stroke-width="1"/>
+                <line x1="10" y1="42" x2="110" y2="42" stroke="rgba(167,139,250,0.3)" stroke-width="0.7" stroke-dasharray="3 3"/>
+                <text id="tflowTokenLine1" x="10" y="56" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="8">(hover or click to mint)</text>
+                <text id="tflowTokenLine2" x="10" y="68" fill="#7c7c8a" font-family="ui-monospace,monospace" font-size="8">&#160;</text>
+              </g>
+
+              <g transform="translate(15, 145)">
+                <rect width="62" height="20" rx="10" fill="rgba(167,139,250,0.14)" stroke="rgba(167,139,250,0.4)"/>
+                <text id="tflowScopeChip" x="46" y="159" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="9">read:*</text>
+              </g>
+              <g transform="translate(83, 145)">
+                <rect width="62" height="20" rx="10" fill="rgba(167,139,250,0.14)" stroke="rgba(167,139,250,0.4)"/>
+                <text id="tflowTierChip" x="114" y="159" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="9">tier: 1</text>
+              </g>
+
+              <text id="tflowAgentSub" x="80" y="190" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="10">agent: anthropic</text>
+            </g>
+
+            <!-- VERIFIER -->
+            <g id="tflowVerifierNode" transform="translate(675, 195)">
+              <rect width="155" height="90" rx="12" fill="url(#tflowNodeFill)" stroke="rgba(167,139,250,0.6)" stroke-width="1.2"/>
+              <text x="77" y="32" text-anchor="middle" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="13" font-weight="700" letter-spacing="1.5">VERIFIER</text>
+              <text x="77" y="54" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11">verify.agentpki.dev</text>
+              <text x="77" y="72" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="10">&lt; 50ms p99 &middot; edge</text>
+            </g>
+
+            <text x="297" y="225" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="600">mint</text>
+            <text x="297" y="262" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">PASETO v4.public</text>
+
+            <text x="602" y="225" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="600">verify</text>
+            <text x="602" y="262" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">RFC 9421 Mode B</text>
+
+            <!-- Verdict callout -->
+            <g transform="translate(675, 320)">
+              <rect id="tflowVerdictBox" width="155" height="80" rx="10" fill="rgba(107,107,120,0.08)" stroke="rgba(107,107,120,0.3)" stroke-width="1.2"/>
+              <circle id="tflowVerdictDot" cx="20" cy="20" r="6" fill="rgba(107,107,120,0.25)" stroke="rgba(107,107,120,0.6)" stroke-width="1.2"/>
+              <path id="tflowVerdictMark" d="M 17 20 l 2.5 2.5 L 24 17" fill="none" stroke="rgba(134,239,172,0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <text id="tflowVerdictText" x="34" y="24" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="700">verdict: pending</text>
+              <line x1="12" y1="38" x2="143" y2="38" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+              <text id="tflowVerdictMeta1" x="12" y="54" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">hover a scenario to preview</text>
+              <text id="tflowVerdictMeta2" x="12" y="68" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">&#160;</text>
+            </g>
+
+            <!-- Issuer key callout -->
+            <g transform="translate(70, 320)">
+              <rect width="155" height="80" rx="10" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.35)" stroke-width="1.2"/>
+              <g transform="translate(12, 14)">
+                <rect width="14" height="18" rx="2" fill="none" stroke="rgba(196,181,253,0.85)" stroke-width="1.2"/>
+                <circle cx="7" cy="9" r="3" fill="rgba(196,181,253,0.35)"/>
+                <line x1="7" y1="13" x2="7" y2="16" stroke="rgba(196,181,253,0.85)" stroke-width="1.2"/>
+              </g>
+              <text x="34" y="22" fill="#c4b5fd" font-family="ui-monospace,monospace" font-size="11" font-weight="700">issuer key</text>
+              <line x1="12" y1="36" x2="143" y2="36" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+              <text id="tflowKidLine" x="12" y="52" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">kid: demo-2026-q2</text>
+              <text id="tflowKidSub" x="12" y="66" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">Ed25519 &middot; rotates 90d</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="tflow-log">
+          <div class="tflow-log-head">
+            <span class="label">live wire log</span>
+            <button id="tflowClearLog" type="button">clear</button>
+          </div>
+          <div id="tflowLog" class="tflow-log-body">
+            <div class="tflow-log-empty">Idle &mdash; hover or click a scenario above to start.</div>
           </div>
         </div>
       </section>
@@ -999,6 +1409,274 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
         window.history.replaceState(null, '', newUrl);
         setTimeout(() => $('btn-anthropic')?.click(), 800);
       }
+
+      // ═════════════════════════════════════════════════════════════════
+      // INTERACTIVE TRUST FLOW (new visual demo, complements step 3)
+      // ═════════════════════════════════════════════════════════════════
+
+      const TFLOW_VERIFIER = 'https://verify.agentpki.dev';
+      const TFLOW_ISSUER   = 'https://demo.agentpki.dev';
+
+      const TFLOW_SCENARIOS = {
+        anthropic: {
+          mintQuery: '?sub=anthropic',
+          tampered: false,
+          expectedVerdict: 'allow',
+          previewMeta1: 'tier: 2 · abuse: 0.02',
+          previewMeta2: 'cached_until: +60s',
+          previewKid: 'kid: demo-2026-q2',
+          previewKidSub: 'Ed25519 · rotates 90d',
+          scopeLabel: 'read:*',
+          tierLabel: 'tier: 2',
+          hint: 'Mints a normal passport for "anthropic", sends to verifier, returns allow. This is the happy path.',
+        },
+        tampered: {
+          mintQuery: '?sub=anthropic',
+          tampered: true,
+          expectedVerdict: 'deny',
+          previewMeta1: 'reason: signature_invalid',
+          previewMeta2: 'tier: ? · abuse: ?',
+          previewKid: 'kid: demo-2026-q2',
+          previewKidSub: 'Ed25519 · rotates 90d',
+          scopeLabel: 'read:*',
+          tierLabel: 'tier: 2',
+          hint: 'Mints a normal token then flips one character in the signature. Verifier rejects: cryptographic check fails.',
+        },
+        revoked: {
+          mintQuery: '?sub=anthropic&revoked=1',
+          tampered: false,
+          expectedVerdict: 'deny',
+          previewMeta1: 'reason: revoked_key',
+          previewMeta2: 'kid: demo-2026-q1-rotated',
+          previewKid: 'kid: demo-2026-q1-rotated',
+          previewKidSub: 'revoked · CRL hit',
+          scopeLabel: 'read:*',
+          tierLabel: 'tier: 2',
+          hint: 'Mints a token signed with an old key that has since been rotated. Verifier rejects: kid is in the CRL.',
+        },
+      };
+
+      let tflowRunning = false;
+
+      function tflowTs() {
+        return new Date().toTimeString().slice(0, 8);
+      }
+      function tflowLog(tag, html) {
+        const el = $('tflowLog');
+        if (!el) return;
+        const empty = el.querySelector('.tflow-log-empty');
+        if (empty) empty.remove();
+        const row = document.createElement('div');
+        row.className = 'tflow-log-line';
+        const tagSafe = tag.replace(/[^a-z]/g, '');
+        row.innerHTML = '<span class="ts">' + tflowTs() + '</span><span class="tag ' + tagSafe + '">' + tag + '</span>' + html;
+        el.appendChild(row);
+        el.scrollTop = el.scrollHeight;
+      }
+      function tflowClearLog() {
+        const el = $('tflowLog');
+        if (el) el.innerHTML = '<div class="tflow-log-empty">Idle &mdash; hover or click a scenario above to start.</div>';
+      }
+      function tflowSetPill(label, kind) {
+        const pill = $('tflowPill');
+        if (!pill) return;
+        pill.classList.remove('working', 'allow', 'deny');
+        if (kind) pill.classList.add(kind);
+        pill.textContent = label;
+      }
+      function tflowFocusActor(which) {
+        const groups = { issuer: $('tflowIssuerNode'), passport: $('tflowPassportNode'), verifier: $('tflowVerifierNode') };
+        Object.entries(groups).forEach(function ([k, g]) {
+          if (!g) return;
+          g.classList.remove('node-active', 'node-faded');
+          if (which && k === which) g.classList.add('node-active');
+          else if (which) g.classList.add('node-faded');
+        });
+      }
+      function tflowTravel(which) {
+        const el = which === 1 ? $('tflowTraveler1') : $('tflowTraveler2');
+        if (!el) return;
+        const start = which === 1 ? 225 : 530;
+        const end   = which === 1 ? 370 : 675;
+        el.setAttribute('cx', start);
+        el.animate(
+          [
+            { cx: start, opacity: 0 },
+            { cx: start + 10, opacity: 1, offset: 0.15 },
+            { cx: end - 10, opacity: 1, offset: 0.85 },
+            { cx: end, opacity: 0 },
+          ],
+          { duration: 1400, easing: 'ease-in-out', fill: 'forwards' }
+        );
+      }
+      function tflowPaintVerdict(verdict, meta1, meta2, isPreview) {
+        const isAllow = verdict === 'allow';
+        const box = $('tflowVerdictBox');
+        const dot = $('tflowVerdictDot');
+        const mark = $('tflowVerdictMark');
+        const text = $('tflowVerdictText');
+        if (!box) return;
+        if (isAllow) {
+          box.setAttribute('fill', 'rgba(34,197,94,0.08)');
+          box.setAttribute('stroke', 'rgba(74,222,128,0.5)');
+          dot.setAttribute('fill', 'rgba(74,222,128,0.25)');
+          dot.setAttribute('stroke', 'rgba(74,222,128,0.9)');
+          mark.setAttribute('stroke', 'rgba(134,239,172,1)');
+          text.setAttribute('fill', '#86efac');
+        } else {
+          box.setAttribute('fill', 'rgba(248,113,113,0.08)');
+          box.setAttribute('stroke', 'rgba(248,113,113,0.5)');
+          dot.setAttribute('fill', 'rgba(248,113,113,0.25)');
+          dot.setAttribute('stroke', 'rgba(248,113,113,0.9)');
+          mark.setAttribute('stroke', 'rgba(252,165,165,0)');
+          text.setAttribute('fill', '#fca5a5');
+        }
+        text.textContent = (isPreview ? '↻ ' : '') + 'verdict: ' + verdict;
+        $('tflowVerdictMeta1').textContent = meta1 || '';
+        $('tflowVerdictMeta2').textContent = meta2 || '';
+      }
+      function tflowResetVerdict() {
+        const box = $('tflowVerdictBox');
+        if (!box) return;
+        box.setAttribute('fill', 'rgba(107,107,120,0.08)');
+        box.setAttribute('stroke', 'rgba(107,107,120,0.3)');
+        $('tflowVerdictDot').setAttribute('fill', 'rgba(107,107,120,0.25)');
+        $('tflowVerdictDot').setAttribute('stroke', 'rgba(107,107,120,0.6)');
+        $('tflowVerdictMark').setAttribute('stroke', 'rgba(134,239,172,0)');
+        $('tflowVerdictText').setAttribute('fill', '#9c9cab');
+        $('tflowVerdictText').textContent = 'verdict: pending';
+        $('tflowVerdictMeta1').textContent = 'hover a scenario to preview';
+        $('tflowVerdictMeta2').textContent = '';
+        $('tflowDiagram').classList.remove('preview-allow', 'preview-deny');
+        $('tflowTokenLine1').textContent = '(hover or click to mint)';
+        $('tflowTokenLine2').textContent = '';
+        $('tflowKidLine').textContent = 'kid: demo-2026-q2';
+        $('tflowKidSub').textContent = 'Ed25519 · rotates 90d';
+        $('tflowAgentSub').textContent = 'agent: anthropic';
+        $('tflowScopeChip').textContent = 'read:*';
+        $('tflowTierChip').textContent = 'tier: 1';
+      }
+      function tflowApplyPreview(name) {
+        if (tflowRunning) return;
+        const s = TFLOW_SCENARIOS[name];
+        const diagram = $('tflowDiagram');
+        if (!s || !diagram) return;
+        diagram.classList.remove('preview-allow', 'preview-deny');
+        diagram.classList.add(s.expectedVerdict === 'allow' ? 'preview-allow' : 'preview-deny');
+        $('tflowTokenLine1').textContent = 'v4.public.eyJpc3M…';
+        $('tflowTokenLine2').textContent = s.tampered ? '…SIG_TAMPERED' : '…(unminted)';
+        $('tflowAgentSub').textContent = 'agent: anthropic';
+        $('tflowScopeChip').textContent = s.scopeLabel;
+        $('tflowTierChip').textContent = s.tierLabel;
+        tflowPaintVerdict(s.expectedVerdict, s.previewMeta1, s.previewMeta2, true);
+        $('tflowKidLine').textContent = s.previewKid;
+        $('tflowKidSub').textContent = s.previewKidSub;
+        $('tflowHint').textContent = s.hint;
+      }
+      function tflowClearPreview() {
+        if (tflowRunning) return;
+        tflowResetVerdict();
+        const hint = $('tflowHint');
+        if (hint) hint.textContent = 'Hover any scenario to preview — the trust flow updates without firing the API.';
+      }
+      function tflowSleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      async function tflowRun(name) {
+        if (tflowRunning) return;
+        tflowRunning = true;
+        const s = TFLOW_SCENARIOS[name];
+        const btn = document.querySelector('[data-tflow="' + name + '"]');
+        document.querySelectorAll('.tflow-btn').forEach(function (b) { b.disabled = true; b.classList.remove('running'); });
+        if (btn) btn.classList.add('running');
+
+        tflowResetVerdict();
+        tflowApplyPreview(name);
+        $('tflowVerdictMeta1').textContent = 'minting…';
+        $('tflowVerdictMeta2').textContent = '';
+
+        tflowSetPill('minting', 'working');
+        tflowFocusActor('issuer');
+        tflowLog('mint', 'POST ' + TFLOW_ISSUER + '/mint' + s.mintQuery);
+        tflowTravel(1);
+        await tflowSleep(700);
+
+        let token;
+        try {
+          const t0 = performance.now();
+          const res = await fetch(TFLOW_ISSUER + '/mint' + s.mintQuery);
+          const body = await res.json();
+          token = body.token;
+          if (s.tampered) {
+            const parts = token.split('.');
+            const last = parts[parts.length - 1];
+            parts[parts.length - 1] = last.slice(0, 10) + (last[10] === 'A' ? 'B' : 'A') + last.slice(11);
+            token = parts.join('.');
+          }
+          const ms = Math.round(performance.now() - t0);
+          tflowLog('ok', 'minted in ' + ms + 'ms &mdash; token: <code style="color: var(--demo-accent-bright);">' + token.slice(0, 32) + '…</code>' + (s.tampered ? ' <span style="color: var(--demo-danger);">[signature flipped client-side]</span>' : ''));
+        } catch (e) {
+          tflowLog('fail', 'mint failed: ' + (e && e.message ? e.message : e));
+          tflowSetPill('failed', 'deny');
+          document.querySelectorAll('.tflow-btn').forEach(function (b) { b.disabled = false; b.classList.remove('running'); });
+          tflowRunning = false;
+          return;
+        }
+
+        $('tflowTokenLine1').textContent = token.slice(0, 18) + '…';
+        $('tflowTokenLine2').textContent = token.slice(-22);
+        await tflowSleep(400);
+        tflowFocusActor('passport');
+        tflowSetPill('passport ready', 'working');
+        await tflowSleep(700);
+
+        tflowSetPill('verifying', 'working');
+        tflowFocusActor('verifier');
+        tflowLog('verify', 'POST ' + TFLOW_VERIFIER + '/v1/verify');
+        tflowTravel(2);
+        await tflowSleep(700);
+
+        try {
+          const t0 = performance.now();
+          const res = await fetch(TFLOW_VERIFIER + '/v1/verify', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ token: token }),
+          });
+          const body = await res.json();
+          const ms = Math.round(performance.now() - t0);
+          const verdict = body.verdict || 'unknown';
+          const abuseScore = typeof body.abuse_score === 'number' ? body.abuse_score.toFixed(2) : '0.00';
+          const cacheLine = body.cached_until
+            ? 'cached_until: +' + Math.round(body.cached_until - Date.now() / 1000) + 's'
+            : 'verifier_id: ' + (body.verifier_id || 'edge');
+          tflowLog('ok', 'verdict: <strong style="color: ' + (verdict === 'allow' ? 'var(--demo-success-bright)' : 'var(--demo-danger)') + ';">' + verdict + '</strong> in ' + ms + 'ms' + (body.failure_reason ? ' · reason: ' + body.failure_reason : ''));
+          if (body.failure_reason) {
+            tflowPaintVerdict(verdict, 'reason: ' + body.failure_reason, cacheLine, false);
+          } else {
+            tflowPaintVerdict(verdict, 'tier: ' + ((body.passport && body.passport.tier) || 1) + ' · abuse: ' + abuseScore, cacheLine, false);
+          }
+          tflowSetPill(verdict, verdict === 'allow' ? 'allow' : 'deny');
+        } catch (e) {
+          tflowLog('fail', 'verify failed: ' + (e && e.message ? e.message : e));
+          tflowSetPill('failed', 'deny');
+        }
+
+        await tflowSleep(800);
+        tflowFocusActor(null);
+        document.querySelectorAll('.tflow-btn').forEach(function (b) { b.disabled = false; b.classList.remove('running'); });
+        tflowRunning = false;
+      }
+
+      document.querySelectorAll('.tflow-btn').forEach(function (btn) {
+        const name = btn.dataset.tflow;
+        btn.addEventListener('mouseenter', function () { tflowApplyPreview(name); });
+        btn.addEventListener('focus',      function () { tflowApplyPreview(name); });
+        btn.addEventListener('mouseleave', function () { tflowClearPreview(); });
+        btn.addEventListener('blur',       function () { tflowClearPreview(); });
+        btn.addEventListener('click',      function () { tflowRun(name); });
+      });
+      const tflowClearBtn = $('tflowClearLog');
+      if (tflowClearBtn) tflowClearBtn.addEventListener('click', tflowClearLog);
     })();
   </script>
 
