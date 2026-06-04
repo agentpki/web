@@ -43,33 +43,47 @@ import Footer from '../../../components/Footer.astro';
 <style>
   .back-link { margin-bottom: 0.75rem; }
 
-  .result-card {
-    border-radius: 0.85rem; border: 1.5px solid; padding: 1.5rem 1.5rem 1.25rem;
-    background: rgba(15, 15, 18, 0.6); backdrop-filter: blur(4px);
+  /* Identical card design as /check (kept in sync manually for now) */
+  .result-card { border-radius: 12px; border: 2px solid; overflow: hidden; }
+  .result-card.verified   { border-color: #4ade80; background: #052e16; }
+  .result-card.revoked    { border-color: #f87171; background: #450a0a; }
+  .result-card.unverified { border-color: #fbbf24; background: #3a2a05; }
+  .result-card.error      { border-color: #f87171; background: #450a0a; }
+
+  .result-header { display: flex; align-items: center; gap: 0.85rem; padding: 1.1rem 1.4rem; border-bottom: 2px solid; font-family: ui-monospace, monospace; }
+  .result-card.verified   .result-header { background: rgba(74, 222, 128, 0.18); border-bottom-color: #4ade80; }
+  .result-card.revoked    .result-header { background: rgba(248, 113, 113, 0.20); border-bottom-color: #f87171; }
+  .result-card.unverified .result-header { background: rgba(251, 191, 36, 0.18); border-bottom-color: #fbbf24; }
+  .result-card.error      .result-header { background: rgba(248, 113, 113, 0.18); border-bottom-color: #f87171; }
+  .result-icon { font-size: 1.85rem; line-height: 1; flex-shrink: 0; }
+  .result-card.verified   .result-icon { color: #86efac; }
+  .result-card.revoked    .result-icon { color: #fca5a5; }
+  .result-card.unverified .result-icon { color: #fcd34d; }
+  .result-card.error      .result-icon { color: #fca5a5; }
+  .result-title { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.1; }
+  .result-card.verified   .result-title { color: #bbf7d0; }
+  .result-card.revoked    .result-title { color: #fecaca; }
+  .result-card.unverified .result-title { color: #fde68a; }
+  .result-card.error      .result-title { color: #fecaca; }
+
+  .result-body { padding: 1.25rem 1.4rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .result-field { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.7rem 0.95rem 0.8rem; }
+  .result-field-label { display: block; font-family: ui-monospace, monospace; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #c4b5fd; margin-bottom: 0.35rem; }
+  .result-field-value { display: block; font-size: 0.95rem; color: #f3f4f6; font-weight: 500; line-height: 1.45; word-break: break-word; overflow-wrap: anywhere; }
+  .result-field-value strong { font-weight: 700; }
+  .result-field-value code { color: #c4b5fd; background: rgba(167, 139, 250, 0.18); padding: 0.15em 0.5em; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+  .result-prose { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.85rem 1rem; color: #f3f4f6; font-size: 0.92rem; line-height: 1.55; }
+  .result-prose p { margin: 0; }
+
+  .result-card a, .result-footer a {
+    color: #c4b5fd !important; text-decoration: underline !important;
+    text-decoration-thickness: 2px !important; text-underline-offset: 3px !important;
+    font-weight: 600; cursor: pointer !important;
   }
-  .result-card.verified { border-color: rgba(74, 222, 128, 0.55); background: rgba(34, 197, 94, 0.05); }
-  .result-card.revoked  { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.05); }
-  .result-card.unverified { border-color: rgba(251, 191, 36, 0.55); background: rgba(251, 191, 36, 0.04); }
-  .result-card.error     { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.04); }
+  .result-card a:hover, .result-footer a:hover { color: #ffffff !important; }
 
-  .result-headline {
-    font-family: ui-monospace, monospace;
-    font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; margin: 0 0 1rem;
-  }
-  .result-card.verified .result-headline { color: #86efac; }
-  .result-card.revoked  .result-headline { color: #fca5a5; }
-  .result-card.unverified .result-headline { color: #fcd34d; }
-  .result-card.error    .result-headline { color: #fca5a5; }
-
-  .result-field { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.5rem 1rem; padding: 0.4rem 0; align-items: baseline; }
-  @media (max-width: 560px) { .result-field { grid-template-columns: 1fr; gap: 0.1rem; } }
-  .result-field .k { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-dim); font-family: ui-monospace, monospace; }
-  .result-field .v { color: var(--color-text); word-break: break-word; overflow-wrap: anywhere; font-size: 0.95rem; }
-  .result-field code { color: var(--color-accent-bright); font-size: 0.85em; background: rgba(255,255,255,0.04); padding: 0.05em 0.35em; border-radius: 3px; }
-
-  .footer-note { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.78rem; color: var(--color-text-dim); line-height: 1.55; }
-  .footer-note a { color: var(--color-accent-bright); }
+  .result-footer { padding: 1rem 1.4rem 1.1rem; background: rgba(0, 0, 0, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.82rem; color: #d1d5db; line-height: 1.6; }
+  .result-footer p { margin: 0; }
 
   .stored-at { margin-top: 1.5rem; font-size: 0.7rem; color: var(--color-text-dim); text-align: center; }
 
@@ -97,7 +111,8 @@ import Footer from '../../../components/Footer.astro';
   }
   function fmt(n) { return typeof n === 'number' ? n.toFixed(2) : String(n); }
   function formatTs(s) { if (!s) return '—'; try { return new Date(s * 1000).toLocaleString(); } catch { return '—'; } }
-  function field(k, v) { return '<div class="result-field"><div class="k">' + escape(k) + '</div><div class="v">' + v + '</div></div>'; }
+  function field(k, v) { return '<div class="result-field"><span class="result-field-label">' + escape(k) + '</span><span class="result-field-value">' + v + '</span></div>'; }
+  function header(icon, title) { return '<header class="result-header"><span class="result-icon" aria-hidden="true">' + icon + '</span><h2 class="result-title">' + escape(title) + '</h2></header>'; }
 
   function classifyResult(result) {
     if (!result) return 'unverified';
@@ -118,38 +133,47 @@ import Footer from '../../../components/Footer.astro';
     if (kind === 'verified') {
       const scopes = Array.isArray(p.scopes) && p.scopes.length ? p.scopes.join(', ') : '(none declared)';
       inner =
-        '<h2 class="result-headline">&#9989; Verified</h2>' +
-        field('Issuer', '<code>' + escape(p.issuer || '—') + '</code>' + (p.issuer_name ? ' · ' + escape(p.issuer_name) : '')) +
-        field('Tier', escape(String(p.tier || '—'))) +
-        field('Identity', '<code>' + escape(p.agent_id || '—') + '</code>') +
-        field('Scopes', '<code>' + escape(scopes) + '</code>') +
-        field('Reputation', 'abuse score: ' + escape(fmt(r.abuse_score || 0)) + (p.expires_at ? ' · expires ' + formatTs(p.expires_at) : '')) +
-        field('Captured', formatTs(snap.stored_at)) +
-        '<p class="footer-note">Verified means the agent operator has cryptographically proven its identity to AgentPKI. It does <strong>not</strong> mean the agent is endorsed or recommended. <a href="/how-verification-works">Learn more →</a></p>';
+        header('&#9989;', 'Verified') +
+        '<div class="result-body">' +
+          field('Issuer', '<code>' + escape(p.issuer || '—') + '</code>' + (p.issuer_name ? ' &middot; ' + escape(p.issuer_name) : '')) +
+          field('Tier', escape(String(p.tier || '—'))) +
+          field('Identity', '<code>' + escape(p.agent_id || '—') + '</code>') +
+          field('Scopes', '<code>' + escape(scopes) + '</code>') +
+          field('Reputation', 'abuse score: <strong>' + escape(fmt(r.abuse_score || 0)) + '</strong>' + (p.expires_at ? ' &middot; expires ' + formatTs(p.expires_at) : '')) +
+          field('Captured', formatTs(snap.stored_at)) +
+        '</div>' +
+        '<div class="result-footer"><p>Verified means the agent operator has cryptographically proven its identity to AgentPKI. It does <strong>not</strong> mean the agent is endorsed or recommended. <a href="/how-verification-works">Learn more →</a></p></div>';
     } else if (kind === 'revoked') {
       inner =
-        '<h2 class="result-headline">&#9940; Do not trust</h2>' +
-        field('Status', '<strong style="color:#fca5a5;">REVOKED</strong>') +
-        field('Reason', '<code>' + escape(r.failure_reason || 'unknown') + '</code>' + (r.failure_detail ? ' · ' + escape(r.failure_detail) : '')) +
-        (p.issuer ? field('Issuer', '<code>' + escape(p.issuer) + '</code>') : '') +
-        (p.agent_id ? field('Identity', '<code>' + escape(p.agent_id) + '</code>') : '') +
-        field('What to do', 'Do not share information with this agent. If you\'ve already interacted, review your account activity.') +
-        field('Captured', formatTs(snap.stored_at)) +
-        '<p class="footer-note">Revocation means a previously verified identity has been canceled. <a href="/how-verification-works">Learn more →</a></p>';
+        header('&#9940;', 'Do Not Trust') +
+        '<div class="result-body">' +
+          field('Status', '<strong>REVOKED</strong>') +
+          field('Reason', '<code>' + escape(r.failure_reason || 'unknown') + '</code>' + (r.failure_detail ? ' &middot; ' + escape(r.failure_detail) : '')) +
+          (p.issuer ? field('Issuer', '<code>' + escape(p.issuer) + '</code>') : '') +
+          (p.agent_id ? field('Identity', '<code>' + escape(p.agent_id) + '</code>') : '') +
+          field('What to do', 'Do not share information with this agent. If you have already interacted, review your account activity.') +
+          field('Captured', formatTs(snap.stored_at)) +
+        '</div>' +
+        '<div class="result-footer"><p>Revocation means a previously verified identity has been canceled. <a href="/how-verification-works">Learn more →</a></p></div>';
     } else {
       inner =
-        '<h2 class="result-headline">&#9888; Unverified</h2>' +
-        '<p style="margin:0 0 1rem; color:var(--color-text);">No AgentPKI passport was found for this identifier when the check was performed.</p>' +
-        field('Input', '<code>' + escape(snap.input || '(unavailable)') + '</code>') +
-        field('Captured', formatTs(snap.stored_at)) +
-        '<p class="footer-note">Most AI agents have not yet registered with AgentPKI. <a href="/how-verification-works">Learn more →</a></p>';
+        header('&#9888;', 'Unverified') +
+        '<div class="result-body">' +
+          '<div class="result-prose"><p>No AgentPKI passport was found for this identifier when the check was performed.</p></div>' +
+          field('Input', '<code>' + escape(snap.input || '(unavailable)') + '</code>') +
+          field('Captured', formatTs(snap.stored_at)) +
+        '</div>' +
+        '<div class="result-footer"><p>Most AI agents have not yet registered with AgentPKI. <a href="/how-verification-works">Learn more →</a></p></div>';
     }
     $('resultArea').innerHTML = '<div class="result-card ' + kind + '">' + inner + '</div>' +
       '<p class="stored-at">Stored at ' + formatTs(snap.stored_at) + ' · expires within 24 hours of that time.</p>';
   }
 
   function renderError(msg) {
-    $('resultArea').innerHTML = '<div class="result-card error"><h2 class="result-headline">&#10006; Not found</h2><p style="margin:0; color:var(--color-text-muted);">' + escape(msg) + '</p></div>';
+    $('resultArea').innerHTML = '<div class="result-card error">' +
+      header('&#10006;', 'Not Found') +
+      '<div class="result-body"><div class="result-prose"><p>' + escape(msg) + '</p></div></div>' +
+      '</div>';
   }
 
   async function load() {
