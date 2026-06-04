@@ -9,20 +9,20 @@ import Footer from '../components/Footer.astro';
 
   <Nav />
 
-  <main class="max-w-3xl mx-auto px-6 pt-16 pb-24">
+  <main class="max-w-3xl mx-auto px-6 pt-10 pb-16">
 
     <!-- Hero -->
-    <section class="text-center mb-10">
+    <section class="text-center mb-7">
       <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-tight">
         Is this AI agent <span class="hero-accent-text">legitimate</span>?
       </h1>
-      <p class="mt-5 text-base sm:text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto">
+      <p class="mt-4 text-base sm:text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto">
         Paste an agent ID, passport token, or URL. We'll check it against the AgentPKI network in under a second.
       </p>
     </section>
 
     <!-- Banner: adoption disclosure -->
-    <div class="banner-adoption mb-6" role="note">
+    <div class="banner-adoption mb-4" role="note">
       <p class="text-xs sm:text-sm">
         AgentPKI is in early days. Most AI agents have not yet registered.
         We expect "Unverified" to be the most common result today and become rarer over time.
@@ -187,7 +187,7 @@ import Footer from '../components/Footer.astro';
       </div>
     </div>
 
-    <p class="text-center mt-12 text-xs text-[color:var(--color-text-dim)]">
+    <p class="text-center mt-6 text-xs text-[color:var(--color-text-dim)]">
       Want to integrate verification into your own app? Read the <a href="/spec/v0.1" class="underline">v0.1 spec</a> or grab the <a href="https://github.com/agentpki/extension" class="underline">Chrome extension</a>.
     </p>
   </main>
@@ -216,7 +216,7 @@ import Footer from '../components/Footer.astro';
   .banner-adoption a { color: #fcd34d; }
 
   /* Input */
-  .check-form { margin-bottom: 0.875rem; }
+  .check-form { margin-bottom: 0; }
   .input-group {
     display: grid; grid-template-columns: 1fr auto; gap: 0.65rem;
     align-items: start;
@@ -261,7 +261,7 @@ import Footer from '../components/Footer.astro';
 
   /* Helper callout under the input — prominent so users notice */
   .helper-callout {
-    margin: 1.25rem 0;
+    margin: 0.85rem 0 0;
     background: linear-gradient(135deg, rgba(167, 139, 250, 0.10), rgba(167, 139, 250, 0.04));
     border: 1.5px solid rgba(167, 139, 250, 0.35);
     border-left: 4px solid var(--color-accent);
@@ -294,7 +294,7 @@ import Footer from '../components/Footer.astro';
 
   /* Developer curl box — always visible, prominent */
   .dev-curl {
-    margin: 1.25rem 0;
+    margin: 0.85rem 0 0;
     background: #0a0a0f;
     border: 1.5px solid rgba(74, 222, 128, 0.3);
     border-radius: 0.65rem;
@@ -425,8 +425,8 @@ import Footer from '../components/Footer.astro';
 
   /* Example links — prominent, above textarea */
   .example-wrap {
-    margin: 0 0 1.25rem;
-    padding: 1rem 1.25rem;
+    margin: 0 0 0.65rem;
+    padding: 0.85rem 1.1rem;
     background: rgba(167, 139, 250, 0.08);
     border: 1px solid rgba(167, 139, 250, 0.3);
     border-radius: 0.75rem;
@@ -469,7 +469,7 @@ import Footer from '../components/Footer.astro';
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--color-text-dim);
-    margin: 0 0 0.85rem;
+    margin: 0.25rem 0 0.55rem;
     font-family: ui-monospace, monospace;
   }
   .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; display: inline-block; flex-shrink: 0; }
@@ -483,7 +483,8 @@ import Footer from '../components/Footer.astro';
      its own bordered "data row" with a clear label-on-top, value-below
      layout. Buttons are in their own footer bar with distinct colours.
      ═══════════════════════════════════════════════════════════════════ */
-  .result-area { margin-top: 1.5rem; }
+  .result-area { margin-top: 1rem; }
+  .result-area:empty { margin-top: 0; }
 
   /* The outermost card — solid coloured tint, thick border, no padding
      (each inner section sets its own). */
