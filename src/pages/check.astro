@@ -313,33 +313,50 @@ import Footer from '../components/Footer.astro';
   .result-card.error      .result-headline { color: #fecaca; background: rgba(239, 68, 68, 0.22); border-bottom-color: rgba(248, 113, 113, 0.55); }
   .result-headline-icon { font-size: 1.5rem; line-height: 1; }
 
-  /* Content rows */
+  /* Content rows — single-line layout: label-on-left, value-on-right,
+     always on the same line at every viewport width. */
   .result-field {
-    display: grid; grid-template-columns: 9rem 1fr; gap: 0.5rem 1rem;
-    padding: 0.45rem 0;
+    display: flex;
+    flex-wrap: nowrap;
     align-items: baseline;
+    gap: 0.85rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
-  @media (max-width: 560px) {
-    .result-field { grid-template-columns: 1fr; gap: 0.15rem; padding: 0.35rem 0; }
-  }
+  .result-field:last-of-type { border-bottom: 0; }
   .result-field .k {
-    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-text-dim);
+    flex: 0 0 9.5rem;             /* fixed label column */
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);   /* VIOLET — clearly different from value */
     font-family: ui-monospace, monospace;
-    font-weight: 600;
+    font-weight: 700;
   }
   .result-field .v {
+    flex: 1 1 auto;
+    min-width: 0;
     color: var(--color-text);
-    word-break: break-word; overflow-wrap: anywhere;
     font-size: 0.95rem;
+    font-weight: 500;
     line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
   .result-field .v strong { font-weight: 700; }
   .result-field code {
     color: var(--color-accent-bright);
     font-size: 0.85em;
-    background: rgba(255,255,255,0.06);
-    padding: 0.05em 0.4em; border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-family: ui-monospace, monospace;
+  }
+  /* Mobile (under 480px) — stack so the value can wrap freely, but keep
+     the visual distinction (label still violet, value still bright). */
+  @media (max-width: 480px) {
+    .result-field { flex-direction: column; gap: 0.15rem; padding: 0.4rem 0; }
+    .result-field .k { flex: 0 0 auto; }
   }
 
   /* All links inside the result card render as clear underlined links */
@@ -353,23 +370,69 @@ import Footer from '../components/Footer.astro';
   .result-card a:hover { color: var(--color-accent); }
 
   .result-actions {
-    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    display: flex; flex-wrap: wrap; gap: 0.65rem;
     margin-top: 1.25rem; padding-top: 1.25rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
   .action-btn {
-    padding: 0.55rem 1rem;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1.1rem;
     border-radius: 0.5rem;
-    background: transparent;
-    border: 1px solid var(--color-border-bright);
-    color: var(--color-text);
-    font: inherit; font-size: 0.8rem; font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    border: 1.5px solid;
+    font: inherit; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer !important;      /* explicit so anchors styled as buttons also show pointer */
+    text-decoration: none;
+    transition: all 0.18s ease;
+    line-height: 1;
   }
-  .action-btn:hover { border-color: var(--color-accent); background: rgba(167, 139, 250, 0.06); }
-  .action-btn.danger { color: #fca5a5; border-color: rgba(248, 113, 113, 0.4); }
-  .action-btn.danger:hover { border-color: #f87171; background: rgba(239, 68, 68, 0.08); }
+  .action-btn:hover { transform: translateY(-1px); }
+
+  /* Primary action — solid violet ("copy") */
+  .action-btn.btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #0a0a0f;
+  }
+  .action-btn.btn-primary:hover {
+    background: var(--color-accent-bright);
+    border-color: var(--color-accent-bright);
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.12);
+  }
+
+  /* Secondary action — outlined violet ("share") */
+  .action-btn.btn-secondary {
+    background: rgba(167, 139, 250, 0.08);
+    border-color: rgba(167, 139, 250, 0.6);
+    color: var(--color-accent-bright);
+  }
+  .action-btn.btn-secondary:hover {
+    background: rgba(167, 139, 250, 0.18);
+    border-color: var(--color-accent);
+  }
+
+  /* Tertiary / info action — outlined neutral ("learn more / how it works") */
+  .action-btn.btn-tertiary {
+    background: transparent;
+    border-color: var(--color-border-bright);
+    color: var(--color-text);
+  }
+  .action-btn.btn-tertiary:hover {
+    border-color: var(--color-accent);
+    background: rgba(167, 139, 250, 0.06);
+  }
+
+  /* Danger action — red ("report") */
+  .action-btn.btn-danger {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(248, 113, 113, 0.6);
+    color: #fca5a5;
+  }
+  .action-btn.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.22);
+    border-color: #f87171;
+    color: #fecaca;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  }
 
   .footer-note {
     margin-top: 1.25rem; padding-top: 1rem;
@@ -620,10 +683,10 @@ import Footer from '../components/Footer.astro';
       field('Last verified', formatTs(Math.floor(Date.now() / 1000)) + ' (just now)') +
       '<div class="result-actions">' +
         (shareUrl
-          ? '<button type="button" class="action-btn" data-action="copy-url" data-url="' + escape(shareUrl) + '">Copy verification URL</button>' +
-            '<button type="button" class="action-btn" data-action="share" data-url="' + escape(shareUrl) + '">Share this verification</button>'
-          : '<button type="button" class="action-btn" data-action="share-this">Share this verification</button>') +
-        '<button type="button" class="action-btn danger" data-action="report">Report concern</button>' +
+          ? '<button type="button" class="action-btn btn-primary" data-action="copy-url" data-url="' + escape(shareUrl) + '" title="Copy verification URL"><span aria-hidden="true">&#128203;</span> Copy verification URL</button>' +
+            '<button type="button" class="action-btn btn-secondary" data-action="share" data-url="' + escape(shareUrl) + '" title="Share this verification"><span aria-hidden="true">&#8599;</span> Share this verification</button>'
+          : '<button type="button" class="action-btn btn-secondary" data-action="share-this"><span aria-hidden="true">&#8599;</span> Share this verification</button>') +
+        '<button type="button" class="action-btn btn-danger" data-action="report" title="Report a concern about this agent"><span aria-hidden="true">&#9873;</span> Report concern</button>' +
       '</div>' +
       '<p class="footer-note">' +
         'Verified means the agent operator has cryptographically proven its identity to AgentPKI. ' +
@@ -649,9 +712,9 @@ import Footer from '../components/Footer.astro';
       field('What to do', 'Do not share information with this agent. If you\'ve already interacted, review your account activity.') +
       '<div class="result-actions">' +
         (shareUrl
-          ? '<button type="button" class="action-btn" data-action="copy-url" data-url="' + escape(shareUrl) + '">Share this warning</button>'
-          : '<button type="button" class="action-btn" data-action="share-this">Share this warning</button>') +
-        '<button type="button" class="action-btn danger" data-action="report">Report incident</button>' +
+          ? '<button type="button" class="action-btn btn-primary" data-action="copy-url" data-url="' + escape(shareUrl) + '"><span aria-hidden="true">&#128203;</span> Share this warning</button>'
+          : '<button type="button" class="action-btn btn-secondary" data-action="share-this"><span aria-hidden="true">&#8599;</span> Share this warning</button>') +
+        '<button type="button" class="action-btn btn-danger" data-action="report"><span aria-hidden="true">&#9873;</span> Report incident</button>' +
       '</div>' +
       '<p class="footer-note">' +
         'Revocation means a previously verified identity has been canceled — usually because of fraud, abuse, ' +
@@ -685,8 +748,8 @@ import Footer from '../components/Footer.astro';
         '<div id="heuristicRows"><div class="heuristic-row"><span class="status-pill status-inc">running</span><span class="h-name">checking…</span></div></div>' +
       '</div>' +
       '<div class="result-actions">' +
-        '<button type="button" class="action-btn danger" data-action="report">Report this as a scam</button>' +
-        '<a href="/how-verification-works" class="action-btn" style="text-decoration:none;">How verification works</a>' +
+        '<button type="button" class="action-btn btn-danger" data-action="report"><span aria-hidden="true">&#9873;</span> Report this as a scam</button>' +
+        '<a href="/how-verification-works" class="action-btn btn-tertiary"><span aria-hidden="true">&#9432;</span> How verification works</a>' +
       '</div>' +
       '</div>'
     );
@@ -854,7 +917,8 @@ import Footer from '../components/Footer.astro';
       try {
         const token = await mintExample(kind);
         $('checkInput').value = token;
-        await runVerify(token);
+        $('checkInput').focus();
+        // User clicks Verify themselves — do NOT auto-run.
       } finally {
         el.disabled = false;
       }
