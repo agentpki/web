@@ -63,6 +63,18 @@ import ContactModal from '../components/ContactModal.astro';
       <p class="mt-6 text-xs text-[color:var(--color-text-dim)] tracking-wide">
         Apache 2.0 &middot; open spec &middot; interop with MCP, A2A, Kite, SPIFFE, OWASP ANS
       </p>
+
+      <!-- Honest day-1 disclosure: AgentPKI is a brand-new open standard.
+           Set expectations before users install the Chrome extension and
+           wonder why every site isn't green. -->
+      <div class="mt-10 max-w-3xl mx-auto px-5 py-4 rounded-lg border border-[color:var(--color-border)]/60 bg-[color:var(--color-bg-elevated)]/40 text-left">
+        <p class="text-xs font-mono tracking-widest uppercase text-amber-400/90 mb-2">
+          Where adoption stands today
+        </p>
+        <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+          AgentPKI is a brand-new open standard. As of <strong class="text-[color:var(--color-text)]">June 2026</strong>, very few production sites publish passports yet. If you install the Chrome extension you'll see mostly <span class="text-zinc-400">gray</span> badges (no agent detected) and <span class="text-amber-300">yellow</span> badges (an AI agent framework is present but unverified). <span class="text-green-300">Green</span> badges arrive as issuers adopt the spec — the <a href="/demo" class="text-[color:var(--color-accent)] hover:underline">live demo</a> shows what verified looks like end-to-end. <span class="text-zinc-500">Yellow alerts are themselves useful</span> — they tell you when an AI agent is operating on a page you didn't expect.
+        </p>
+      </div>
     </div>
   </section>
 
