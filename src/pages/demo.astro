@@ -614,8 +614,8 @@ import ContactModal from '../components/ContactModal.astro';
       background: rgba(15, 15, 18, 0.4);
       backdrop-filter: blur(4px);
       padding: 0.75rem;
-      /* Smaller, centered — doesn't need to dominate the page */
-      max-width: 720px;
+      /* Constrained but readable — middle ground between full-width and tiny */
+      max-width: 960px;
       margin: 0 auto;
     }
     @media (min-width: 720px) {
@@ -1003,13 +1003,13 @@ import ContactModal from '../components/ContactModal.astro';
             <text x="602" y="225" text-anchor="middle" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="600">verify</text>
             <text x="602" y="262" text-anchor="middle" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">RFC 9421 Mode B</text>
 
-            <!-- Verdict callout -->
-            <g transform="translate(675, 320)">
-              <rect id="tflowVerdictBox" width="155" height="80" rx="10" fill="rgba(107,107,120,0.08)" stroke="rgba(107,107,120,0.3)" stroke-width="1.2"/>
+            <!-- Verdict callout (wider than issuer-key so long reason strings fit) -->
+            <g transform="translate(660, 320)">
+              <rect id="tflowVerdictBox" width="215" height="80" rx="10" fill="rgba(107,107,120,0.08)" stroke="rgba(107,107,120,0.3)" stroke-width="1.2"/>
               <circle id="tflowVerdictDot" cx="20" cy="20" r="6" fill="rgba(107,107,120,0.25)" stroke="rgba(107,107,120,0.6)" stroke-width="1.2"/>
               <path id="tflowVerdictMark" d="M 17 20 l 2.5 2.5 L 24 17" fill="none" stroke="rgba(134,239,172,0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <text id="tflowVerdictText" x="34" y="24" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="11" font-weight="700">verdict: pending</text>
-              <line x1="12" y1="38" x2="143" y2="38" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+              <line x1="12" y1="38" x2="203" y2="38" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
               <text id="tflowVerdictMeta1" x="12" y="54" fill="#9c9cab" font-family="ui-monospace,monospace" font-size="9">hover a scenario to preview</text>
               <text id="tflowVerdictMeta2" x="12" y="68" fill="#6b6b78" font-family="ui-monospace,monospace" font-size="9">&#160;</text>
             </g>
