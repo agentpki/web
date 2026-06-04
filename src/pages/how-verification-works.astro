@@ -1,0 +1,210 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <main class="max-w-3xl mx-auto px-6 py-20 prose prose-invert text-[color:var(--color-text)]">
+
+    <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">How AgentPKI verification works</h1>
+    <p class="text-sm text-[color:var(--color-text-muted)]">A plain-English guide for anyone using <a href="/check">agentpki.dev/check</a> or the AgentPKI Chrome extension.</p>
+
+    <section>
+      <h2>1. The problem</h2>
+      <p>
+        AI agents are increasingly browsing, calling, and acting on
+        people's behalf — booking appointments, answering customer
+        questions, scraping prices, making payments. There's been no
+        standard way to verify which agents are real, who runs them,
+        and what they're allowed to do.
+      </p>
+      <p>
+        Anyone can spin up a bot and label it "Anthropic's customer-support
+        agent" or "Stripe's billing agent." Without cryptography, you have
+        no way to tell.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. The analogy</h2>
+      <p>
+        AgentPKI works like <strong>HTTPS for the web</strong>. Websites
+        only show a padlock if they obtained an SSL certificate.
+        AgentPKI only shows a verified badge if the agent operator
+        registered a cryptographic <em>passport</em> with an issuer that
+        AgentPKI recognizes.
+      </p>
+      <p>
+        Just like HTTPS doesn't say "this website is good" — it just
+        says "this website is who it claims to be and the connection is
+        secure" — AgentPKI's verification means the agent's identity is
+        real and traceable. Not that you should trust the agent.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Three result states</h2>
+      <p>When you check an agent at <a href="/check">agentpki.dev/check</a>, you get one of three answers:</p>
+
+      <div class="result-mini result-green">
+        <h3>✅ Verified</h3>
+        <p>
+          The agent has registered with AgentPKI and proven its identity
+          cryptographically. You see who issued the identity (which issuer
+          domain signed the passport), what the agent is authorized to do
+          (scopes), and how it has behaved over time (reputation, abuse
+          reports).
+        </p>
+      </div>
+
+      <div class="result-mini result-red">
+        <h3>⛔ Revoked or flagged</h3>
+        <p>
+          The agent's passport has been revoked, or community reports
+          indicate fraud. <strong>Don't trust this agent.</strong> Revocation
+          is the strongest "do not trust" signal AgentPKI provides —
+          someone (usually the issuer) explicitly canceled this identity.
+        </p>
+      </div>
+
+      <div class="result-mini result-yellow">
+        <h3>⚠ Unverified</h3>
+        <p>
+          No AgentPKI passport exists for this agent. <strong>This does
+          not necessarily mean the agent is malicious.</strong> Many
+          legitimate agents have not yet registered with AgentPKI — it's
+          a new system. But it does mean trust has not been
+          cryptographically established. Treat unverified agents the way
+          you'd treat an unknown phone caller.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Why most agents are unverified today</h2>
+      <p>
+        AgentPKI launched in June 2026 as an open standard. Adoption
+        takes time, just as the early web had almost no HTTPS sites in
+        1995 and now nearly all of them do.
+      </p>
+      <p>
+        Today, the vast majority of AI agents have not yet registered
+        with AgentPKI. So <strong>most checks return "Unverified"</strong>.
+        As adoption grows over the next several months and years, "Verified"
+        will become more common and "Unverified" rarer.
+      </p>
+      <p>
+        In the meantime, the "Unverified" answer is still useful —
+        it tells you the agent has not proven who it is, so you should
+        apply normal caution.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. What "Verified" guarantees and doesn't guarantee</h2>
+      <p>Verification proves <strong>identity is real and traceable</strong>:</p>
+      <ul>
+        <li>The agent presented a cryptographic passport.</li>
+        <li>An issuer that AgentPKI recognizes signed that passport.</li>
+        <li>The passport has not been revoked.</li>
+        <li>The signature checks out mathematically.</li>
+      </ul>
+      <p>Verification does <strong>NOT</strong> mean:</p>
+      <ul>
+        <li>The agent is endorsed or recommended by AgentPKI.</li>
+        <li>The agent is safe for any particular use.</li>
+        <li>The agent's operator has good intentions.</li>
+        <li>You should share sensitive information with it.</li>
+      </ul>
+      <p>
+        Always use your own judgment. Verification answers "is this who
+        it claims to be?" — not "should I trust it?"
+      </p>
+    </section>
+
+    <section>
+      <h2>6. What to do if you get "Unverified"</h2>
+      <ul>
+        <li><strong>Don't share sensitive information</strong> — passwords, account numbers, social security numbers, payment details.</li>
+        <li><strong>Verify through official channels.</strong> If the agent claims to be from a company, contact that company directly through its website or known phone number.</li>
+        <li><strong>Be skeptical of urgency or payment requests.</strong> Common scam tactic: artificial deadlines, "limited time" offers, demands for immediate payment.</li>
+        <li><strong>If you believe the agent is a scam</strong>, report it from the <a href="/check">/check</a> page. Your reports help future users by flagging the identifier in our community database.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. How agents get verified</h2>
+      <p>
+        Any operator running an AI agent can register at
+        <a href="https://dashboard.agentpki.dev">dashboard.agentpki.dev</a>.
+        The flow is:
+      </p>
+      <ol>
+        <li>Sign up with email (magic link, no password).</li>
+        <li>Verify a domain you control (DNS TXT record).</li>
+        <li>Mint an Ed25519 keypair in browser-resident Web Crypto.</li>
+        <li>Publish your issuer key at <code>your-domain/.well-known/agentpki-issuer.json</code>.</li>
+        <li>Use the <code>@agentpki/sdk</code> npm package to mint short-lived passports for your agents.</li>
+      </ol>
+      <p>
+        Once your domain serves the issuer file and your passports are
+        signed, every <code>/v1/verify</code> call against your agent's
+        passport returns <em>Verified</em>.
+      </p>
+    </section>
+
+    <section>
+      <h2>8. The open standard</h2>
+      <p>
+        AgentPKI is <strong>open source</strong>, MIT/Apache 2.0 licensed,
+        and built on a public protocol. The spec is at
+        <a href="/spec/v0.1">agentpki.dev/spec/v0.1</a>. Anyone can implement
+        verification themselves; the verifier service at
+        <code>verify.agentpki.dev</code> is just one implementation — a
+        reference. You can run your own verifier from the source at
+        <a href="https://github.com/agentpki/verifier">github.com/agentpki/verifier</a>.
+      </p>
+      <p>
+        There is no vendor lock-in, no per-call fee, no proprietary protocol.
+        AgentPKI is designed to be the way the internet identifies AI agents
+        the way HTTPS is the way the internet secures connections.
+      </p>
+    </section>
+
+    <hr />
+
+    <p class="text-sm text-[color:var(--color-text-dim)]">
+      Want to test the system now? Head to <a href="/check">agentpki.dev/check</a>.
+      Want to integrate AgentPKI into your own agent or bot-defense product?
+      Read the <a href="/spec/v0.1">v0.1 spec</a> or email <a href="mailto:hello@agentpki.dev">hello@agentpki.dev</a>.
+    </p>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  main h2 { margin-top: 2.5rem; font-size: 1.35rem; font-weight: 600; }
+  main h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 600; }
+  main h2 + p, main h2 + ul, main h2 + ol { margin-top: 0.6rem; }
+  main ul, main ol { margin-left: 1.25rem; }
+  main ul { list-style: disc; }
+  main ol { list-style: decimal; }
+  main li { margin-top: 0.35rem; line-height: 1.55; }
+  main p { line-height: 1.65; }
+  main code { background: rgba(255,255,255,0.06); padding: 0 0.3em; border-radius: 3px; font-size: 0.9em; color: #c4b5fd; }
+
+  .result-mini { margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 0.75rem; border: 1px solid; }
+  .result-mini p { margin: 0; font-size: 0.95rem; }
+  .result-green { background: rgba(34, 197, 94, 0.06); border-color: rgba(74, 222, 128, 0.35); }
+  .result-green h3 { color: #86efac; }
+  .result-red { background: rgba(239, 68, 68, 0.06); border-color: rgba(248, 113, 113, 0.35); }
+  .result-red h3 { color: #fca5a5; }
+  .result-yellow { background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.35); }
+  .result-yellow h3 { color: #fcd34d; }
+</style>

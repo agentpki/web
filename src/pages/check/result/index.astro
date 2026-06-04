@@ -1,0 +1,174 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+
+// One static page serves every /check/result/<id> permalink, via the
+// _redirects rule `/check/result/*  /check/result/  200`. The JS at the
+// bottom parses the last URL segment as the verification ID and fetches
+// the snapshot from verify.agentpki.dev/v1/verification/<id>.
+---
+<Base>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <main class="max-w-3xl mx-auto px-6 pt-16 pb-24">
+
+    <div class="back-link">
+      <a href="/check" class="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] text-sm">&larr; Check another</a>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Shared verification result</h1>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+      This is a snapshot of a verification that was run earlier. Results expire 24 hours after they were stored.
+    </p>
+
+    <div id="resultArea" aria-live="polite">
+      <div class="skeleton">
+        <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
+      </div>
+    </div>
+
+    <p class="text-center mt-12 text-xs text-[color:var(--color-text-dim)]">
+      Want to verify something yourself? <a href="/check" class="underline">agentpki.dev/check</a>
+    </p>
+
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .back-link { margin-bottom: 0.75rem; }
+
+  .result-card {
+    border-radius: 0.85rem; border: 1.5px solid; padding: 1.5rem 1.5rem 1.25rem;
+    background: rgba(15, 15, 18, 0.6); backdrop-filter: blur(4px);
+  }
+  .result-card.verified { border-color: rgba(74, 222, 128, 0.55); background: rgba(34, 197, 94, 0.05); }
+  .result-card.revoked  { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.05); }
+  .result-card.unverified { border-color: rgba(251, 191, 36, 0.55); background: rgba(251, 191, 36, 0.04); }
+  .result-card.error     { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.04); }
+
+  .result-headline {
+    font-family: ui-monospace, monospace;
+    font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin: 0 0 1rem;
+  }
+  .result-card.verified .result-headline { color: #86efac; }
+  .result-card.revoked  .result-headline { color: #fca5a5; }
+  .result-card.unverified .result-headline { color: #fcd34d; }
+  .result-card.error    .result-headline { color: #fca5a5; }
+
+  .result-field { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.5rem 1rem; padding: 0.4rem 0; align-items: baseline; }
+  @media (max-width: 560px) { .result-field { grid-template-columns: 1fr; gap: 0.1rem; } }
+  .result-field .k { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-dim); font-family: ui-monospace, monospace; }
+  .result-field .v { color: var(--color-text); word-break: break-word; overflow-wrap: anywhere; font-size: 0.95rem; }
+  .result-field code { color: var(--color-accent-bright); font-size: 0.85em; background: rgba(255,255,255,0.04); padding: 0.05em 0.35em; border-radius: 3px; }
+
+  .footer-note { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.78rem; color: var(--color-text-dim); line-height: 1.55; }
+  .footer-note a { color: var(--color-accent-bright); }
+
+  .stored-at { margin-top: 1.5rem; font-size: 0.7rem; color: var(--color-text-dim); text-align: center; }
+
+  .skeleton { background: rgba(15,15,18,0.6); border-radius: 0.85rem; padding: 1.5rem; border: 1px solid var(--color-border-bright); }
+  .skeleton .skel {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px; height: 0.85rem; margin: 0.5rem 0;
+  }
+  .skeleton .skel:nth-child(1) { width: 35%; height: 1.4rem; }
+  .skeleton .skel:nth-child(2) { width: 70%; }
+  .skeleton .skel:nth-child(3) { width: 55%; }
+  .skeleton .skel:nth-child(4) { width: 65%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+</style>
+
+<script is:inline>
+(function () {
+  const VERIFIER = 'https://verify.agentpki.dev';
+  const $ = (id) => document.getElementById(id);
+
+  function escape(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+  function fmt(n) { return typeof n === 'number' ? n.toFixed(2) : String(n); }
+  function formatTs(s) { if (!s) return '—'; try { return new Date(s * 1000).toLocaleString(); } catch { return '—'; } }
+  function field(k, v) { return '<div class="result-field"><div class="k">' + escape(k) + '</div><div class="v">' + v + '</div></div>'; }
+
+  function classifyResult(result) {
+    if (!result) return 'unverified';
+    if (result.verdict === 'allow') return 'verified';
+    if (result.verdict === 'deny') {
+      const r = result.failure_reason || '';
+      if (/revok|expired|malformed|signature_invalid|sig_invalid|no_issuer_key/i.test(r)) return 'revoked';
+      return 'unverified';
+    }
+    return 'unverified';
+  }
+
+  function renderResult(snap) {
+    const r = snap.result || {};
+    const kind = classifyResult(r);
+    const p = r.passport || {};
+    let inner = '';
+    if (kind === 'verified') {
+      const scopes = Array.isArray(p.scopes) && p.scopes.length ? p.scopes.join(', ') : '(none declared)';
+      inner =
+        '<h2 class="result-headline">&#9989; Verified</h2>' +
+        field('Issuer', '<code>' + escape(p.issuer || '—') + '</code>' + (p.issuer_name ? ' · ' + escape(p.issuer_name) : '')) +
+        field('Tier', escape(String(p.tier || '—'))) +
+        field('Identity', '<code>' + escape(p.agent_id || '—') + '</code>') +
+        field('Scopes', '<code>' + escape(scopes) + '</code>') +
+        field('Reputation', 'abuse score: ' + escape(fmt(r.abuse_score || 0)) + (p.expires_at ? ' · expires ' + formatTs(p.expires_at) : '')) +
+        field('Captured', formatTs(snap.stored_at)) +
+        '<p class="footer-note">Verified means the agent operator has cryptographically proven its identity to AgentPKI. It does <strong>not</strong> mean the agent is endorsed or recommended. <a href="/how-verification-works">Learn more →</a></p>';
+    } else if (kind === 'revoked') {
+      inner =
+        '<h2 class="result-headline">&#9940; Do not trust</h2>' +
+        field('Status', '<strong style="color:#fca5a5;">REVOKED</strong>') +
+        field('Reason', '<code>' + escape(r.failure_reason || 'unknown') + '</code>' + (r.failure_detail ? ' · ' + escape(r.failure_detail) : '')) +
+        (p.issuer ? field('Issuer', '<code>' + escape(p.issuer) + '</code>') : '') +
+        (p.agent_id ? field('Identity', '<code>' + escape(p.agent_id) + '</code>') : '') +
+        field('What to do', 'Do not share information with this agent. If you\'ve already interacted, review your account activity.') +
+        field('Captured', formatTs(snap.stored_at)) +
+        '<p class="footer-note">Revocation means a previously verified identity has been canceled. <a href="/how-verification-works">Learn more →</a></p>';
+    } else {
+      inner =
+        '<h2 class="result-headline">&#9888; Unverified</h2>' +
+        '<p style="margin:0 0 1rem; color:var(--color-text);">No AgentPKI passport was found for this identifier when the check was performed.</p>' +
+        field('Input', '<code>' + escape(snap.input || '(unavailable)') + '</code>') +
+        field('Captured', formatTs(snap.stored_at)) +
+        '<p class="footer-note">Most AI agents have not yet registered with AgentPKI. <a href="/how-verification-works">Learn more →</a></p>';
+    }
+    $('resultArea').innerHTML = '<div class="result-card ' + kind + '">' + inner + '</div>' +
+      '<p class="stored-at">Stored at ' + formatTs(snap.stored_at) + ' · expires within 24 hours of that time.</p>';
+  }
+
+  function renderError(msg) {
+    $('resultArea').innerHTML = '<div class="result-card error"><h2 class="result-headline">&#10006; Not found</h2><p style="margin:0; color:var(--color-text-muted);">' + escape(msg) + '</p></div>';
+  }
+
+  async function load() {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const id = parts[parts.length - 1];
+    if (!id || id === 'result' || !/^[0-9a-f]{8,16}$/i.test(id)) {
+      renderError('No verification ID in URL. Use a link of the form /check/result/<id>.');
+      return;
+    }
+    try {
+      const res = await fetch(VERIFIER + '/v1/verification/' + encodeURIComponent(id));
+      if (res.status === 404) { renderError('This verification result has expired or never existed. Verifications are stored for 24 hours.'); return; }
+      if (!res.ok) { renderError('Server returned HTTP ' + res.status); return; }
+      const snap = await res.json();
+      renderResult(snap);
+    } catch (e) {
+      renderError("Couldn't reach verify.agentpki.dev: " + (e && e.message ? e.message : e));
+    }
+  }
+  load();
+})();
+</script>

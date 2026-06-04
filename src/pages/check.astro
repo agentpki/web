@@ -1,0 +1,946 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <main class="max-w-3xl mx-auto px-6 pt-16 pb-24">
+
+    <!-- Hero -->
+    <section class="text-center mb-10">
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-tight">
+        Is this AI agent <span class="hero-accent-text">legitimate</span>?
+      </h1>
+      <p class="mt-5 text-base sm:text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto">
+        Paste an agent ID, passport token, or URL. We'll check it against the AgentPKI network in under a second.
+      </p>
+    </section>
+
+    <!-- Banner: adoption disclosure -->
+    <div class="banner-adoption mb-6" role="note">
+      <p class="text-xs sm:text-sm">
+        AgentPKI is in early days. Most AI agents have not yet registered.
+        We expect "Unverified" to be the most common result today and become rarer over time.
+        <a href="/how-verification-works" class="underline hover:text-[color:var(--color-accent-bright)]">How does this work?</a>
+      </p>
+    </div>
+
+    <!-- Input + verify -->
+    <form id="checkForm" class="check-form" novalidate>
+      <label for="checkInput" class="sr-only">Agent identifier or passport token</label>
+      <div class="input-group">
+        <textarea
+          id="checkInput"
+          name="check-input"
+          placeholder="Paste agent ID, passport token, or URL"
+          rows="3"
+          required
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-describedby="inputHelp"
+        ></textarea>
+        <button type="submit" id="checkSubmit">
+          <span class="btn-label">Verify</span>
+          <svg class="btn-spinner" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="40 60"/>
+          </svg>
+        </button>
+      </div>
+      <p id="inputHelp" class="text-xs text-[color:var(--color-text-dim)] mt-2">
+        Examples: <code>v4.public.eyJpc3M…</code> (passport token) · <code>agent:anthropic/research-bot-v3</code> · <code>example.com</code>
+      </p>
+    </form>
+
+    <!-- Example links -->
+    <div class="example-row" role="group" aria-label="Example checks">
+      <button type="button" class="example-link" data-example="verified">
+        <span class="dot dot-green"></span>
+        Try a verified agent
+      </button>
+      <button type="button" class="example-link" data-example="unverified">
+        <span class="dot dot-yellow"></span>
+        Try an unverified agent
+      </button>
+      <button type="button" class="example-link" data-example="revoked">
+        <span class="dot dot-red"></span>
+        Try a revoked agent
+      </button>
+    </div>
+
+    <!-- Result container -->
+    <div id="resultArea" class="result-area" aria-live="polite"></div>
+
+    <!-- Report modal (hidden until invoked) -->
+    <div id="reportModal" class="report-modal" hidden role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+      <div class="report-modal-backdrop" data-close></div>
+      <div class="report-modal-content">
+        <header class="report-modal-head">
+          <h2 id="reportModalTitle">Report a scam or abuse</h2>
+          <button type="button" class="report-modal-close" data-close aria-label="Close">&#10005;</button>
+        </header>
+        <form id="reportForm">
+          <div class="field">
+            <label for="reportContext">What happened? <span class="text-[color:var(--color-text-dim)]">(10–1000 chars)</span></label>
+            <textarea id="reportContext" rows="4" minlength="10" maxlength="1000" required placeholder="e.g. The agent claimed to be Stripe billing support and asked for my credit card number to 'verify identity'."></textarea>
+            <div class="char-count"><span id="reportCharCount">0</span>/1000</div>
+          </div>
+
+          <div class="field">
+            <label for="reportCategory">Category</label>
+            <select id="reportCategory" required>
+              <option value="impersonation">Impersonation — pretending to be a known brand</option>
+              <option value="fraud" selected>Fraud / phishing / scam</option>
+              <option value="harm">Harmful or unsafe behavior</option>
+              <option value="scope-violation">Acting outside its declared scopes</option>
+              <option value="rate-abuse">Rate abuse / scraping</option>
+              <option value="spam">Spam</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="reportSeverity">Severity</label>
+            <select id="reportSeverity" required>
+              <option value="low">Low — annoyance</option>
+              <option value="medium" selected>Medium — meaningful harm</option>
+              <option value="high">High — material damage</option>
+              <option value="critical">Critical — fraud, safety, large-scale</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="checkbox-row">
+              <input type="checkbox" id="reportShotConsent" />
+              <span>
+                I want to attach a screenshot as evidence.
+                <span class="text-[color:var(--color-text-dim)] text-xs block mt-1">
+                  Screenshots may contain personal info. <strong>Only attach if the screenshot
+                  contains no passwords, account numbers, or other private data.</strong>
+                  By checking this you confirm you've reviewed the image.
+                </span>
+              </span>
+            </label>
+            <div id="shotPicker" class="shot-picker" hidden>
+              <input type="file" id="reportShot" accept="image/png,image/jpeg,image/webp" />
+              <div id="shotPreviewWrap" class="shot-preview-wrap" hidden>
+                <img id="shotPreview" alt="Screenshot preview" />
+                <button type="button" id="shotClear">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field privacy-note">
+            Your report is sent with an anonymous UUID generated once per browser, never tied to your identity.
+            No email, no IP retention. <a href="/privacy">Privacy policy</a>.
+          </div>
+
+          <div class="report-actions">
+            <button type="button" class="btn-ghost" data-close>Cancel</button>
+            <button type="submit" class="btn-danger" id="reportSubmit">Submit report</button>
+          </div>
+        </form>
+
+        <div id="reportResult" class="report-result" hidden></div>
+      </div>
+    </div>
+
+    <p class="text-center mt-12 text-xs text-[color:var(--color-text-dim)]">
+      Want to integrate verification into your own app? Read the <a href="/spec/v0.1" class="underline">v0.1 spec</a> or grab the <a href="https://github.com/agentpki/extension" class="underline">Chrome extension</a>.
+    </p>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  :root { --bg-card: rgba(15, 15, 18, 0.6); }
+
+  .hero-accent-text {
+    background: linear-gradient(135deg, var(--color-accent-bright), var(--color-accent));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  .banner-adoption {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0.6rem;
+    padding: 0.85rem 1rem;
+    color: rgba(253, 224, 167, 0.95);
+  }
+  .banner-adoption a { color: #fcd34d; }
+
+  /* Input */
+  .check-form { margin-bottom: 0.875rem; }
+  .input-group {
+    display: grid; grid-template-columns: 1fr auto; gap: 0.65rem;
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .input-group { grid-template-columns: 1fr; }
+  }
+  .input-group textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.6rem;
+    border: 1.5px solid var(--color-border-bright);
+    background: var(--bg-card);
+    color: var(--color-text);
+    font: inherit; font-size: 1rem;
+    font-family: ui-monospace, monospace;
+    resize: vertical;
+    min-height: 78px;
+    transition: border-color 0.2s;
+  }
+  .input-group textarea:focus { outline: none; border-color: var(--color-accent); }
+  .input-group textarea::placeholder { color: var(--color-text-dim); }
+
+  .input-group button {
+    padding: 0 1.5rem;
+    border-radius: 0.6rem;
+    background: var(--color-accent);
+    color: black;
+    border: 0;
+    font: inherit; font-weight: 600;
+    cursor: pointer;
+    min-height: 60px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    transition: background 0.2s;
+  }
+  .input-group button:hover:not(:disabled) { background: var(--color-accent-bright); }
+  .input-group button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-spinner { display: none; animation: spin 0.9s linear infinite; }
+  .input-group button.loading .btn-spinner { display: inline-block; }
+  .input-group button.loading .btn-label { opacity: 0.7; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Example links */
+  .example-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1rem 0 2rem;
+  }
+  .example-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border-bright);
+    background: var(--bg-card);
+    color: var(--color-text-muted);
+    font: inherit; font-size: 0.8rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .example-link:hover { color: var(--color-text); border-color: var(--color-accent); }
+  .dot { width: 0.45rem; height: 0.45rem; border-radius: 50%; display: inline-block; }
+  .dot-green { background: #4ade80; }
+  .dot-yellow { background: #fbbf24; }
+  .dot-red { background: #f87171; }
+
+  /* Result card */
+  .result-area { margin-top: 1.5rem; }
+  .result-card {
+    border-radius: 0.85rem;
+    border: 1.5px solid;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--bg-card);
+    backdrop-filter: blur(4px);
+  }
+  .result-card.verified { border-color: rgba(74, 222, 128, 0.55); background: rgba(34, 197, 94, 0.05); }
+  .result-card.revoked  { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.05); }
+  .result-card.unverified { border-color: rgba(251, 191, 36, 0.55); background: rgba(251, 191, 36, 0.04); }
+  .result-card.error     { border-color: rgba(248, 113, 113, 0.55); background: rgba(239, 68, 68, 0.04); }
+
+  .result-headline {
+    font-family: ui-monospace, monospace;
+    font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 1rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .result-card.verified .result-headline { color: #86efac; }
+  .result-card.revoked .result-headline { color: #fca5a5; }
+  .result-card.unverified .result-headline { color: #fcd34d; }
+  .result-card.error .result-headline { color: #fca5a5; }
+
+  .result-field {
+    display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.5rem 1rem;
+    padding: 0.4rem 0;
+    align-items: baseline;
+  }
+  @media (max-width: 560px) {
+    .result-field { grid-template-columns: 1fr; gap: 0.1rem; }
+  }
+  .result-field .k {
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-text-dim);
+    font-family: ui-monospace, monospace;
+  }
+  .result-field .v {
+    color: var(--color-text);
+    word-break: break-word; overflow-wrap: anywhere;
+    font-size: 0.95rem;
+  }
+  .result-field code {
+    color: var(--color-accent-bright);
+    font-size: 0.85em;
+    background: rgba(255,255,255,0.04);
+    padding: 0.05em 0.35em; border-radius: 3px;
+  }
+
+  .result-actions {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-top: 1.25rem; padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .action-btn {
+    padding: 0.55rem 1rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-text);
+    font: inherit; font-size: 0.8rem; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .action-btn:hover { border-color: var(--color-accent); background: rgba(167, 139, 250, 0.06); }
+  .action-btn.danger { color: #fca5a5; border-color: rgba(248, 113, 113, 0.4); }
+  .action-btn.danger:hover { border-color: #f87171; background: rgba(239, 68, 68, 0.08); }
+
+  .footer-note {
+    margin-top: 1.25rem; padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.78rem; color: var(--color-text-dim); line-height: 1.55;
+  }
+  .footer-note a { color: var(--color-accent-bright); }
+
+  /* Heuristic checks block */
+  .heuristic-block {
+    margin-top: 1.25rem; padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .heuristic-block h4 {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-text-dim); margin: 0 0 0.65rem;
+    font-family: ui-monospace, monospace;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .heuristic-block .signal-tag {
+    display: inline-block; padding: 0.1rem 0.4rem; border-radius: 3px;
+    background: rgba(167, 139, 250, 0.18); color: var(--color-accent-bright);
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em;
+  }
+  .heuristic-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem;
+    align-items: baseline; padding: 0.45rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+  }
+  .heuristic-row:last-child { border-bottom: 0; }
+  .heuristic-row .status-pill {
+    font-family: ui-monospace, monospace; font-size: 0.65rem; font-weight: 700;
+    padding: 0.1rem 0.45rem; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .heuristic-row .status-clean { background: rgba(74, 222, 128, 0.15); color: #86efac; }
+  .heuristic-row .status-flagged { background: rgba(248, 113, 113, 0.15); color: #fca5a5; }
+  .heuristic-row .status-na { background: rgba(107, 107, 120, 0.15); color: var(--color-text-muted); }
+  .heuristic-row .status-inc { background: rgba(251, 191, 36, 0.15); color: #fcd34d; }
+  .heuristic-row .h-name { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--color-text-muted); }
+  .heuristic-row .h-detail { color: var(--color-text-dim); font-size: 0.78rem; grid-column: 1 / -1; padding-left: 0; }
+
+  /* Skeleton */
+  .skeleton {
+    background: var(--bg-card); border-radius: 0.85rem; padding: 1.5rem;
+    border: 1px solid var(--color-border-bright);
+  }
+  .skeleton .skel {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+    height: 0.85rem;
+    margin: 0.5rem 0;
+  }
+  .skeleton .skel:nth-child(1) { width: 35%; height: 1.4rem; }
+  .skeleton .skel:nth-child(2) { width: 70%; }
+  .skeleton .skel:nth-child(3) { width: 55%; }
+  .skeleton .skel:nth-child(4) { width: 65%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  /* Report modal */
+  .report-modal {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .report-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(8, 8, 11, 0.85);
+    backdrop-filter: blur(4px);
+  }
+  .report-modal-content {
+    position: relative;
+    width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+    background: #0f0f12;
+    border: 1px solid var(--color-border-bright);
+    border-radius: 0.85rem;
+    padding: 1.5rem;
+  }
+  .report-modal-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .report-modal-head h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+  .report-modal-close {
+    background: transparent; border: 0; color: var(--color-text-muted);
+    font-size: 1.1rem; cursor: pointer; padding: 0.25rem 0.5rem; line-height: 1;
+  }
+  .report-modal-close:hover { color: var(--color-text); }
+
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-dim); margin-bottom: 0.35rem; font-family: ui-monospace, monospace; }
+  .field textarea, .field select, .field input[type=text] {
+    width: 100%;
+    background: #0a0a0f;
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-text);
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.4rem;
+    font: inherit; font-size: 0.9rem;
+  }
+  .field textarea { resize: vertical; min-height: 86px; }
+  .field textarea:focus, .field select:focus, .field input:focus { outline: none; border-color: var(--color-accent); }
+  .char-count { font-size: 0.7rem; color: var(--color-text-dim); text-align: right; margin-top: 0.2rem; }
+
+  .checkbox-row {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    text-transform: none; letter-spacing: 0; font-family: inherit;
+    color: var(--color-text); font-size: 0.85rem; line-height: 1.4;
+    cursor: pointer;
+  }
+  .checkbox-row input { margin-top: 0.18rem; flex-shrink: 0; }
+  .shot-picker { margin-top: 0.6rem; padding-left: 1.4rem; }
+  .shot-picker input[type=file] { font-size: 0.8rem; color: var(--color-text-muted); }
+  .shot-preview-wrap { margin-top: 0.6rem; display: flex; gap: 0.6rem; align-items: flex-start; }
+  .shot-preview-wrap img { max-width: 200px; max-height: 140px; border-radius: 4px; border: 1px solid var(--color-border-bright); }
+  .shot-preview-wrap button {
+    background: transparent; border: 1px solid var(--color-border-bright);
+    color: var(--color-text-muted); padding: 0.35rem 0.6rem; border-radius: 4px;
+    font: inherit; font-size: 0.75rem; cursor: pointer;
+  }
+
+  .privacy-note {
+    font-size: 0.7rem; color: var(--color-text-dim);
+    line-height: 1.45; text-transform: none; letter-spacing: 0; font-family: inherit;
+  }
+  .privacy-note a { color: var(--color-accent-bright); }
+
+  .report-actions {
+    display: flex; gap: 0.6rem; justify-content: flex-end;
+    padding-top: 1rem; border-top: 1px solid var(--color-border);
+  }
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--color-border-bright);
+    color: var(--color-text); padding: 0.55rem 1rem; border-radius: 0.45rem;
+    font: inherit; font-size: 0.85rem; cursor: pointer;
+  }
+  .btn-ghost:hover { border-color: var(--color-accent); }
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(248, 113, 113, 0.55);
+    color: #fca5a5; padding: 0.55rem 1rem; border-radius: 0.45rem;
+    font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  }
+  .btn-danger:hover { background: rgba(239, 68, 68, 0.28); }
+  .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .report-result {
+    text-align: center; padding: 2rem 1rem;
+  }
+  .report-result.success { color: #86efac; }
+  .report-result.error { color: #fca5a5; }
+  .report-result code { background: rgba(255,255,255,0.06); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.85em; }
+</style>
+
+<script is:inline>
+(function () {
+  const VERIFIER = 'https://verify.agentpki.dev';
+  const DEMO_ISSUER = 'https://demo.agentpki.dev';
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => typeof n === 'number' ? n.toFixed(2) : String(n);
+
+  // ═══════════════════ INSTALLATION UUID (Phase 4) ═══════════════════
+  // A random UUID generated once per browser, used as the `reporter` on
+  // any abuse report. No PII, no cross-site identifier — just an
+  // anonymous handle so the verifier can rate-limit a single reporter
+  // and reject duplicates.
+  const INSTALL_KEY = 'agentpki:install_id';
+  function getInstallId() {
+    let v;
+    try { v = localStorage.getItem(INSTALL_KEY); } catch { v = null; }
+    if (v && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)) return v;
+    v = (crypto && crypto.randomUUID) ? crypto.randomUUID()
+        : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            const r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+          });
+    try { localStorage.setItem(INSTALL_KEY, v); } catch {}
+    return v;
+  }
+
+  // ═══════════════════ EXAMPLE LINKS (mint live tokens against demo) ═══════════════════
+  async function mintExample(kind) {
+    try {
+      if (kind === 'verified') {
+        const r = await (await fetch(DEMO_ISSUER + '/mint?sub=anthropic')).json();
+        return r.token;
+      } else if (kind === 'revoked') {
+        const r = await (await fetch(DEMO_ISSUER + '/mint?sub=anthropic&revoked=1')).json();
+        return r.token;
+      } else if (kind === 'unverified') {
+        // A plausible identifier that won't have a passport
+        return 'agent:example.com/some-unregistered-bot';
+      }
+    } catch (e) {
+      console.warn('[check] mintExample failed', e);
+    }
+    return '';
+  }
+
+  // ═══════════════════ VERIFY FLOW ═══════════════════
+  let lastResultSnapshot = null;     // for sharing
+  let lastInputUsed     = '';
+
+  function renderSkeleton() {
+    $('resultArea').innerHTML =
+      '<div class="skeleton">' +
+      '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>' +
+      '</div>';
+  }
+
+  function escape(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  function formatTs(unixSec) {
+    if (!unixSec) return '—';
+    try {
+      const d = new Date(unixSec * 1000);
+      return d.toLocaleString();
+    } catch { return '—'; }
+  }
+
+  function field(k, v) {
+    return '<div class="result-field"><div class="k">' + escape(k) + '</div><div class="v">' + v + '</div></div>';
+  }
+
+  function buildVerifiedCard(input, result, shareUrl) {
+    const p = result.passport || {};
+    const scopes = Array.isArray(p.scopes) && p.scopes.length ? p.scopes.join(', ') : '(none declared)';
+    const abuse = typeof result.abuse_score === 'number' ? fmt(result.abuse_score) : '—';
+    const tier = typeof p.tier === 'number' ? p.tier : '—';
+    const issuerLine = p.issuer_name
+      ? '<code>' + escape(p.issuer) + '</code> · ' + escape(p.issuer_name)
+      : '<code>' + escape(p.issuer || '—') + '</code>';
+    return (
+      '<div class="result-card verified">' +
+      '<h2 class="result-headline">&#9989; Verified</h2>' +
+      field('Issuer', issuerLine) +
+      field('Tier', escape(String(tier))) +
+      field('Identity', '<code>' + escape(p.agent_id || '—') + '</code>') +
+      field('Scopes', '<code>' + escape(scopes) + '</code>') +
+      field('Reputation', 'abuse score: ' + escape(String(abuse)) + ' · ' + (typeof p.expires_at === 'number' ? 'expires ' + formatTs(p.expires_at) : 'TTL unknown')) +
+      field('Last verified', formatTs(Math.floor(Date.now() / 1000)) + ' (just now)') +
+      '<div class="result-actions">' +
+        (shareUrl
+          ? '<button type="button" class="action-btn" data-action="copy-url" data-url="' + escape(shareUrl) + '">Copy verification URL</button>' +
+            '<button type="button" class="action-btn" data-action="share" data-url="' + escape(shareUrl) + '">Share this verification</button>'
+          : '<button type="button" class="action-btn" data-action="share-this">Share this verification</button>') +
+        '<button type="button" class="action-btn danger" data-action="report">Report concern</button>' +
+      '</div>' +
+      '<p class="footer-note">' +
+        'Verified means the agent operator has cryptographically proven its identity to AgentPKI. ' +
+        'It does <strong>not</strong> mean the agent is endorsed or recommended — only that its identity ' +
+        'is real and traceable. <a href="/how-verification-works">Learn more →</a>' +
+      '</p>' +
+      '</div>'
+    );
+  }
+
+  function buildRevokedCard(input, result, shareUrl) {
+    const p = result.passport || {};
+    const reason = result.failure_reason || 'unknown';
+    const detail = result.failure_detail || '';
+    return (
+      '<div class="result-card revoked">' +
+      '<h2 class="result-headline">&#9940; Do not trust</h2>' +
+      field('Status', '<strong style="color:#fca5a5;">REVOKED</strong>') +
+      field('Reason', '<code>' + escape(reason) + '</code>' + (detail ? ' · ' + escape(detail) : '')) +
+      (p.issuer ? field('Issuer', '<code>' + escape(p.issuer) + '</code>') : '') +
+      (p.agent_id ? field('Identity', '<code>' + escape(p.agent_id) + '</code>') : '') +
+      field('Abuse reports', 'see issuer\'s CRL or reputation endpoint') +
+      field('What to do', 'Do not share information with this agent. If you\'ve already interacted, review your account activity.') +
+      '<div class="result-actions">' +
+        (shareUrl
+          ? '<button type="button" class="action-btn" data-action="copy-url" data-url="' + escape(shareUrl) + '">Share this warning</button>'
+          : '<button type="button" class="action-btn" data-action="share-this">Share this warning</button>') +
+        '<button type="button" class="action-btn danger" data-action="report">Report incident</button>' +
+      '</div>' +
+      '<p class="footer-note">' +
+        'Revocation means a previously verified identity has been canceled — usually because of fraud, abuse, ' +
+        'or security compromise. This is the strongest "do not trust" signal AgentPKI provides. ' +
+        '<a href="/how-verification-works">Learn more →</a>' +
+      '</p>' +
+      '</div>'
+    );
+  }
+
+  function buildUnverifiedCard(input) {
+    return (
+      '<div class="result-card unverified">' +
+      '<h2 class="result-headline">&#9888; Unverified</h2>' +
+      '<p style="margin:0 0 1rem; color:var(--color-text);">' +
+        'We could not find an AgentPKI passport for this identifier.' +
+      '</p>' +
+      '<p style="margin:0 0 1rem; font-size:0.9rem; color:var(--color-text-muted); line-height:1.55;">' +
+        'Most AI agents have not yet registered with AgentPKI. "Unverified" means we couldn\'t find ' +
+        'a cryptographic identity for this agent — not that it\'s necessarily dangerous. But trust ' +
+        'hasn\'t been established.' +
+      '</p>' +
+      '<p style="margin:0 0 0.55rem; font-size:0.85rem; font-weight:600;">Use the same caution you\'d use with an unknown caller or unfamiliar website:</p>' +
+      '<ul style="margin:0 0 1rem 1.2rem; padding:0; font-size:0.85rem; color:var(--color-text-muted); line-height:1.6;">' +
+        '<li>Don\'t share passwords, account numbers, or SSN.</li>' +
+        '<li>Verify identity directly through the company\'s official channels.</li>' +
+        '<li>Be skeptical of urgency or payment requests.</li>' +
+      '</ul>' +
+      '<div class="heuristic-block" id="heuristicBlock">' +
+        '<h4>Heuristic checks we ran <span class="signal-tag">signal not proof</span></h4>' +
+        '<div id="heuristicRows"><div class="heuristic-row"><span class="status-pill status-inc">running</span><span class="h-name">checking…</span></div></div>' +
+      '</div>' +
+      '<div class="result-actions">' +
+        '<button type="button" class="action-btn danger" data-action="report">Report this as a scam</button>' +
+        '<a href="/how-verification-works" class="action-btn" style="text-decoration:none;">How verification works</a>' +
+      '</div>' +
+      '</div>'
+    );
+  }
+
+  function buildErrorCard(message) {
+    return (
+      '<div class="result-card error">' +
+      '<h2 class="result-headline">&#10006; Error</h2>' +
+      '<p style="margin:0; color:var(--color-text-muted);">' + escape(message) + '</p>' +
+      '</div>'
+    );
+  }
+
+  // Decide which card to render based on verifier response
+  function classifyResult(result) {
+    if (!result) return 'unverified';
+    if (result.verdict === 'allow') return 'verified';
+    if (result.verdict === 'deny') {
+      const r = result.failure_reason || '';
+      if (r === 'revoked' || r === 'revoked_key' || r === 'no_issuer_key' || /revok/i.test(r)) return 'revoked';
+      if (r === 'expired' || r === 'malformed' || r === 'signature_invalid' || r === 'sig_invalid') return 'revoked';
+      // Other denies (e.g. no_passport_found) → unverified
+      return 'unverified';
+    }
+    return 'unverified';
+  }
+
+  async function runVerify(input) {
+    lastInputUsed = input;
+    renderSkeleton();
+    const btn = $('checkSubmit');
+    btn.classList.add('loading'); btn.disabled = true;
+
+    // Decide whether the input is a token (starts with v4.public.) or an identifier
+    let verifyResult = null;
+    let verifyError  = null;
+    const looksLikeToken = /^v4\.public\.[A-Za-z0-9._-]+$/.test(input.trim());
+
+    if (looksLikeToken) {
+      try {
+        const r = await fetch(VERIFIER + '/v1/verify', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ token: input.trim() }),
+        });
+        verifyResult = await r.json();
+      } catch (e) {
+        verifyError = e && e.message ? e.message : String(e);
+      }
+    }
+
+    let cardHtml;
+    let shareUrl = null;
+    let kind;
+
+    if (verifyError) {
+      cardHtml = buildErrorCard("Couldn't reach verify.agentpki.dev: " + verifyError);
+      kind = 'error';
+    } else if (verifyResult) {
+      kind = classifyResult(verifyResult);
+      // Try to store a snapshot for sharing (best-effort; UI works either way)
+      try {
+        const storeRes = await fetch(VERIFIER + '/v1/verification/store', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ input: input, result: verifyResult, ttl_seconds: 86400 }),
+        });
+        if (storeRes.ok) {
+          const stored = await storeRes.json();
+          shareUrl = window.location.origin + '/check/result/' + stored.id;
+          lastResultSnapshot = { id: stored.id, kind: kind, url: shareUrl };
+        }
+      } catch { /* swallow */ }
+
+      if (kind === 'verified') cardHtml = buildVerifiedCard(input, verifyResult, shareUrl);
+      else if (kind === 'revoked') cardHtml = buildRevokedCard(input, verifyResult, shareUrl);
+      else cardHtml = buildUnverifiedCard(input);
+    } else {
+      // Input wasn't a recognizable token — go straight to unverified + heuristics
+      kind = 'unverified';
+      cardHtml = buildUnverifiedCard(input);
+    }
+
+    $('resultArea').innerHTML = cardHtml;
+
+    // Run heuristic checks for unverified-style results
+    if (kind === 'unverified') {
+      await runHeuristics(input);
+    }
+
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+
+  async function runHeuristics(input) {
+    const rowsHost = $('heuristicRows');
+    if (!rowsHost) return;
+    try {
+      const res = await fetch(VERIFIER + '/v1/check-heuristic', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ input: input }),
+      });
+      const body = await res.json();
+      if (!body.checks || body.checks.length === 0) {
+        rowsHost.innerHTML = '<div class="heuristic-row"><span class="status-pill status-na">none</span><span class="h-name" style="color:var(--color-text-muted);">' + escape(body.note || 'Nothing to check.') + '</span></div>';
+        return;
+      }
+      rowsHost.innerHTML = body.checks.map((c) => {
+        const stClass = c.status === 'clean' ? 'status-clean'
+                     : c.status === 'flagged' ? 'status-flagged'
+                     : c.status === 'not_available' ? 'status-na'
+                     : 'status-inc';
+        const stLabel = c.status === 'not_available' ? 'N/A' : c.status;
+        return (
+          '<div class="heuristic-row">' +
+            '<span class="status-pill ' + stClass + '">' + escape(stLabel) + '</span>' +
+            '<span class="h-name">' + escape(c.name) + '</span>' +
+            '<span class="h-name" style="font-size:0.7rem;">' + escape(c.source) + '</span>' +
+            (c.detail ? '<div class="h-detail">' + escape(c.detail) + '</div>' : '') +
+          '</div>'
+        );
+      }).join('');
+    } catch (e) {
+      rowsHost.innerHTML = '<div class="heuristic-row"><span class="status-pill status-inc">error</span><span class="h-name">Heuristic checks unavailable.</span></div>';
+    }
+  }
+
+  // ═══════════════════ ACTION BUTTONS DELEGATION ═══════════════════
+  document.addEventListener('click', async (e) => {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    const btn = target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+
+    if (action === 'copy-url' || action === 'share') {
+      const url = btn.dataset.url || '';
+      if (!url) return;
+      if (action === 'share' && navigator.share) {
+        try {
+          await navigator.share({ title: 'AgentPKI verification', url });
+        } catch {}
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        btn.textContent = '✓ Copied';
+        setTimeout(() => { btn.textContent = action === 'share' ? 'Share this verification' : 'Copy verification URL'; }, 1600);
+      } catch {}
+    } else if (action === 'share-this') {
+      // No share URL was produced (storage offline) — fall back to copying the input
+      try {
+        await navigator.clipboard.writeText(window.location.origin + '/check?q=' + encodeURIComponent(lastInputUsed));
+        btn.textContent = '✓ Copied URL with input';
+        setTimeout(() => { btn.textContent = 'Share this verification'; }, 1800);
+      } catch {}
+    } else if (action === 'report') {
+      openReportModal();
+    }
+  });
+
+  // ═══════════════════ INPUT + EXAMPLE LINKS ═══════════════════
+  document.querySelectorAll('[data-example]').forEach((el) => {
+    el.addEventListener('click', async () => {
+      const kind = el.dataset.example;
+      const token = await mintExample(kind);
+      $('checkInput').value = token;
+      $('checkInput').focus();
+    });
+  });
+
+  $('checkForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = $('checkInput').value.trim();
+    if (!v) return;
+    runVerify(v);
+  });
+
+  // Pre-fill from query string ?q= (used by Share-this fallback)
+  try {
+    const q = new URL(window.location.href).searchParams.get('q');
+    if (q) {
+      $('checkInput').value = q;
+      setTimeout(() => runVerify(q), 200);
+    }
+  } catch {}
+
+  // ═══════════════════ REPORT MODAL (Phase 4) ═══════════════════
+  const modal = $('reportModal');
+  const ctxEl = $('reportContext');
+  const charCount = $('reportCharCount');
+  const consentEl = $('reportShotConsent');
+  const picker = $('shotPicker');
+  const shotInput = $('reportShot');
+  const shotPreview = $('shotPreview');
+  const shotPreviewWrap = $('shotPreviewWrap');
+  const shotClear = $('shotClear');
+  let shotDataUrl = null;
+
+  function openReportModal() {
+    if (!modal) return;
+    modal.hidden = false;
+    setTimeout(() => ctxEl && ctxEl.focus(), 50);
+  }
+  function closeReportModal() {
+    if (!modal) return;
+    modal.hidden = true;
+    // Reset state
+    if (ctxEl) ctxEl.value = '';
+    if (charCount) charCount.textContent = '0';
+    if (consentEl) consentEl.checked = false;
+    picker.hidden = true;
+    shotPreviewWrap.hidden = true;
+    if (shotInput) shotInput.value = '';
+    shotDataUrl = null;
+    $('reportForm').hidden = false;
+    $('reportResult').hidden = true;
+  }
+
+  document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal && !modal.hidden) closeReportModal(); });
+
+  if (ctxEl && charCount) {
+    ctxEl.addEventListener('input', () => { charCount.textContent = String(ctxEl.value.length); });
+  }
+  if (consentEl) {
+    consentEl.addEventListener('change', () => {
+      picker.hidden = !consentEl.checked;
+      if (!consentEl.checked) {
+        shotInput.value = '';
+        shotPreviewWrap.hidden = true;
+        shotDataUrl = null;
+      }
+    });
+  }
+  if (shotInput) {
+    shotInput.addEventListener('change', () => {
+      const file = shotInput.files && shotInput.files[0];
+      if (!file) return;
+      if (file.size > 500 * 1024) {
+        alert('Please choose an image under 500 KB.');
+        shotInput.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        shotDataUrl = String(reader.result || '');
+        shotPreview.src = shotDataUrl;
+        shotPreviewWrap.hidden = false;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  if (shotClear) {
+    shotClear.addEventListener('click', () => {
+      shotInput.value = '';
+      shotPreviewWrap.hidden = true;
+      shotDataUrl = null;
+    });
+  }
+
+  $('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const ctx = ctxEl.value.trim();
+    if (ctx.length < 10) return;
+    const category = $('reportCategory').value;
+    const severity = $('reportSeverity').value;
+    const reporter = getInstallId();
+    const submit = $('reportSubmit');
+    submit.disabled = true; submit.textContent = 'Submitting…';
+
+    const payload = {
+      v: 1,
+      reporter: reporter,
+      reporter_kind: 'web',
+      agent_id: lastInputUsed.slice(0, 256),
+      category: category,
+      severity: severity,
+      occurred_at: Math.floor(Date.now() / 1000),
+      description: ctx + (shotDataUrl ? '\n\n[screenshot attached, ' + Math.round(shotDataUrl.length * 3 / 4 / 1024) + ' KB base64]' : ''),
+      evidence_urls: shotDataUrl ? [shotDataUrl] : undefined,
+    };
+
+    try {
+      const res = await fetch(VERIFIER + '/v1/abuse/report', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const body = await res.json();
+      $('reportForm').hidden = true;
+      const out = $('reportResult');
+      out.hidden = false;
+      if (body && body.accepted) {
+        out.className = 'report-result success';
+        out.innerHTML = '<div style="font-size:2.5rem; margin-bottom:0.5rem;">&#9989;</div>' +
+          '<h3 style="margin:0 0 0.5rem; font-size:1.05rem;">Report received</h3>' +
+          '<p style="margin:0 0 1rem; font-size:0.85rem; color:var(--color-text-muted);">Thank you. Your report has been logged anonymously.</p>' +
+          '<p style="font-size:0.7rem; color:var(--color-text-dim);">Report ID: <code>' + escape(body.report_id || 'unknown') + '</code></p>' +
+          '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
+        // Re-bind close button (it's now newly-rendered)
+        out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
+      } else {
+        out.className = 'report-result error';
+        out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Report failed</h3>' +
+          '<p style="font-size:0.85rem;">' + escape(body && body.error ? body.error : 'Unknown error') + '</p>' +
+          '<button type="button" class="btn-ghost" data-close style="margin-top:1.5rem;">Close</button>';
+        out.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeReportModal));
+      }
+    } catch (e) {
+      const out = $('reportResult');
+      out.hidden = false;
+      out.className = 'report-result error';
+      out.innerHTML = '<h3 style="margin:0 0 0.5rem;">Network error</h3><p style="font-size:0.85rem;">' + escape(e && e.message ? e.message : String(e)) + '</p>';
+    } finally {
+      submit.disabled = false; submit.textContent = 'Submit report';
+    }
+  });
+})();
+</script>

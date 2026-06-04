@@ -2,3 +2,9 @@
 # any links shared in outreach or pasted into chat still resolve.
 /why    /problem    301
 /why/   /problem    301
+
+# /check/result/<id> shared-verification permalinks. The page is a single
+# static index — the ID is parsed by JS from window.location and fetched
+# from verify.agentpki.dev/v1/verification/<id>. Cloudflare Pages serves
+# /check/result/index.html for any sub-path under this prefix.
+/check/result/*   /check/result/   200
