@@ -523,6 +523,30 @@ import Footer from '../components/Footer.astro';
     border-radius: 8px;
     padding: 0.95rem 1rem 1.05rem;
   }
+  /* Overall-verdict banner at the top of the heuristic block. Gives the
+     user ONE clear summary so they don't have to read three rows. */
+  .heuristic-overall {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid;
+    border-radius: 8px;
+    margin-bottom: 0.85rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .heuristic-overall.overall-flagged     { background: rgba(239, 68, 68, 0.18); border-color: #f87171; color: #ffe4e6; }
+  .heuristic-overall.overall-clean       { background: rgba(34, 197, 94, 0.14); border-color: #4ade80; color: #dcfce7; }
+  .heuristic-overall.overall-inconclusive{ background: rgba(251, 191, 36, 0.14); border-color: #fbbf24; color: #fef3c7; }
+  .heuristic-overall .ov-icon {
+    font-size: 1.25rem; line-height: 1; flex-shrink: 0;
+  }
+  .heuristic-overall .ov-text { flex: 1; min-width: 0; }
+  .heuristic-overall .ov-title {
+    display: block; font-weight: 800; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem;
+    font-family: ui-monospace, monospace;
+  }
+
   .heuristic-title {
     display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
     font-family: ui-monospace, monospace;
@@ -532,6 +556,12 @@ import Footer from '../components/Footer.astro';
     text-transform: uppercase;
     color: #ffffff;
     margin: 0 0 0.85rem;
+  }
+  .heuristic-detail-label {
+    font-family: ui-monospace, monospace;
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #a1a1aa; margin: 0.9rem 0 0.5rem;
   }
   .signal-tag {
     display: inline-block;
@@ -1020,11 +1050,31 @@ import Footer from '../components/Footer.astro';
         body: JSON.stringify({ input: input }),
       });
       const body = await res.json();
+      // Render the overall verdict banner at the top — gives the user ONE
+      // clear summary so they don't have to read three rows to know.
+      let overallHtml = '';
+      if (body.overall && body.overall_summary) {
+        const ovIcon = body.overall === 'flagged' ? '&#9888;'         // ⚠
+                     : body.overall === 'clean'   ? '&#10003;'        // ✓
+                                                  : '&#8505;';        // ℹ
+        const ovTitle = body.overall === 'flagged' ? 'Caution — heuristic flag'
+                      : body.overall === 'clean'   ? 'No heuristic flags'
+                      :                              'Inconclusive';
+        overallHtml =
+          '<div class="heuristic-overall overall-' + escape(body.overall) + '">' +
+            '<span class="ov-icon" aria-hidden="true">' + ovIcon + '</span>' +
+            '<div class="ov-text">' +
+              '<span class="ov-title">' + escape(ovTitle) + '</span>' +
+              escape(body.overall_summary) +
+            '</div>' +
+          '</div>';
+      }
+
       if (!body.checks || body.checks.length === 0) {
-        rowsHost.innerHTML = '<div class="heuristic-row row-na"><span class="status-pill status-na">none</span><div class="h-info"><div class="h-name">' + escape(body.note || 'Nothing to check.') + '</div></div></div>';
+        rowsHost.innerHTML = overallHtml +
+          '<div class="heuristic-row row-na"><span class="status-pill status-na">none</span><div class="h-info"><div class="h-name">' + escape(body.note || 'No domain or phone extracted from the input.') + '</div></div></div>';
         return;
       }
-      // Pretty names for the check sources
       const SOURCE_LABEL = {
         agentpki_curated_phishing_list: 'AgentPKI curated phishing list',
         internal: 'AgentPKI community reports',
@@ -1035,7 +1085,7 @@ import Footer from '../components/Footer.astro';
         phone_reputation: 'Phone reputation',
         community_reputation: 'Community reputation',
       };
-      rowsHost.innerHTML = body.checks.map((c) => {
+      const rowsHtml = body.checks.map((c) => {
         const isFlagged = c.status === 'flagged';
         const isClean = c.status === 'clean';
         const isNa = c.status === 'not_available';
@@ -1055,6 +1105,10 @@ import Footer from '../components/Footer.astro';
           '</div>'
         );
       }).join('');
+      rowsHost.innerHTML =
+        overallHtml +
+        '<p class="heuristic-detail-label">Per-source breakdown</p>' +
+        rowsHtml;
     } catch (e) {
       rowsHost.innerHTML = '<div class="heuristic-row row-inc"><span class="status-pill status-inc">ERROR</span><div class="h-info"><div class="h-name">Heuristic checks unavailable.</div></div></div>';
     }
