@@ -3,6 +3,11 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+
+// Animated walkthrough of how AI compliance teams use Provenance + intent
+// audit logs to satisfy EU AI Act / China AIGC / US state disclosure.
+import '../styles/persona-flows.css';
+import flowHtml from '../snippets/flow-for-compliance.html?raw';
 ---
 <Base
   title="For AI compliance — AgentPKI as Article 50 attribution infrastructure"
@@ -145,8 +150,22 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how compliance teams produce signed disclosure records -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What disclosure looks like end-to-end</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+      Five steps: your AI acts, provenance fires automatically, a hash-chained audit entry is appended,
+      your dashboard ingests via webhook + Atom, and the result satisfies EU AI Act / China AIGC / US state requirements.
+    </p>
+    <div class="persona-flow">
+      <Fragment set:html={flowHtml} />
+    </div>
+  </section>
+
   <Footer />
   <ContactModal />
+
+  <script src="/persona-flows.js" defer></script>
 
   <style is:global>
     .compliance-row {

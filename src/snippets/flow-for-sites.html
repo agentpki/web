@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-sites">
+    <div class="scenario">
+      <div class="scenario-icon">🛡️</div>
+      <div>
+        You run a site or platform. Roughly half your traffic today is bots — a mix of legitimate shopping assistants, search crawlers, and adversarial scrapers / scalpers. AgentPKI gives you a <strong>cryptographic positive signal</strong> for the legitimate ones plus a declared <code>intent</code> claim. Your policy decides what gets through.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fsd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fs-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">🤖 Incoming agent</text>
+            <text x="140" y="160" class="sub">AgentPKI-Token</text>
+            <text x="140" y="185" class="sub">RFC 9421 signature</text>
+            <text x="140" y="210" class="sub">intent: scrape-bulk</text>
+          </g>
+
+          <g class="actor" id="fs-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">🛡️ Your edge</text>
+            <text x="500" y="160" class="sub">Worker / nginx</text>
+            <text x="500" y="185" class="sub">Express / Fastify</text>
+            <text x="500" y="210" class="sub">5 lines of code</text>
+          </g>
+
+          <g class="actor" id="fs-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">🔐 verify.agentpki.dev</text>
+            <text x="860" y="160" class="sub">verdict + tier</text>
+            <text x="860" y="185" class="sub">intent_match</text>
+            <text x="860" y="210" class="sub">abuse_score</text>
+          </g>
+
+          <g class="actor outcome" id="fs-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">📋 Your policy</text>
+            <text x="1220" y="160" class="sub">allow → upstream</text>
+            <text x="1220" y="185" class="sub">throttle → bucket</text>
+            <text x="1220" y="210" class="sub">deny → 403 / captcha</text>
+          </g>
+
+          <path id="fs-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fsd)" />
+          <text id="fs-l1" class="label" x="320" y="50" text-anchor="middle">1. extract token</text>
+
+          <path id="fs-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fsd)" />
+          <text id="fs-l2" class="label" x="680" y="50" text-anchor="middle">2. verify + enrich</text>
+
+          <path id="fs-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fsd)" />
+          <text id="fs-l3" class="label" x="1040" y="50" text-anchor="middle">3. apply policy</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fs-play">▶ Play</button>
+          <button class="ctrl" id="fs-step-btn">Step ›</button>
+          <button class="ctrl" id="fs-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fs-step">Step 0 of 5</div>
+        <div class="narration-title" id="fs-title">Ready to start.</div>
+        <div class="narration-body" id="fs-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fs-progress"></div></div>
+      </div>
+    </div>
+  </div>

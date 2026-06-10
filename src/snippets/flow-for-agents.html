@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-agents">
+    <div class="scenario">
+      <div class="scenario-icon">🤖</div>
+      <div>
+        You operate one or more AI bots. Today, bot-defense systems block your traffic on half the sites it visits — they can't tell you apart from credential stuffers or scrapers. AgentPKI gives your bot a <strong>verifiable cryptographic identity</strong> that any AgentPKI-aware site recognizes automatically. 5-line SDK install; no per-site negotiation.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fa-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">🤖 Your bot</text>
+            <text x="140" y="160" class="sub">@agentpki/sdk</text>
+            <text x="140" y="185" class="sub">cached passport</text>
+            <text x="140" y="210" class="sub">intent: purchase</text>
+          </g>
+
+          <g class="actor" id="fa-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">🛡️ Target site</text>
+            <text x="500" y="160" class="sub">edge middleware</text>
+            <text x="500" y="185" class="sub">extracts header</text>
+            <text x="500" y="210" class="sub">Cloudflare Worker</text>
+          </g>
+
+          <g class="actor" id="fa-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">🔐 verify.agentpki.dev</text>
+            <text x="860" y="160" class="sub">sig + CRL + tier</text>
+            <text x="860" y="185" class="sub">intent_match</text>
+            <text x="860" y="210" class="sub">~50ms p50</text>
+          </g>
+
+          <g class="actor outcome" id="fa-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">✓ 200 OK + audit</text>
+            <text x="1220" y="160" class="sub">your bot served</text>
+            <text x="1220" y="185" class="sub">log entry written</text>
+            <text x="1220" y="210" class="sub">attributable to you</text>
+          </g>
+
+          <path id="fa-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fad)" />
+          <text id="fa-l1" class="label" x="320" y="50" text-anchor="middle">1. signed HTTPS</text>
+
+          <path id="fa-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fad)" />
+          <text id="fa-l2" class="label" x="680" y="50" text-anchor="middle">2. POST /v1/verify</text>
+
+          <path id="fa-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fad)" />
+          <text id="fa-l3" class="label" x="1040" y="50" text-anchor="middle">3. verdict: allow</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fa-play">▶ Play</button>
+          <button class="ctrl" id="fa-step-btn">Step ›</button>
+          <button class="ctrl" id="fa-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fa-step">Step 0 of 5</div>
+        <div class="narration-title" id="fa-title">Ready to start.</div>
+        <div class="narration-body" id="fa-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fa-progress"></div></div>
+      </div>
+    </div>
+  </div>

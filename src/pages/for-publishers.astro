@@ -3,6 +3,11 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+
+// Animated walkthrough of how publishers sign content via signing.agentpki.dev
+// and how readers + aggregators verify provenance.
+import '../styles/persona-flows.css';
+import flowHtml from '../snippets/flow-for-publishers.html?raw';
 ---
 <Base
   title="For publishers — AgentPKI Provenance"
@@ -218,8 +223,22 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a publisher signs content + how readers verify -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at publish time</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+      Five steps: your CMS POSTs the bytes, signing.agentpki.dev returns a manifest, your CDN serves both the article and
+      its sidecar, and verifying clients walk the chain back to your issuer.
+    </p>
+    <div class="persona-flow">
+      <Fragment set:html={flowHtml} />
+    </div>
+  </section>
+
   <Footer />
   <ContactModal />
+
+  <script src="/persona-flows.js" defer></script>
 
   <style is:global>
     /* ── Story columns ── */

@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-everyone">
+    <div class="scenario">
+      <div class="scenario-icon">👤</div>
+      <div>
+        You don't run a site or operate an AI. But you read content, receive emails, and increasingly interact with agents that claim to act on your behalf. AgentPKI is <strong>infrastructure that gets adopted by the AI labs, publishers, and sites you already use</strong>. You don't install anything; you just gain a free, on-demand verifier at <a href="/check" class="text-violet-300 underline">agentpki.dev/check</a> for any time you want to know "is this real?"
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fe-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">📩 Something arrives</text>
+            <text x="140" y="160" class="sub">email / article</text>
+            <text x="140" y="185" class="sub">DM / agent call</text>
+            <text x="140" y="210" class="sub">"is this legit?"</text>
+          </g>
+
+          <g class="actor" id="fe-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">👤 You</text>
+            <text x="500" y="160" class="sub">agentpki.dev/check</text>
+            <text x="500" y="185" class="sub">no signup</text>
+            <text x="500" y="210" class="sub">paste &amp; submit</text>
+          </g>
+
+          <g class="actor" id="fe-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">🔍 Verifier</text>
+            <text x="860" y="160" class="sub">signature</text>
+            <text x="860" y="185" class="sub">issuer + reputation</text>
+            <text x="860" y="210" class="sub">abuse reports</text>
+          </g>
+
+          <g class="actor outcome" id="fe-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">✓ ⚠ ⛔ Result</text>
+            <text x="1220" y="160" class="sub">verified / unknown</text>
+            <text x="1220" y="185" class="sub">revoked / flagged</text>
+            <text x="1220" y="210" class="sub">shareable URL</text>
+          </g>
+
+          <path id="fe-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fed)" />
+          <text id="fe-l1" class="label" x="320" y="50" text-anchor="middle">1. paste &amp; submit</text>
+
+          <path id="fe-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fed)" />
+          <text id="fe-l2" class="label" x="680" y="50" text-anchor="middle">2. walk the chain</text>
+
+          <path id="fe-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fed)" />
+          <text id="fe-l3" class="label" x="1040" y="50" text-anchor="middle">3. show result</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fe-play">▶ Play</button>
+          <button class="ctrl" id="fe-step-btn">Step ›</button>
+          <button class="ctrl" id="fe-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fe-step">Step 0 of 5</div>
+        <div class="narration-title" id="fe-title">Ready to start.</div>
+        <div class="narration-body" id="fe-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fe-progress"></div></div>
+      </div>
+    </div>
+  </div>

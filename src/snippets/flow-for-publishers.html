@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-publishers">
+    <div class="scenario">
+      <div class="scenario-icon">📝</div>
+      <div>
+        You publish original content — articles, photos, video. AI farms clone you within hours, and today you can't <em>prove</em> which is the original to a search engine, an aggregator, or a court. AgentPKI Provenance <strong>cryptographically signs every piece of content at publish time</strong>. Verification takes milliseconds; forgery costs an Ed25519 private key you control.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fpd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fp-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">📝 Your CMS</text>
+            <text x="140" y="160" class="sub">WordPress / Ghost</text>
+            <text x="140" y="185" class="sub">Sanity / Substack</text>
+            <text x="140" y="210" class="sub">publish hook</text>
+          </g>
+
+          <g class="actor" id="fp-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">✍️ signing.agentpki.dev</text>
+            <text x="500" y="160" class="sub">we hold the key</text>
+            <text x="500" y="185" class="sub">encrypted at rest</text>
+            <text x="500" y="210" class="sub">Ed25519 signature</text>
+          </g>
+
+          <g class="actor" id="fp-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">🌐 Published</text>
+            <text x="860" y="160" class="sub">Content-Provenance header</text>
+            <text x="860" y="185" class="sub">+ .provenance.json sidecar</text>
+            <text x="860" y="210" class="sub">C2PA-compatible</text>
+          </g>
+
+          <g class="actor outcome" id="fp-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">👁️ Verified</text>
+            <text x="1220" y="160" class="sub">Google / Bing / Perplexity</text>
+            <text x="1220" y="185" class="sub">cryptographic byline</text>
+            <text x="1220" y="210" class="sub">ranking + disputes</text>
+          </g>
+
+          <path id="fp-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fpd)" />
+          <text id="fp-l1" class="label" x="320" y="50" text-anchor="middle">1. POST content</text>
+
+          <path id="fp-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fpd)" />
+          <text id="fp-l2" class="label" x="680" y="50" text-anchor="middle">2. signed manifest</text>
+
+          <path id="fp-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fpd)" />
+          <text id="fp-l3" class="label" x="1040" y="50" text-anchor="middle">3. read provenance</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fp-play">▶ Play</button>
+          <button class="ctrl" id="fp-step-btn">Step ›</button>
+          <button class="ctrl" id="fp-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fp-step">Step 0 of 5</div>
+        <div class="narration-title" id="fp-title">Ready to start.</div>
+        <div class="narration-body" id="fp-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fp-progress"></div></div>
+      </div>
+    </div>
+  </div>

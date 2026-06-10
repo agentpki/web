@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-bot-defense">
+    <div class="scenario">
+      <div class="scenario-icon">📊</div>
+      <div>
+        You run a bot-defense product (Cloudflare, Akamai, HUMAN, DataDome, Arkose, Kasada, F5, et al.). Your detection engine treats every unknown bot the same — defaulting to suspicious. AgentPKI adds a <strong>positive signal</strong> for the verifiable-identity subset: "known issuer, declared intent, tier 2+." Drop it into your existing scoring pipeline as one signal among many.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fbd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fb-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">🌐 Customer site</text>
+            <text x="140" y="160" class="sub">Reuters / SO / etc.</text>
+            <text x="140" y="185" class="sub">forwards request</text>
+            <text x="140" y="210" class="sub">to your scoring</text>
+          </g>
+
+          <g class="actor" id="fb-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">🛡️ Your engine</text>
+            <text x="500" y="160" class="sub">IP, headers, behavior</text>
+            <text x="500" y="185" class="sub">+ AgentPKI parser</text>
+            <text x="500" y="210" class="sub">(new signal stage)</text>
+          </g>
+
+          <g class="actor" id="fb-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">🔐 verify.agentpki.dev</text>
+            <text x="860" y="160" class="sub">cached, sub-1ms</text>
+            <text x="860" y="185" class="sub">issuer + tier + intent</text>
+            <text x="860" y="210" class="sub">positive signal!</text>
+          </g>
+
+          <g class="actor outcome" id="fb-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">📊 Combined score</text>
+            <text x="1220" y="160" class="sub">your weight = 0.40</text>
+            <text x="1220" y="185" class="sub">+ all other signals</text>
+            <text x="1220" y="210" class="sub">final verdict → action</text>
+          </g>
+
+          <path id="fb-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fbd)" />
+          <text id="fb-l1" class="label" x="320" y="50" text-anchor="middle">1. parse token</text>
+
+          <path id="fb-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fbd)" />
+          <text id="fb-l2" class="label" x="680" y="50" text-anchor="middle">2. cached verify</text>
+
+          <path id="fb-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fbd)" />
+          <text id="fb-l3" class="label" x="1040" y="50" text-anchor="middle">3. into bot score</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fb-play">▶ Play</button>
+          <button class="ctrl" id="fb-step-btn">Step ›</button>
+          <button class="ctrl" id="fb-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fb-step">Step 0 of 5</div>
+        <div class="narration-title" id="fb-title">Ready to start.</div>
+        <div class="narration-body" id="fb-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fb-progress"></div></div>
+      </div>
+    </div>
+  </div>

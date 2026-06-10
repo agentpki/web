@@ -3,6 +3,11 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+
+// Animated walkthrough of how sites consume AgentPKI in their edge middleware
+// (extract token -> verify -> apply policy -> route).
+import '../styles/persona-flows.css';
+import flowHtml from '../snippets/flow-for-sites.html?raw';
 ---
 <Base
   title="For site operators — AgentPKI Intent"
@@ -161,8 +166,22 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a site consumes AgentPKI -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at your edge</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+      Five steps from an incoming request to a routing decision: middleware extracts the token,
+      verifier enriches it, your policy maps the verdict to an action. Click <strong class="text-[color:var(--color-text)]">Play</strong>.
+    </p>
+    <div class="persona-flow">
+      <Fragment set:html={flowHtml} />
+    </div>
+  </section>
+
   <Footer />
   <ContactModal />
+
+  <script src="/persona-flows.js" defer></script>
 
   <style is:global>
     .story-col {

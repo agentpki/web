@@ -1,0 +1,72 @@
+  <div class="flow-panel active" id="panel-for-compliance">
+    <div class="scenario">
+      <div class="scenario-icon">🏛️</div>
+      <div>
+        You own AI compliance — EU AI Act Article 50 (August 2026), China AIGC labeling rules (already in force), US state AI disclosure cascades. Today, "AI-generated" disclosure is a checkbox on a sign-up form. Regulators are increasingly asking: <em>prove it</em>. AgentPKI Provenance produces <strong>machine-readable, hash-chained, cryptographically signed disclosure records</strong> for every AI-touched event.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="fcd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <g class="actor" id="fc-n1">
+            <rect x="20" y="70" width="240" height="180" rx="12" />
+            <text x="140" y="120" font-size="18">🤖 Your AI</text>
+            <text x="140" y="160" class="sub">generates content</text>
+            <text x="140" y="185" class="sub">accesses data</text>
+            <text x="140" y="210" class="sub">acts autonomously</text>
+          </g>
+
+          <g class="actor" id="fc-n2">
+            <rect x="380" y="70" width="240" height="180" rx="12" />
+            <text x="500" y="120" font-size="18">✍️ Provenance + intent</text>
+            <text x="500" y="160" class="sub">signed at source</text>
+            <text x="500" y="185" class="sub">on every call</text>
+            <text x="500" y="210" class="sub">model + run-id embedded</text>
+          </g>
+
+          <g class="actor" id="fc-n3">
+            <rect x="740" y="70" width="240" height="180" rx="12" />
+            <text x="860" y="120" font-size="18">📋 Audit log</text>
+            <text x="860" y="160" class="sub">hash-chained, public</text>
+            <text x="860" y="185" class="sub">RFC 6962-inspired</text>
+            <text x="860" y="210" class="sub">append-only</text>
+          </g>
+
+          <g class="actor outcome" id="fc-n4">
+            <rect x="1100" y="70" width="240" height="180" rx="12" />
+            <text x="1220" y="120" font-size="18">🏛️ Disclosure ready</text>
+            <text x="1220" y="160" class="sub">EU AI Act Article 50</text>
+            <text x="1220" y="185" class="sub">China AIGC labeling</text>
+            <text x="1220" y="210" class="sub">US state AI laws</text>
+          </g>
+
+          <path id="fc-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fcd)" />
+          <text id="fc-l1" class="label" x="320" y="50" text-anchor="middle">1. sign manifest</text>
+
+          <path id="fc-a2" class="arrow" d="M620,160 L740,160" marker-end="url(#fcd)" />
+          <text id="fc-l2" class="label" x="680" y="50" text-anchor="middle">2. audit entry</text>
+
+          <path id="fc-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fcd)" />
+          <text id="fc-l3" class="label" x="1040" y="50" text-anchor="middle">3. webhook + Atom</text>
+        </svg>
+
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="fc-play">▶ Play</button>
+          <button class="ctrl" id="fc-step-btn">Step ›</button>
+          <button class="ctrl" id="fc-reset">↻ Reset</button>
+        </div>
+      </div>
+
+      <div class="narration">
+        <div class="narration-step" id="fc-step">Step 0 of 5</div>
+        <div class="narration-title" id="fc-title">Ready to start.</div>
+        <div class="narration-body" id="fc-body">Click <strong>Play</strong> for the passive walkthrough, or <strong>Step</strong> through manually.</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="fc-progress"></div></div>
+      </div>
+    </div>
+  </div>

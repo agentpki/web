@@ -3,6 +3,12 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+
+// Animated 4-step walkthrough of how bot operators use AgentPKI end-to-end:
+// SDK mints passport -> outbound HTTPS with token -> target site verifies ->
+// allow + audit log. Shown above the footer.
+import '../styles/persona-flows.css';
+import flowHtml from '../snippets/flow-for-agents.html?raw';
 ---
 <Base
   title="For agent builders — AgentPKI as your bot's passport"
@@ -154,6 +160,18 @@ import ContactModal from '../components/ContactModal.astro';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a bot operator uses AgentPKI end-to-end -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like in production</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+      Five steps end-to-end: your bot already has a passport, makes an outbound call, the target site verifies, and you get
+      a 200 OK plus an audit-log entry that's attributable to your issuer.
+    </p>
+    <div class="persona-flow">
+      <Fragment set:html={flowHtml} />
+    </div>
+  </section>
+
   <Footer />
   <ContactModal />
 
@@ -183,4 +201,6 @@ import ContactModal from '../components/ContactModal.astro';
     }
     .step-desc code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
   </style>
+
+  <script src="/persona-flows.js" defer></script>
 </Base>
