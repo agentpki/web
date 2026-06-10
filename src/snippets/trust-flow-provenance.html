@@ -1,0 +1,138 @@
+  <div class="flow-panel active" id="panel-provenance">
+
+    <div class="scenario">
+      <div class="scenario-icon">📰</div>
+      <div class="scenario-text">
+        <strong>Scenario:</strong> Sarah Lin publishes an investigation on her Substack. Within hours, AI farms clone the piece and post it under fake bylines. AgentPKI Provenance is how readers, search engines, and courts can tell which is the original — in milliseconds.
+      </div>
+    </div>
+
+    <div class="stage">
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 600 480" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="ph-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" class="arrowhead-default" />
+            </marker>
+            <marker id="ph-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" class="arrowhead-violet" />
+            </marker>
+            <marker id="ph-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" class="arrowhead-green" />
+            </marker>
+          </defs>
+
+          <!-- SARAH (top-left) -->
+          <g class="actor" id="p-author">
+            <rect x="40" y="30" width="180" height="58" rx="8" />
+            <text x="130" y="52" font-size="13">✍️ Sarah Lin</text>
+            <text x="130" y="70" class="sub">Substack writer</text>
+            <text x="130" y="82" class="sub">issuer: substack.com</text>
+          </g>
+
+          <!-- ARTICLE + MANIFEST (top-right) -->
+          <g class="actor" id="p-article">
+            <rect x="380" y="30" width="180" height="58" rx="8" />
+            <text x="470" y="52" font-size="13">📄 article + manifest</text>
+            <text x="470" y="70" class="sub">content_hash sha256-…</text>
+            <text x="470" y="82" class="sub">Content-Provenance: v=1…</text>
+          </g>
+
+          <!-- READER (middle) -->
+          <g class="actor" id="p-reader">
+            <rect x="210" y="190" width="180" height="58" rx="8" />
+            <text x="300" y="212" font-size="13">👤 Reader</text>
+            <text x="300" y="230" class="sub">browser w/ AgentPKI ext</text>
+            <text x="300" y="242" class="sub">or any C2PA viewer</text>
+          </g>
+
+          <!-- VERIFIER (bottom-left) -->
+          <g class="actor" id="p-verifier">
+            <rect x="40" y="320" width="220" height="58" rx="8" />
+            <text x="150" y="342" font-size="13">🔐 provenance.agentpki.dev</text>
+            <text x="150" y="360" class="sub">verify signature + content hash</text>
+            <text x="150" y="372" class="sub">walks chain back to issuer</text>
+          </g>
+
+          <!-- ISSUER DIR (bottom-right) -->
+          <g class="actor" id="p-dir">
+            <rect x="340" y="320" width="220" height="58" rx="8" />
+            <text x="450" y="342" font-size="13">📁 issuer directory</text>
+            <text x="450" y="360" class="sub">substack.com / .well-known</text>
+            <text x="450" y="372" class="sub">verify pubkey + tier</text>
+          </g>
+
+          <!-- Arrows -->
+          <path id="p-arr-1" class="arrow" d="M220,60 L380,60" marker-end="url(#ph-d)" />
+          <text id="p-lbl-1" class="label" x="240" y="50">sign + attach</text>
+
+          <path id="p-arr-2" class="arrow" d="M460,88 Q400,140 360,200" marker-end="url(#ph-d)" />
+          <text id="p-lbl-2" class="label" x="400" y="140">published</text>
+
+          <path id="p-arr-3" class="arrow" d="M260,248 Q180,290 160,320" marker-end="url(#ph-d)" />
+          <text id="p-lbl-3" class="label" x="125" y="290">verify manifest</text>
+
+          <path id="p-arr-4" class="arrow" d="M260,350 L340,350" marker-end="url(#ph-d)" />
+          <text id="p-lbl-4" class="label" x="270" y="340">resolve issuer</text>
+
+          <path id="p-arr-5" class="arrow" d="M340,370 Q280,400 230,378" marker-end="url(#ph-d)" />
+          <text id="p-lbl-5" class="label" x="245" y="408">pubkey + tier</text>
+
+          <path id="p-arr-6" class="arrow" d="M150,320 Q140,260 220,232" marker-end="url(#ph-d)" />
+          <text id="p-lbl-6" class="label" x="80" y="278">✓ verified: Sarah, t=10:14am</text>
+        </svg>
+      </div>
+
+      <div class="narration">
+        <div>
+          <div class="narration-step" id="p-step">Step 0 of 6</div>
+          <div class="narration-title" id="p-title">Ready to start.</div>
+          <div class="narration-body" id="p-body">
+            Click <strong>Play</strong> to watch a published article get signed and verified end to end.
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="p-progress"></div></div>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p-play">▶ Play</button>
+          <button class="ctrl" id="p-step-btn">Step ›</button>
+          <button class="ctrl" id="p-reset">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <p class="compare-title">Why this matters</p>
+      <div class="compare-grid">
+        <div class="compare-col without">
+          <p class="compare-col-head">Today — no cryptographic attribution</p>
+          <ul>
+            <li>Article gets cloned in hours; clones look identical to original</li>
+            <li>Search engines rank the most-shared version, often a clone</li>
+            <li>Sarah's name attached to AI-generated derivatives she never wrote</li>
+            <li>No defensible way to prove which is the original in court</li>
+          </ul>
+        </div>
+        <div class="compare-col with">
+          <p class="compare-col-head">With AgentPKI Provenance</p>
+          <ul>
+            <li>Original is signed at publication time with Sarah's issuer key</li>
+            <li>Browser shows a verified badge; clones get "no provenance"</li>
+            <li>Search engines + AI Overviews surface the verified original</li>
+            <li>Court-grade evidence: signature is cryptographically bound to bytes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    Both flows are running protocols you can verify today. The Verifier API is at
+    <a href="https://verify.agentpki.dev" target="_blank">verify.agentpki.dev</a>;
+    Provenance signing is at <a href="https://provenance.agentpki.dev" target="_blank">provenance.agentpki.dev</a>.
+    Spec versions: <a href="https://agentpki.dev/spec/v0.3-intent">v0.3-intent</a>,
+    <a href="https://agentpki.dev/spec/provenance-v0.1">Provenance v0.1</a>. Apache 2.0.
+  </div>
+
+</div>
+

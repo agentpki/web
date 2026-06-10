@@ -3,6 +3,13 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
+// Animated walkthrough of how the v0.3 Intent Protocol works end-to-end:
+// bot mints passport with intent claim -> site's intent-policy.json check
+// -> verifier intent_match -> audit log entry. Shown above the builder so
+// visitors see what they're about to author before they touch a form.
+import '../styles/trust-flow.css';
+import intentFlowHtml from '../snippets/trust-flow-intent.html?raw';
+
 // Canonical v0.3 intent vocabulary (§7). Keep this in sync with
 // the spec page — if the spec changes, this list MUST change too.
 const INTENT_CATALOG = [
@@ -45,6 +52,20 @@ const INTENT_CATALOG = [
     <p class="text-sm text-[color:var(--color-text-muted)]">
       Need the spec? See <a href="/spec/v0.3-intent" class="underline text-[color:var(--color-accent-bright)]">/spec/v0.3-intent §4</a>. Want to learn how the verifier consumes this? See <a href="/spec/v0.3-intent#5-verifier-behavior" class="underline text-[color:var(--color-accent-bright)]">§5</a>.
     </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Animated trust flow — Intent Protocol end-to-end
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-5xl mx-auto px-6 pb-10">
+    <h2 class="text-xl sm:text-2xl font-semibold tracking-tight mb-2">How the protocol fires, step by step</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      Bot mints a passport with an <code>intent</code> claim → request reaches your site →
+      verifier matches intent against your policy → decision + audit-log entry. Click <strong class="text-[color:var(--color-text)]">Play</strong>.
+    </p>
+    <div class="trust-flow">
+      <Fragment set:html={intentFlowHtml} />
+    </div>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
@@ -498,4 +519,5 @@ curl -s -X POST 'https://verify.agentpki.dev/v1/verify' \\
       render();
     })();
   </script>
+  <script src="/trust-flow.js" defer></script>
 </Base>
