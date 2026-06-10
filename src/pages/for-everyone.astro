@@ -33,6 +33,19 @@ import flowHtml from '../snippets/flow-for-everyone.html?raw';
     </div>
   </section>
 
+  <!-- Animated walkthrough: end-user verification via agentpki.dev/check -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What "checking" looks like</h2>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+        Five steps from "something arrived" to "I know if it's real": paste it into <a href="/check" class="underline text-[color:var(--color-accent-bright)]">/check</a>, the verifier walks the issuer chain, you see a result you can share. The <span class="text-amber-200">gold-bordered Verifier</span> is the same paid infrastructure other personas use — but for you, end-user verification is <strong class="text-amber-200">FREE forever</strong>. Revenue comes from sites, vendors, publishers paying for production volume.
+      </p>
+      <div class="persona-flow">
+        <Fragment set:html={flowHtml} />
+      </div>
+    </div>
+  </section>
+
   <!-- DAILY SCENARIOS -->
   <section class="border-t border-[color:var(--color-border)]">
     <div class="max-w-5xl mx-auto px-6 py-16 lg:py-20">
@@ -177,18 +190,6 @@ import flowHtml from '../snippets/flow-for-everyone.html?raw';
           What we're doing is shifting the equilibrium. Today the default for AI content is "untraceable." Tomorrow it's "untraceable, suspicious." That's the change you'll feel.
         </p>
       </div>
-    </div>
-  </section>
-
-  <!-- Animated walkthrough: end-user verification via agentpki.dev/check -->
-  <section class="max-w-5xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What "checking" looks like</h2>
-    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
-      Five steps from "something arrived" to "I know if it's real": paste it into <a href="/check" class="underline text-[color:var(--color-accent-bright)]">/check</a>,
-      the verifier walks the issuer chain, you see a green / yellow / red result you can share.
-    </p>
-    <div class="persona-flow">
-      <Fragment set:html={flowHtml} />
     </div>
   </section>
 

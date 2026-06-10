@@ -36,6 +36,19 @@ import flowHtml from '../snippets/flow-for-bot-defense.html?raw';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a vendor integrates AgentPKI -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What the integration looks like in your pipeline</h2>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+        Different shape from a site flow: your engine is a <strong class="text-[color:var(--color-text)]">multi-signal scorer</strong> and AgentPKI is one more input alongside IP / behavior / fingerprint / JS challenge. The <span class="text-amber-200">gold-bordered box</span> is the billed AgentPKI Verifier API; the signals row shows the new positive class slotting in next to your existing ones.
+      </p>
+      <div class="persona-flow">
+        <Fragment set:html={flowHtml} />
+      </div>
+    </div>
+  </section>
+
   <!-- WHY THIS IS A WIN FOR YOU SPECIFICALLY -->
   <section class="border-t border-[color:var(--color-border)]">
     <div class="max-w-5xl mx-auto px-6 py-16 lg:py-20">
@@ -144,18 +157,6 @@ import flowHtml from '../snippets/flow-for-bot-defense.html?raw';
         Talk to founder
         <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-  </section>
-
-  <!-- Animated walkthrough: how a vendor integrates AgentPKI as a positive signal -->
-  <section class="max-w-5xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What the integration looks like in your pipeline</h2>
-    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
-      Five steps: customer site forwards the request, your engine parses the token, cached verify returns a positive signal,
-      your weighting + threshold logic decides the final score. AgentPKI never overrides your model — it adds.
-    </p>
-    <div class="persona-flow">
-      <Fragment set:html={flowHtml} />
     </div>
   </section>
 

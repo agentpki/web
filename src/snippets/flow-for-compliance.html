@@ -8,7 +8,7 @@
 
     <div class="stage">
       <div class="diagram-wrap">
-        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="fcd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
           </defs>
@@ -21,20 +21,30 @@
             <text x="140" y="210" class="sub">acts autonomously</text>
           </g>
 
-          <g class="actor" id="fc-n2">
+          <g class="actor hosted" id="fc-n2">
             <rect x="380" y="70" width="240" height="180" rx="12" />
-            <text x="500" y="120" font-size="28">✍️ Provenance + intent</text>
-            <text x="500" y="160" class="sub">signed at source</text>
-            <text x="500" y="185" class="sub">on every call</text>
-            <text x="500" y="210" class="sub">model + run-id embedded</text>
+            <text x="500" y="120" font-size="28">✍️ Provenance API</text>
+            <text x="500" y="160" class="sub">signing.agentpki.dev</text>
+            <text x="500" y="185" class="sub">+ intent claim</text>
+            <text x="500" y="210" class="sub">model + run-id</text>
+          </g>
+          <!-- Compliance customers pay for the signing service AND audit retention -->
+          <g class="price-tag">
+            <rect x="380" y="265" width="240" height="26" rx="6" />
+            <text x="500" y="284">AgentPKI Signing · $49–$499/mo</text>
           </g>
 
-          <g class="actor" id="fc-n3">
+          <g class="actor hosted" id="fc-n3">
             <rect x="740" y="70" width="240" height="180" rx="12" />
             <text x="860" y="120" font-size="28">📋 Audit log</text>
             <text x="860" y="160" class="sub">hash-chained, public</text>
             <text x="860" y="185" class="sub">RFC 6962-inspired</text>
-            <text x="860" y="210" class="sub">append-only</text>
+            <text x="860" y="210" class="sub">1yr+ retention</text>
+          </g>
+          <!-- Pro/Enterprise tier for extended retention -->
+          <g class="price-tag">
+            <rect x="740" y="265" width="240" height="26" rx="6" />
+            <text x="860" y="284">AgentPKI Audit · Custom enterprise</text>
           </g>
 
           <g class="actor outcome" id="fc-n4">
@@ -54,6 +64,20 @@
           <path id="fc-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fcd)" />
           <text id="fc-l3" class="label" x="1040" y="50" text-anchor="middle">3. webhook + Atom</text>
         </svg>
+
+        <!-- Regulator fan-out: the same hash-chained record satisfies multiple
+             frameworks simultaneously. One audit entry, several disclosure
+             obligations — that's the compliance value prop in pictures. -->
+        <div style="margin: 0.5rem 1rem 0.6rem;">
+          <p style="font-size:0.72rem; font-family:ui-monospace,monospace; color:var(--muted); margin: 0 0 0.5rem; letter-spacing:0.06em; text-transform:uppercase;">Disclosure frameworks one record satisfies</p>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.28rem 0.7rem; border-radius:999px;">🇪🇺 EU AI Act Art. 50</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.28rem 0.7rem; border-radius:999px;">🇨🇳 China AIGC labeling</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.28rem 0.7rem; border-radius:999px;">🇺🇸 US state laws</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.28rem 0.7rem; border-radius:999px;">internal audit</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.28rem 0.7rem; border-radius:999px;">customer transparency</span>
+          </div>
+        </div>
 
         <div class="controls">
           <button class="ctrl ctrl-primary" id="fc-play">▶ Play</button>

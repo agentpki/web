@@ -59,6 +59,48 @@
   .actor.success .sub { fill: var(--green); }
   .actor.outcome rect { stroke-dasharray: 6 4; }
 
+  /* AgentPKI's paid infrastructure — gold border + subtle gold tint.
+     This is the box that bills the customer. Calls out the revenue surface
+     explicitly so the diagram doesn't look like the whole thing is free. */
+  .actor.hosted rect {
+    stroke: var(--amber); stroke-width: 3;
+    fill: rgba(251,191,36,0.06);
+  }
+  .actor.hosted text { fill: #fde68a; }
+  .actor.hosted .sub { fill: rgba(252,211,77,0.85); }
+  .actor.hosted.active rect { fill: rgba(251,191,36,0.12); }
+  .actor.hosted.success rect { fill: rgba(251,191,36,0.10); }
+
+  /* Pricing tag below a hosted box: "AgentPKI · X tier · $/M verifies". */
+  .price-tag rect {
+    fill: rgba(251,191,36,0.18); stroke: rgba(251,191,36,0.6); stroke-width: 1.5;
+  }
+  .price-tag text {
+    fill: #fde68a; font-size: 16px; font-family: ui-monospace, monospace;
+    font-weight: 700; text-anchor: middle;
+  }
+
+  /* Fan-out chips: small "outcome variants" branching off a main actor
+     (e.g. allow/throttle/deny on /for-sites, Google/Bing/Perplexity on
+     /for-publishers, EU/China/US on /for-compliance). */
+  .fan-chip rect {
+    fill: var(--bg); stroke: var(--border-hi); stroke-width: 1.5;
+    transition: stroke 0.3s, fill 0.3s;
+  }
+  .fan-chip text {
+    fill: var(--muted); font-size: 16px; font-family: ui-monospace, monospace;
+    text-anchor: middle; font-weight: 600;
+  }
+  .fan-chip.active rect { stroke: var(--violet); fill: rgba(167,139,250,0.08); }
+  .fan-chip.active text { fill: var(--text); }
+  .fan-chip.success rect { stroke: var(--green); fill: rgba(34,197,94,0.08); }
+  .fan-chip.success text { fill: var(--text); }
+  /* Faint lines from main box to each chip. */
+  .fan-line { stroke: var(--border-hi); stroke-width: 1.5; fill: none;
+    transition: stroke 0.3s; opacity: 0.7; }
+  .fan-line.active { stroke: var(--violet); opacity: 1; }
+  .fan-line.success { stroke: var(--green); opacity: 1; }
+
   .arrow { stroke: var(--border-hi); stroke-width: 2.2; fill: none;
     transition: stroke 0.3s, stroke-width 0.3s; }
   .arrow.active { stroke: var(--violet); stroke-width: 3.2; }

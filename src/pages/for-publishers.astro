@@ -38,6 +38,19 @@ import flowHtml from '../snippets/flow-for-publishers.html?raw';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a publisher signs content + readers verify -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at publish time</h2>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+        Publisher flow is a <strong class="text-[color:var(--color-text)]">sign-once, verify-many</strong> shape — one signing call, then a fan-out of consumers (Google, Bing, Perplexity, courts) all reading the same manifest. The <span class="text-amber-200">gold-bordered box</span> is the AgentPKI Signing API — that's the billed surface for publishers.
+      </p>
+      <div class="persona-flow">
+        <Fragment set:html={flowHtml} />
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════════════════════════════════════════════════
        THE SARAH STORY — narrative walkthrough
        Stage 1 (no provenance): visible loss
@@ -220,18 +233,6 @@ import flowHtml from '../snippets/flow-for-publishers.html?raw';
         Talk to founder
         <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-  </section>
-
-  <!-- Animated walkthrough: how a publisher signs content + how readers verify -->
-  <section class="max-w-5xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at publish time</h2>
-    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
-      Five steps: your CMS POSTs the bytes, signing.agentpki.dev returns a manifest, your CDN serves both the article and
-      its sidecar, and verifying clients walk the chain back to your issuer.
-    </p>
-    <div class="persona-flow">
-      <Fragment set:html={flowHtml} />
     </div>
   </section>
 

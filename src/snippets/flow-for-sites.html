@@ -8,7 +8,7 @@
 
     <div class="stage">
       <div class="diagram-wrap">
-        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="fsd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
           </defs>
@@ -29,20 +29,25 @@
             <text x="500" y="210" class="sub">5 lines of code</text>
           </g>
 
-          <g class="actor" id="fs-n3">
+          <g class="actor hosted" id="fs-n3">
             <rect x="740" y="70" width="240" height="180" rx="12" />
             <text x="860" y="120" font-size="28">🔐 Verifier</text>
-            <text x="860" y="160" class="sub">verdict + tier</text>
+            <text x="860" y="160" class="sub">verify.agentpki.dev</text>
             <text x="860" y="185" class="sub">intent_match</text>
             <text x="860" y="210" class="sub">abuse_score</text>
           </g>
+          <!-- AgentPKI's billed surface for site operators -->
+          <g class="price-tag">
+            <rect x="740" y="265" width="240" height="26" rx="6" />
+            <text x="860" y="284">AgentPKI Verifier · $49–499/mo</text>
+          </g>
 
-          <g class="actor outcome" id="fs-n4">
+          <g class="actor" id="fs-n4">
             <rect x="1100" y="70" width="240" height="180" rx="12" />
             <text x="1220" y="120" font-size="28">📋 Your policy</text>
-            <text x="1220" y="160" class="sub">allow → upstream</text>
-            <text x="1220" y="185" class="sub">throttle → bucket</text>
-            <text x="1220" y="210" class="sub">deny → 403 / captcha</text>
+            <text x="1220" y="160" class="sub">your code</text>
+            <text x="1220" y="185" class="sub">your rules</text>
+            <text x="1220" y="210" class="sub">fans out below</text>
           </g>
 
           <path id="fs-a1" class="arrow" d="M260,160 L380,160" marker-end="url(#fsd)" />
@@ -54,6 +59,15 @@
           <path id="fs-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fsd)" />
           <text id="fs-l3" class="label" x="1040" y="50" text-anchor="middle">3. apply policy</text>
         </svg>
+
+        <!-- Fan-out: the 4 distinct actions that "your policy" maps the verdict to.
+             Sites face a fan-out, not just one outcome — calls that out visibly. -->
+        <div style="display:flex; gap:0.45rem; flex-wrap:wrap; justify-content:center; padding:0 1rem 0.4rem;">
+          <span style="font-size:0.82rem; font-family:ui-monospace,monospace; color:var(--green); background:rgba(74,222,128,0.10); border:1px solid rgba(74,222,128,0.40); padding:0.3rem 0.7rem; border-radius:999px;">allow → upstream</span>
+          <span style="font-size:0.82rem; font-family:ui-monospace,monospace; color:var(--amber); background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.40); padding:0.3rem 0.7rem; border-radius:999px;">throttle → bucket</span>
+          <span style="font-size:0.82rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.3rem 0.7rem; border-radius:999px;">captcha challenge</span>
+          <span style="font-size:0.82rem; font-family:ui-monospace,monospace; color:#fca5a5; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.40); padding:0.3rem 0.7rem; border-radius:999px;">deny → 403</span>
+        </div>
 
         <div class="controls">
           <button class="ctrl ctrl-primary" id="fs-play">▶ Play</button>

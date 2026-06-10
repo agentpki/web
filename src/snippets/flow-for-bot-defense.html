@@ -8,7 +8,7 @@
 
     <div class="stage">
       <div class="diagram-wrap">
-        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="fbd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
           </defs>
@@ -29,12 +29,17 @@
             <text x="500" y="210" class="sub">(new signal stage)</text>
           </g>
 
-          <g class="actor" id="fb-n3">
+          <g class="actor hosted" id="fb-n3">
             <rect x="740" y="70" width="240" height="180" rx="12" />
             <text x="860" y="120" font-size="28">🔐 Verifier</text>
-            <text x="860" y="160" class="sub">cached, sub-1ms</text>
-            <text x="860" y="185" class="sub">issuer + tier + intent</text>
+            <text x="860" y="160" class="sub">verify.agentpki.dev</text>
+            <text x="860" y="185" class="sub">cached, sub-1ms</text>
             <text x="860" y="210" class="sub">positive signal!</text>
+          </g>
+          <!-- Vendor scale: Pro / Enterprise tier with revenue-share OEM model -->
+          <g class="price-tag">
+            <rect x="740" y="265" width="240" height="26" rx="6" />
+            <text x="860" y="284">AgentPKI · Pro / OEM rev-share</text>
           </g>
 
           <g class="actor outcome" id="fb-n4">
@@ -54,6 +59,20 @@
           <path id="fb-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fbd)" />
           <text id="fb-l3" class="label" x="1040" y="50" text-anchor="middle">3. into bot score</text>
         </svg>
+
+        <!-- Parallel signals: AgentPKI is one of many your engine combines.
+             That's what makes vendor flows different from a simple chain — your
+             scoring is a multi-input function, and AgentPKI adds one input. -->
+        <div style="margin: 0.4rem 1rem 0.6rem;">
+          <p style="font-size:0.72rem; font-family:ui-monospace,monospace; color:var(--muted); margin: 0 0 0.5rem; letter-spacing:0.06em; text-transform:uppercase;">Signals feeding your engine (+ the new one)</p>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--muted); background:var(--bg); border:1px solid var(--border-hi); padding:0.28rem 0.7rem; border-radius:999px;">IP reputation</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--muted); background:var(--bg); border:1px solid var(--border-hi); padding:0.28rem 0.7rem; border-radius:999px;">behavioral fingerprint</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--muted); background:var(--bg); border:1px solid var(--border-hi); padding:0.28rem 0.7rem; border-radius:999px;">header heuristics</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--muted); background:var(--bg); border:1px solid var(--border-hi); padding:0.28rem 0.7rem; border-radius:999px;">JS challenge</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:#fde68a; background:rgba(251,191,36,0.10); border:1px solid rgba(251,191,36,0.50); padding:0.28rem 0.7rem; border-radius:999px; font-weight:700;">+ AgentPKI passport</span>
+          </div>
+        </div>
 
         <div class="controls">
           <button class="ctrl ctrl-primary" id="fb-play">▶ Play</button>

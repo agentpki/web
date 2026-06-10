@@ -36,6 +36,19 @@ import flowHtml from '../snippets/flow-for-sites.html?raw';
     </div>
   </section>
 
+  <!-- Animated walkthrough: how a site consumes AgentPKI -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at your edge</h2>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+        Five steps from an incoming request to a routing decision. The <span class="text-amber-200">gold-bordered box</span> is the AgentPKI Verifier API — that's the billed surface for sites; the chips below show that "your policy" fans out to four distinct actions.
+      </p>
+      <div class="persona-flow">
+        <Fragment set:html={flowHtml} />
+      </div>
+    </div>
+  </section>
+
   <!-- THE TICKET DROP SCENE — abbreviated 2-column compare -->
   <section class="border-t border-[color:var(--color-border)]">
     <div class="max-w-5xl mx-auto px-6 py-16 lg:py-20">
@@ -163,18 +176,6 @@ import flowHtml from '../snippets/flow-for-sites.html?raw';
         Talk to founder
         <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-  </section>
-
-  <!-- Animated walkthrough: how a site consumes AgentPKI -->
-  <section class="max-w-5xl mx-auto px-6 pb-16">
-    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What this looks like at your edge</h2>
-    <p class="text-sm text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
-      Five steps from an incoming request to a routing decision: middleware extracts the token,
-      verifier enriches it, your policy maps the verdict to an action. Click <strong class="text-[color:var(--color-text)]">Play</strong>.
-    </p>
-    <div class="persona-flow">
-      <Fragment set:html={flowHtml} />
     </div>
   </section>
 

@@ -8,7 +8,7 @@
 
     <div class="stage">
       <div class="diagram-wrap">
-        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="fpd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
           </defs>
@@ -21,12 +21,17 @@
             <text x="140" y="210" class="sub">publish hook</text>
           </g>
 
-          <g class="actor" id="fp-n2">
+          <g class="actor hosted" id="fp-n2">
             <rect x="380" y="70" width="240" height="180" rx="12" />
             <text x="500" y="120" font-size="28">✍️ Signing API</text>
-            <text x="500" y="160" class="sub">we hold the key</text>
-            <text x="500" y="185" class="sub">encrypted at rest</text>
+            <text x="500" y="160" class="sub">signing.agentpki.dev</text>
+            <text x="500" y="185" class="sub">key encrypted at rest</text>
             <text x="500" y="210" class="sub">Ed25519 signature</text>
+          </g>
+          <!-- Publishers' billed surface: Signing-as-a-Service (per-signature pricing) -->
+          <g class="price-tag">
+            <rect x="380" y="265" width="240" height="26" rx="6" />
+            <text x="500" y="284">AgentPKI Signing · $0–$199/mo</text>
           </g>
 
           <g class="actor" id="fp-n3">
@@ -54,6 +59,21 @@
           <path id="fp-a3" class="arrow" d="M980,160 L1100,160" marker-end="url(#fpd)" />
           <text id="fp-l3" class="label" x="1040" y="50" text-anchor="middle">3. read provenance</text>
         </svg>
+
+        <!-- Consumer fan-out: a single signed manifest is read by many distinct
+             aggregators. That's what makes publishers' value compounded — one
+             sign, many verifying parties. -->
+        <div style="margin: 0.5rem 1rem 0.6rem;">
+          <p style="font-size:0.72rem; font-family:ui-monospace,monospace; color:var(--muted); margin: 0 0 0.5rem; letter-spacing:0.06em; text-transform:uppercase;">Verifying parties that read your manifest</p>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">Google Search</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">Bing</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">Perplexity</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">OpenAI search</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">Aggregators</span>
+            <span style="font-size:0.78rem; font-family:ui-monospace,monospace; color:var(--violet-hi); background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.40); padding:0.28rem 0.7rem; border-radius:999px;">Court / dispute</span>
+          </div>
+        </div>
 
         <div class="controls">
           <button class="ctrl ctrl-primary" id="fp-play">▶ Play</button>

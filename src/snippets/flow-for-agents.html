@@ -8,7 +8,7 @@
 
     <div class="stage">
       <div class="diagram-wrap">
-        <svg viewBox="0 0 1400 300" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="fad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
           </defs>
@@ -29,12 +29,17 @@
             <text x="500" y="210" class="sub">Cloudflare Worker</text>
           </g>
 
-          <g class="actor" id="fa-n3">
+          <g class="actor hosted" id="fa-n3">
             <rect x="740" y="70" width="240" height="180" rx="12" />
             <text x="860" y="120" font-size="28">🔐 Verifier</text>
-            <text x="860" y="160" class="sub">sig + CRL + tier</text>
-            <text x="860" y="185" class="sub">intent_match</text>
+            <text x="860" y="160" class="sub">verify.agentpki.dev</text>
+            <text x="860" y="185" class="sub">sig + CRL + intent</text>
             <text x="860" y="210" class="sub">~50ms p50</text>
+          </g>
+          <!-- AgentPKI's billed surface: Verifier API tiers -->
+          <g class="price-tag">
+            <rect x="740" y="265" width="240" height="26" rx="6" />
+            <text x="860" y="284">AgentPKI Verifier · $0–$499/mo</text>
           </g>
 
           <g class="actor outcome" id="fa-n4">
