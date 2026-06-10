@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+/*
+ * /widget — embeddable verification badge showcase.
+ *
+ * Two APIs from one script tag:
+ *   1. Web component: <agentpki-verify token="..."> — framework-friendly
+ *   2. Data attr:     <div data-agentpki-verify="..."> — no-build path
+ *
+ * This page demonstrates both, shows all size+theme combinations live,
+ * and provides copy-paste snippets with the SRI-pinned production URL.
+ */
+
+const WIDGET_SRI = 'sha256-k5US28lf24FnrIl/YtdxLEBc1CVGxHsHsg/Pu6ECt+4=';
+const WIDGET_VERSION = '0.1.0';
+
+// Demo token endpoint — mints a fresh allow-token on each page load,
+// so the live badges below show real verifier responses, not a stale string.
+---
+<Base
+  title="Embeddable verify widget — AgentPKI"
+  description="Drop a live AgentPKI verification badge on any page. Web component <agentpki-verify token> or data-attribute API. 2.7 KB gzipped. SRI-pinned."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      Embeddable widget &middot; v{WIDGET_VERSION}
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
+      Drop a live verdict badge on any page.
+    </h1>
+    <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl mb-8 leading-relaxed">
+      Two APIs from one script tag. Web component for frameworks, data-attribute for plain HTML.
+      Each badge makes one POST to <code class="text-[color:var(--color-accent-bright)]">verify.agentpki.dev</code>
+      and renders the verdict — verified, revoked, or unverified. Shadow DOM, no global CSS leaks.
+      <strong class="text-[color:var(--color-text)]">2.7&thinsp;KB gzipped</strong>. SRI-pinned.
+    </p>
+
+    <!-- Quick stats row -->
+    <div class="flex flex-wrap gap-4 text-sm mb-10">
+      <div class="px-3 py-1.5 rounded-md bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border)]">
+        <span class="text-[color:var(--color-text-muted)]">Minified:</span>
+        <strong class="text-[color:var(--color-text)] ml-1">7.4 KB</strong>
+      </div>
+      <div class="px-3 py-1.5 rounded-md bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border)]">
+        <span class="text-[color:var(--color-text-muted)]">Gzip:</span>
+        <strong class="text-[color:var(--color-text)] ml-1">2.7 KB</strong>
+      </div>
+      <div class="px-3 py-1.5 rounded-md bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border)]">
+        <span class="text-[color:var(--color-text-muted)]">Browsers:</span>
+        <strong class="text-[color:var(--color-text)] ml-1">all evergreen + IE-no</strong>
+      </div>
+      <div class="px-3 py-1.5 rounded-md bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border)]">
+        <span class="text-[color:var(--color-text-muted)]">License:</span>
+        <strong class="text-[color:var(--color-text)] ml-1">MIT</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 1 — Web component API (recommended)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-2xl font-semibold mb-3">Web component <span class="text-[color:var(--color-text-muted)] text-base font-normal">— recommended</span></h2>
+    <p class="text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      Clean DOM API. Works with React (use <code>className</code>), Vue, Svelte, Astro, plain HTML. Re-renders when the <code>token</code> attribute changes.
+    </p>
+    <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5 mb-6">
+      <pre class="overflow-x-auto text-sm"><code class="text-[color:var(--color-text)] font-mono">{`<script src="https://agentpki.dev/v1/widget.min.js"
+        integrity="${WIDGET_SRI}"
+        crossorigin="anonymous" async></script>
+
+<agentpki-verify token="v4.public.AAAA.BBBB"></agentpki-verify>`}</code></pre>
+    </div>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
+      Attributes: <code>token</code> (required), <code>size</code> (small / medium / large), <code>theme</code> (light / dark / auto).
+    </p>
+
+    <h3 class="text-lg font-semibold mt-8 mb-3">Live previews</h3>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-5">
+      Click "Mint demo token" — every badge below verifies the same freshly-minted token against the live verifier. Try "Mint revoked token" to watch them all flip to red.
+    </p>
+
+    <div class="flex flex-wrap gap-3 mb-6">
+      <button id="mint-allow" class="px-4 py-2 rounded-md text-sm font-medium bg-[color:var(--color-accent)] text-white hover:opacity-90">
+        Mint demo token
+      </button>
+      <button id="mint-revoked" class="px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white hover:opacity-90">
+        Mint revoked token
+      </button>
+      <span id="token-status" class="self-center text-xs font-mono text-[color:var(--color-text-muted)]">no token loaded</span>
+    </div>
+
+    <!-- Live demo matrix: 3 sizes × 2 themes -->
+    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+      <div class="rounded-lg border border-[color:var(--color-border)] p-5 bg-white">
+        <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-3">theme="light"</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-500 w-16">small</span>
+            <agentpki-verify class="demo-badge" size="small" theme="light"></agentpki-verify>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-500 w-16">medium</span>
+            <agentpki-verify class="demo-badge" size="medium" theme="light"></agentpki-verify>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-xs text-gray-500 w-16 pt-1">large</span>
+            <agentpki-verify class="demo-badge" size="large" theme="light"></agentpki-verify>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-lg border border-[color:var(--color-border)] p-5 bg-[#0a0a0f]">
+        <p class="text-xs font-mono uppercase tracking-wider text-gray-400 mb-3">theme="dark"</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-400 w-16">small</span>
+            <agentpki-verify class="demo-badge" size="small" theme="dark"></agentpki-verify>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-400 w-16">medium</span>
+            <agentpki-verify class="demo-badge" size="medium" theme="dark"></agentpki-verify>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-xs text-gray-400 w-16 pt-1">large</span>
+            <agentpki-verify class="demo-badge" size="large" theme="dark"></agentpki-verify>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 2 — Data-attribute API (no build)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-2xl font-semibold mb-3">Data-attribute API <span class="text-[color:var(--color-text-muted)] text-base font-normal">— for plain HTML</span></h2>
+    <p class="text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      For when you can't use custom elements (older marketing pages, CMS templates, hand-written HTML). Same widget, plain <code>&lt;div&gt;</code>.
+    </p>
+    <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5 mb-6">
+      <pre class="overflow-x-auto text-sm"><code class="text-[color:var(--color-text)] font-mono">{`<div data-agentpki-verify="v4.public.AAAA.BBBB"
+     data-agentpki-size="large"
+     data-agentpki-theme="auto"></div>
+<script src="https://agentpki.dev/v1/widget.min.js" async></script>`}</code></pre>
+    </div>
+    <p class="text-sm text-[color:var(--color-text-muted)]">
+      Auto-discovers new badges (MutationObserver), so SPAs that inject DOM after load work too.
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 3 — Versioned URLs + SRI
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-2xl font-semibold mb-3">Versioned URLs</h2>
+    <p class="text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      Three URLs depending on your update appetite:
+    </p>
+    <div class="grid gap-3 text-sm">
+      <div class="rounded-lg border border-[color:var(--color-border)] p-4">
+        <div class="flex items-baseline justify-between gap-4 mb-1 flex-wrap">
+          <code class="font-mono text-[color:var(--color-accent-bright)]">/v1/widget.min.js</code>
+          <span class="text-xs text-[color:var(--color-text-muted)]">latest stable, 1-hour cache</span>
+        </div>
+        <p class="text-[color:var(--color-text-muted)] text-xs">Patch fixes land here automatically. Use for marketing sites.</p>
+      </div>
+      <div class="rounded-lg border border-[color:var(--color-border)] p-4">
+        <div class="flex items-baseline justify-between gap-4 mb-1 flex-wrap">
+          <code class="font-mono text-[color:var(--color-accent-bright)]">/v1/widget-v{WIDGET_VERSION}.min.js</code>
+          <span class="text-xs text-[color:var(--color-text-muted)]">immutable, 1-year cache</span>
+        </div>
+        <p class="text-[color:var(--color-text-muted)] text-xs">Pin this. Cryptographically identical bytes forever. Pair with SRI for vendor compliance.</p>
+      </div>
+      <div class="rounded-lg border border-[color:var(--color-border)] p-4">
+        <div class="flex items-baseline justify-between gap-4 mb-1 flex-wrap">
+          <code class="font-mono text-[color:var(--color-accent-bright)]">/widget.js</code>
+          <span class="text-xs text-[color:var(--color-text-muted)]">readable source</span>
+        </div>
+        <p class="text-[color:var(--color-text-muted)] text-xs">Unminified, commented. Use during development to read what it does.</p>
+      </div>
+    </div>
+    <div class="mt-5 rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-4">
+      <p class="text-xs font-mono uppercase tracking-wider text-[color:var(--color-text-muted)] mb-2">SRI hash &middot; v{WIDGET_VERSION}</p>
+      <code class="font-mono text-xs break-all text-[color:var(--color-text)]">{WIDGET_SRI}</code>
+    </div>
+  </section>
+
+  <Footer />
+
+  <!-- Widget loaded from same domain for the demo -->
+  <script is:inline src="/widget.js"></script>
+
+  <!-- Live-demo glue: mint a fresh allow/revoked token, push to every badge -->
+  <script is:inline>
+    (function () {
+      var ALLOW_URL = 'https://demo.agentpki.dev/mint';
+      var REVOKED_URL = 'https://demo.agentpki.dev/mint?revoked=1';
+
+      function setAll(token) {
+        var badges = document.querySelectorAll('.demo-badge');
+        for (var i = 0; i < badges.length; i++) {
+          badges[i].setAttribute('token', token);
+        }
+        var stat = document.getElementById('token-status');
+        if (stat) stat.textContent = token.slice(0, 36) + '…';
+      }
+
+      function mint(url, label) {
+        var stat = document.getElementById('token-status');
+        if (stat) stat.textContent = 'minting ' + label + '…';
+        fetch(url)
+          .then(function (r) { return r.json(); })
+          .then(function (j) { if (j.token) setAll(j.token); })
+          .catch(function (e) { if (stat) stat.textContent = 'mint failed'; });
+      }
+
+      document.getElementById('mint-allow').addEventListener('click', function () {
+        mint(ALLOW_URL, 'allow');
+      });
+      document.getElementById('mint-revoked').addEventListener('click', function () {
+        mint(REVOKED_URL, 'revoked');
+      });
+
+      // Auto-mint one on page load so the badges aren't blank
+      window.addEventListener('load', function () {
+        mint(ALLOW_URL, 'allow');
+      });
+    })();
+  </script>
+</Base>

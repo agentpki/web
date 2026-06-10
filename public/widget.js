@@ -160,4 +160,70 @@
     var obs = new MutationObserver(function () { scan(); });
     obs.observe(document.documentElement, { childList: true, subtree: true });
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Web Component API — <agentpki-verify token="..." size="..." theme="...">
+  //
+  // Reuses the same render/verify pipeline as the data-attribute version
+  // above. The component exposes a clean DOM API:
+  //   <agentpki-verify token="v4.public.AAA.BBB" size="large" theme="dark">
+  //   document.querySelector('agentpki-verify').setAttribute('token', '...')
+  //
+  // Why both APIs? data-attribute is the no-build path (any HTML page).
+  // The custom element is the framework path (React/Vue/Svelte love it).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (typeof window.customElements !== 'undefined' && !window.customElements.get('agentpki-verify')) {
+    function AgentpkiVerify() {
+      return Reflect.construct(HTMLElement, [], AgentpkiVerify);
+    }
+    AgentpkiVerify.prototype = Object.create(HTMLElement.prototype);
+    AgentpkiVerify.prototype.constructor = AgentpkiVerify;
+
+    AgentpkiVerify.observedAttributes = ['token', 'size', 'theme'];
+    Object.defineProperty(AgentpkiVerify, 'observedAttributes', {
+      get: function () { return ['token', 'size', 'theme']; }
+    });
+
+    // Bridge custom-element attrs → the existing data-* render path, so we
+    // get one rendering codepath. We mirror token→data-agentpki-verify, etc.
+    AgentpkiVerify.prototype._sync = function () {
+      var token = this.getAttribute('token') || '';
+      var size = this.getAttribute('size') || 'medium';
+      var theme = this.getAttribute('theme') || 'auto';
+      this.setAttribute('data-agentpki-verify', token);
+      this.setAttribute('data-agentpki-size', size);
+      this.setAttribute('data-agentpki-theme', theme);
+      this.__agentpki_done = false;
+      if (token) verifyOne(this);
+    };
+
+    AgentpkiVerify.prototype.connectedCallback = function () { this._sync(); };
+    AgentpkiVerify.prototype.attributeChangedCallback = function (name, oldV, newV) {
+      if (oldV === newV) return;
+      this._sync();
+    };
+
+    // Modern class-syntax friendly:
+    try {
+      var AgentpkiVerifyClass = class extends HTMLElement {
+        static get observedAttributes() { return ['token', 'size', 'theme']; }
+        connectedCallback() { this._sync(); }
+        attributeChangedCallback(_n, o, n) { if (o !== n) this._sync(); }
+        _sync() {
+          var token = this.getAttribute('token') || '';
+          var size = this.getAttribute('size') || 'medium';
+          var theme = this.getAttribute('theme') || 'auto';
+          this.setAttribute('data-agentpki-verify', token);
+          this.setAttribute('data-agentpki-size', size);
+          this.setAttribute('data-agentpki-theme', theme);
+          this.__agentpki_done = false;
+          if (token) verifyOne(this);
+        }
+      };
+      window.customElements.define('agentpki-verify', AgentpkiVerifyClass);
+    } catch (_e) {
+      // Legacy fallback (pre-class CE)
+      try { window.customElements.define('agentpki-verify', AgentpkiVerify); } catch (_ee) {}
+    }
+  }
 })();

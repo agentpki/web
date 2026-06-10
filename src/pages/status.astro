@@ -1,0 +1,268 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Status — AgentPKI"
+  description="Live operational health of every public AgentPKI surface. Verifier, demo issuer, snapshot store, MCP server. Auto-refreshing edge probe + 7-day verdict history."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-8">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      System status &middot; auto-refreshing
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
+      <span id="status-headline">Checking systems…</span>
+    </h1>
+    <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+      Live probe from the Cloudflare edge. Every 15 seconds this page runs the full
+      mint → verify pipeline, plus three side checks. If any component degrades, the dot turns yellow;
+      if the verifier itself fails, the page turns red.
+    </p>
+
+    <div class="flex flex-wrap gap-3 text-xs font-mono text-[color:var(--color-text-muted)] mt-4">
+      <span>Source: <a href="/api/status" class="underline text-[color:var(--color-accent-bright)]">/api/status</a></span>
+      <span>·</span>
+      <span>Last checked: <span id="last-checked">—</span></span>
+      <span>·</span>
+      <span>For traffic + verdict trends, see <a href="/stats" class="underline text-[color:var(--color-accent-bright)]">/stats</a></span>
+    </div>
+  </section>
+
+  <!-- Component cards -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <div id="components" class="grid sm:grid-cols-2 gap-4">
+      <!-- 4 cards injected by JS -->
+      <div class="status-card status-card-loading">Loading verifier…</div>
+      <div class="status-card status-card-loading">Loading demo issuer…</div>
+      <div class="status-card status-card-loading">Loading snapshot store…</div>
+      <div class="status-card status-card-loading">Loading MCP server…</div>
+    </div>
+  </section>
+
+  <!-- 7-day verdict ribbon -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-xl font-semibold mb-3">7-day verdict ribbon</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
+      Each cell is one day. Green = allow share &gt; 90%. Yellow = 50–90% (mixed). Red = mostly deny (something's off). Hover for raw counts.
+    </p>
+    <div id="ribbon" class="flex gap-2 h-16 items-stretch"></div>
+  </section>
+
+  <!-- Incident log -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+    <h2 class="text-xl font-semibold mb-3">Incident log</h2>
+    <div id="incidents" class="text-sm text-[color:var(--color-text-muted)]">
+      No incidents reported. All systems have been operational since launch.
+    </div>
+    <p class="text-xs text-[color:var(--color-text-muted)] mt-4">
+      Need to report a problem? Email <a href="mailto:hello@agentpki.dev" class="underline">hello@agentpki.dev</a>
+      or open an issue at <a href="https://github.com/agentpki" class="underline">github.com/agentpki</a>.
+    </p>
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .status-card {
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20, 20, 30, 0.4);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .status-card-loading {
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+    .status-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .status-card-name {
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+    .status-card-dot {
+      display: inline-block;
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-card-endpoint {
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      word-break: break-all;
+      margin-bottom: 0.5rem;
+    }
+    .status-card-meta {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .status-card-error {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 0.4rem;
+      color: #fca5a5;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+    }
+
+    /* Status color variants */
+    .status-card-operational { border-color: rgba(34, 197, 94, 0.4); }
+    .status-card-operational .status-card-dot { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+    .status-card-degraded { border-color: rgba(251, 191, 36, 0.4); }
+    .status-card-degraded .status-card-dot { background: #fbbf24; box-shadow: 0 0 8px rgba(251,191,36,0.6); }
+    .status-card-down { border-color: rgba(239, 68, 68, 0.6); background: rgba(239,68,68,0.05); }
+    .status-card-down .status-card-dot { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.7); animation: status-pulse 1.4s ease-in-out infinite; }
+
+    @keyframes status-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Headline state */
+    .status-headline-operational { color: #4ade80; }
+    .status-headline-degraded { color: #fbbf24; }
+    .status-headline-down { color: #f87171; }
+
+    /* 7-day ribbon */
+    .ribbon-cell {
+      flex: 1 1 0;
+      min-width: 0;
+      border-radius: 0.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.65rem;
+      font-family: ui-monospace, monospace;
+      color: rgba(255,255,255,0.85);
+      cursor: default;
+      transition: transform 0.15s;
+    }
+    .ribbon-cell:hover { transform: translateY(-2px); }
+    .ribbon-cell-good   { background: linear-gradient(180deg, rgba(34,197,94,0.5), rgba(34,197,94,0.25)); }
+    .ribbon-cell-mixed  { background: linear-gradient(180deg, rgba(251,191,36,0.5), rgba(251,191,36,0.25)); }
+    .ribbon-cell-bad    { background: linear-gradient(180deg, rgba(239,68,68,0.6), rgba(239,68,68,0.3)); }
+    .ribbon-cell-empty  { background: rgba(120,120,140,0.15); color: rgba(255,255,255,0.4); }
+  </style>
+
+  <script is:inline>
+    (function () {
+      var POLL_MS = 15000;
+
+      function setHeadline(status) {
+        var head = document.getElementById('status-headline');
+        head.className = ''; // reset
+        if (status === 'operational') {
+          head.textContent = 'All systems operational';
+          head.className = 'status-headline-operational';
+        } else if (status === 'degraded') {
+          head.textContent = 'Partial degradation';
+          head.className = 'status-headline-degraded';
+        } else if (status === 'down') {
+          head.textContent = 'Major outage';
+          head.className = 'status-headline-down';
+        } else {
+          head.textContent = 'Checking systems…';
+        }
+      }
+
+      function statusLabel(s) {
+        if (s === 'operational') return 'Operational';
+        if (s === 'degraded') return 'Degraded';
+        if (s === 'down') return 'Down';
+        return 'Unknown';
+      }
+
+      function renderComponents(components) {
+        var box = document.getElementById('components');
+        box.innerHTML = '';
+        for (var i = 0; i < components.length; i++) {
+          var c = components[i];
+          var card = document.createElement('div');
+          card.className = 'status-card status-card-' + c.status;
+          card.innerHTML =
+            '<div class="status-card-head">' +
+              '<span class="status-card-name">' + c.name + '</span>' +
+              '<span class="status-card-dot" aria-hidden="true"></span>' +
+            '</div>' +
+            '<div class="status-card-endpoint">' + c.endpoint + '</div>' +
+            '<div class="status-card-meta">' +
+              '<span>' + statusLabel(c.status) + '</span>' +
+              '<span>' + c.latency_ms + ' ms</span>' +
+            '</div>' +
+            (c.last_error ? '<div class="status-card-error">' + c.last_error + '</div>' : '');
+          box.appendChild(card);
+        }
+      }
+
+      function renderRibbon(stats) {
+        var box = document.getElementById('ribbon');
+        box.innerHTML = '';
+        var days = (stats && stats.last_7_days) || {};
+        // Build last 7 keys (UTC), oldest → newest
+        var keys = [];
+        var now = new Date();
+        for (var i = 6; i >= 0; i--) {
+          var d = new Date(now.getTime() - i * 86400 * 1000);
+          var key = d.toISOString().slice(0, 10);
+          keys.push(key);
+        }
+        for (var j = 0; j < keys.length; j++) {
+          var key = keys[j];
+          var dayInfo = days[key] || {};
+          var allow = dayInfo.allow || 0;
+          var deny = dayInfo.deny || 0;
+          var total = allow + deny;
+          var cls = 'ribbon-cell-empty';
+          var label = '—';
+          if (total > 0) {
+            var allowShare = allow / total;
+            cls = allowShare > 0.9 ? 'ribbon-cell-good' :
+                  allowShare > 0.5 ? 'ribbon-cell-mixed' :
+                  'ribbon-cell-bad';
+            label = total + '';
+          }
+          var cell = document.createElement('div');
+          cell.className = 'ribbon-cell ' + cls;
+          cell.title = key + ' · allow=' + allow + ' deny=' + deny;
+          cell.innerHTML =
+            '<div>' + label + '</div>' +
+            '<div style="opacity:.7;">' + key.slice(5) + '</div>';
+          box.appendChild(cell);
+        }
+      }
+
+      function tick() {
+        fetch('/api/status', { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            setHeadline(j.status);
+            renderComponents(j.components);
+            renderRibbon(j.verify_stats);
+            var checked = new Date(j.checked_at).toLocaleTimeString();
+            document.getElementById('last-checked').textContent = checked;
+          })
+          .catch(function (e) {
+            setHeadline('down');
+            document.getElementById('components').innerHTML =
+              '<div class="status-card status-card-down" style="grid-column:1 / -1;">' +
+                '<div class="status-card-head"><span class="status-card-name">Status API unreachable</span><span class="status-card-dot"></span></div>' +
+                '<div class="status-card-error">' + (e.message || 'fetch failed') + '</div>' +
+              '</div>';
+          });
+      }
+
+      tick();
+      setInterval(tick, POLL_MS);
+    })();
+  </script>
+</Base>

@@ -7,7 +7,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 ---
 
 <header id="site-nav" class="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg)]/70 backdrop-blur-xl sticky top-0 z-50 transition-all">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+  <div class="max-w-none px-2 sm:px-3 lg:px-4 py-4 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2 font-medium tracking-tight">
       <img src="/favicon.svg" alt="" class="w-7 h-7" />
       <span>AgentPKI</span>
@@ -19,14 +19,14 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
       <a href="/pricing" class={`hidden sm:inline transition ${isActive('/pricing') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Pricing</a>
       <a href="/spec" class={`transition ${isActive('/spec') ? 'text-[color:var(--color-text)]' : 'text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]'}`}>Spec</a>
       <a href="https://github.com/agentpki" class="hidden md:inline text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] transition">GitHub</a>
-      <a href="https://dashboard.agentpki.dev"
+      <a href="/account"
          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[color:var(--color-accent)]/40 text-[color:var(--color-accent-bright)] hover:bg-[color:var(--color-accent)]/10 transition">
         Sign in
       </a>
       <a id="nav-signup-cta"
-         href="https://dashboard.agentpki.dev"
+         href="/keys"
          class="opacity-0 pointer-events-none translate-y-1 transition inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[color:var(--color-accent)] text-black font-medium hover:bg-[color:var(--color-accent-bright)] transition">
-        Sign up free &rarr;
+        Get API key &rarr;
       </a>
     </nav>
   </div>

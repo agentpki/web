@@ -10,7 +10,7 @@ const { title, description } = Astro.props;
 ---
 <Base title={`${title} — AgentPKI`} description={description}>
   <header class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-5 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2 text-sm font-medium tracking-tight">
         <img src="/favicon.svg" alt="" class="w-6 h-6" />
         <span>AgentPKI</span>
@@ -23,14 +23,14 @@ const { title, description } = Astro.props;
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-6 py-12">
+  <main class="max-w-none px-2 sm:px-3 lg:px-4 py-12">
     <article class="prose prose-invert prose-spec max-w-none">
       <slot />
     </article>
   </main>
 
   <footer class="border-t border-[color:var(--color-border)] mt-16">
-    <div class="max-w-4xl mx-auto px-6 py-6 text-xs text-[color:var(--color-text-muted)] flex flex-wrap gap-x-4 gap-y-2 justify-between">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-6 text-xs text-[color:var(--color-text-muted)] flex flex-wrap gap-x-4 gap-y-2 justify-between">
       <span>AgentPKI · v0.1 draft · 2026 · Apache 2.0</span>
       <span>Feedback: <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">hello@agentpki.dev</a></span>
     </div>

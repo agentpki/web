@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For site operators — AgentPKI Intent"
+  description="Half your traffic is bots. Some are honest shopping assistants, some are scalpers. AgentPKI Intent lets honest bots declare what they're here to do — your policy decides what gets through."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For site operators
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        Honest bots through. Scalpers out.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        It's tour-announcement morning. 100,000 visitors hit your marketplace. 80% of them are bots. Some are real fans' shopping assistants (you want them). Some are scalper farms with rotating IPs (you don't). Your bot defender treats them the same and blocks both — real fans get angry, scalpers eventually break through anyway.
+      </p>
+      <p class="text-lg text-[color:var(--color-text)] font-medium max-w-3xl leading-relaxed mt-5">
+        AgentPKI Intent is the positive signal your bot defender doesn't have today. Bots arrive with declared intent. You publish a policy saying what you accept. The verifier does the matching at the edge in milliseconds.
+      </p>
+    </div>
+  </section>
+
+  <!-- THE TICKET DROP SCENE — abbreviated 2-column compare -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3 text-balance">
+        Two ways the ticket drop goes.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Same marketplace, same Black-Friday-scale bot traffic, two configurations.
+      </p>
+
+      <div class="grid lg:grid-cols-2 gap-5 mb-12">
+
+        <div class="story-col story-col-without">
+          <p class="story-col-header">Today — heuristic-only defense</p>
+          <ul class="bullet-list">
+            <li>Cloudflare/Akamai sees 80k bot requests in 5 minutes</li>
+            <li>It blocks all of them. False positive rate ~30%.</li>
+            <li>Real fans whose shopping assistants tried to help get bounced</li>
+            <li>Scalper farms with residential-IP rotation get through anyway after 50ms latency</li>
+            <li>Checkout completes for 4,000 buyers — half of them resellers</li>
+            <li>Negative press the next day: "marketplace blocked real customers"</li>
+          </ul>
+          <p class="story-col-summary story-col-summary-bad">
+            The heuristic can't tell good from bad, so it blocks everyone. The scalpers still win.
+          </p>
+        </div>
+
+        <div class="story-col story-col-with">
+          <p class="story-col-header">With AgentPKI Intent policy</p>
+          <ul class="bullet-list">
+            <li>Marketplace publishes <code class="text-xs">/.well-known/agentpki-intent-policy.json</code>: accept `purchase` at 10 rpm, deny `automate-account`, `evade-rate-limit`, `manipulate-rank`</li>
+            <li>Honest shopping assistants present their AgentPKI passport declaring intent `purchase`</li>
+            <li>Verifier checks policy in 50ms, allows them through</li>
+            <li>Scalper farms either decline to present a passport (denied — `unspecified`) or declare a denied intent (denied directly)</li>
+            <li>Real fans complete checkout at normal speed; scalpers can't get past the verifier</li>
+            <li>Audit log records every declaration for after-the-fact dispute resolution</li>
+          </ul>
+          <p class="story-col-summary story-col-summary-good">
+            The site finally has a positive signal. Honest bots get through, adversarial bots don't.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE STEPS -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Three steps for a site.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        AgentPKI Intent plugs into your existing bot defense (Cloudflare, Akamai, HUMAN, DataDome) as an additional positive signal. Doesn't replace anything. Just adds clarity on the bots that bothered to identify.
+      </p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3 class="step-title">Build your policy</h3>
+          <p class="step-desc">
+            Decide which intents you accept (<code class="text-xs">purchase</code>, <code class="text-xs">monitor</code>, <code class="text-xs">read-public</code>), throttle (<code class="text-xs">extract-train</code>), and deny (<code class="text-xs">scrape-bulk</code>, <code class="text-xs">manipulate-rank</code>). Use the visual <a href="/policy-builder" class="underline">/policy-builder</a> or write the JSON by hand.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3 class="step-title">Publish at well-known URL</h3>
+          <p class="step-desc">
+            Drop your policy JSON at <code class="text-xs">/.well-known/agentpki-intent-policy.json</code>. Public, cacheable, no auth, no infrastructure. The verifier reads it on demand.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3 class="step-title">Check intent_match in your stack</h3>
+          <p class="step-desc">
+            On each request, your edge code calls <code class="text-xs">verify.agentpki.dev</code> with the agent's passport and your site as <code class="text-xs">intent_check.site</code>. Verdict comes back in ~50ms with <code class="text-xs">intent_match.overall</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRY IT -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16">
+      <div class="rounded-2xl border border-[color:var(--color-accent)]/30 bg-[color:var(--color-accent)]/[0.04] p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-3">
+          Hands-on
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-4 text-balance">
+          Build your policy in 60 seconds.
+        </h2>
+        <p class="text-[color:var(--color-text-muted)] mb-7 max-w-2xl leading-relaxed">
+          Click through the intent vocabulary, decide accept/throttle/deny on each, get back a copyable JSON file. Drop it at your well-known URL. Then watch a verify call against it via the audit log.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/policy-builder"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+            Open Policy Builder
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="/intent-log" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+            Watch the live audit log
+          </a>
+          <a href="/spec/v0.3-intent" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+            Read the spec
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5">
+        Who we want to work with first.
+      </h2>
+      <ul class="space-y-2 text-[color:var(--color-text-muted)] mb-8">
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>Ticket marketplaces and e-commerce platforms with scalper / scraping problems</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>Review aggregators and dating apps facing engagement-farming bots</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>Cloudflare, Akamai, HUMAN, DataDome, Kasada — as the bot-defense channel partners who would integrate this signal</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>SaaS platforms whose APIs are being scraped at scale</span></li>
+      </ul>
+      <button type="button" data-contact-modal data-contact-source="for-sites"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .story-col {
+      border: 1px solid var(--color-border);
+      border-radius: 0.95rem;
+      padding: 1.5rem 1.65rem;
+      display: flex; flex-direction: column;
+      background: linear-gradient(170deg, rgba(20,20,30,0.55) 0%, rgba(20,20,30,0.25) 100%);
+    }
+    .story-col-without { border-color: rgba(239,68,68,0.3); }
+    .story-col-with    { border-color: rgba(34,197,94,0.35); }
+    .story-col-header {
+      font-size: 0.72rem;
+      font-family: ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
+    }
+    .story-col-without .story-col-header { color: #f87171; }
+    .story-col-with    .story-col-header { color: #4ade80; }
+
+    .bullet-list {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      flex: 1;
+    }
+    .bullet-list li {
+      position: relative; padding-left: 1.2rem;
+      font-size: 0.92rem; line-height: 1.55;
+      color: var(--color-text);
+    }
+    .bullet-list li::before {
+      content: '·'; position: absolute; left: 0.3rem; top: -0.15rem;
+      color: var(--color-text-muted); font-size: 1.4rem;
+    }
+    .bullet-list li code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+
+    .story-col-summary {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+    .story-col-summary-bad  { color: #fca5a5; }
+    .story-col-summary-good { color: #86efac; }
+
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      font-weight: 700; font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .step-title {
+      font-size: 1.1rem; font-weight: 600;
+      margin-bottom: 0.55rem; color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem; line-height: 1.55;
+    }
+    .step-desc code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+  </style>
+</Base>

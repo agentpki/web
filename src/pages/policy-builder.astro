@@ -1,0 +1,501 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+// Canonical v0.3 intent vocabulary (§7). Keep this in sync with
+// the spec page — if the spec changes, this list MUST change too.
+const INTENT_CATALOG = [
+  { id: 'monitor',          group: 'Read',      desc: 'Periodic health/price/availability checks.' },
+  { id: 'index',            group: 'Read',      desc: 'Search-engine-style crawling.' },
+  { id: 'archive',          group: 'Read',      desc: 'Snapshot for permanent preservation.' },
+  { id: 'extract-train',    group: 'Read',      desc: 'Collect content for AI training.' },
+  { id: 'browse-catalog',   group: 'Read',      desc: 'Read product/content catalog.' },
+  { id: 'read-public',      group: 'Read',      desc: 'Generic read of public content.' },
+  { id: 'purchase',         group: 'Write',     desc: 'Buy a product or service.' },
+  { id: 'book',             group: 'Write',     desc: 'Reserve a calendar slot or room.' },
+  { id: 'submit-form',      group: 'Write',     desc: 'Apply, register, or contact.' },
+  { id: 'post-content',     group: 'Write',     desc: 'Comment, review, message, or post.' },
+  { id: 'subscribe',        group: 'Write',     desc: 'Sign up for email/feed.' },
+  { id: 'react',            group: 'Write',     desc: 'Like, upvote, react, or share.' },
+  { id: 'transact-funds',   group: 'High',      desc: 'Actually move money.' },
+  { id: 'act-on-behalf',    group: 'High',      desc: 'Act as a verified human principal.' },
+  { id: 'scrape-bulk',      group: 'Adversarial', desc: 'Bulk content extraction beyond robots.txt.' },
+  { id: 'evade-rate-limit', group: 'Adversarial', desc: 'Bypass rate limits.' },
+  { id: 'automate-account', group: 'Adversarial', desc: 'Unattended account automation.' },
+  { id: 'manipulate-rank',  group: 'Adversarial', desc: 'Vote, review, follower gaming.' },
+];
+---
+<Base
+  title="Intent Policy Builder — AgentPKI"
+  description="Build your site's agentpki-intent-policy.json visually. Click to accept, deny, or throttle each canonical intent. Live preview against any test intent. Copy / download the JSON, drop it at /.well-known/agentpki-intent-policy.json on your site."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      v0.3-intent &middot; site-side
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
+      Build your site's intent policy.
+    </h1>
+    <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] max-w-3xl mb-3 leading-relaxed">
+      Click to decide what each canonical intent means at <em>your</em> site. We generate a v0.3-conformant JSON document; you drop it at <code class="text-[color:var(--color-accent-bright)]">https://&lt;your-site&gt;/.well-known/agentpki-intent-policy.json</code>. From that moment, any v0.3 verifier (including ours) checks every agent passport against your policy.
+    </p>
+    <p class="text-sm text-[color:var(--color-text-muted)]">
+      Need the spec? See <a href="/spec/v0.3-intent" class="underline text-[color:var(--color-accent-bright)]">/spec/v0.3-intent §4</a>. Want to learn how the verifier consumes this? See <a href="/spec/v0.3-intent#5-verifier-behavior" class="underline text-[color:var(--color-accent-bright)]">§5</a>.
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Builder + preview grid
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-12">
+    <div class="grid lg:grid-cols-[1fr,1fr] gap-6">
+
+      <!-- ── LEFT: form ── -->
+      <div class="space-y-5">
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5">
+          <h3 class="font-semibold mb-3">Site basics</h3>
+          <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Hostname</label>
+          <input id="pb-site" type="text" value="example.com"
+            class="w-full px-3 py-2 mb-3 rounded bg-[color:var(--color-bg)] border border-[color:var(--color-border)] text-sm font-mono text-[color:var(--color-text)] focus:outline-none focus:border-[color:var(--color-accent)]" />
+          <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Contact (abuse) email</label>
+          <input id="pb-abuse" type="email" placeholder="abuse@example.com"
+            class="w-full px-3 py-2 mb-3 rounded bg-[color:var(--color-bg)] border border-[color:var(--color-border)] text-sm font-mono text-[color:var(--color-text)] focus:outline-none focus:border-[color:var(--color-accent)]" />
+          <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Human-readable policy URL (optional)</label>
+          <input id="pb-policy-url" type="url" placeholder="https://example.com/bots"
+            class="w-full px-3 py-2 rounded bg-[color:var(--color-bg)] border border-[color:var(--color-border)] text-sm font-mono text-[color:var(--color-text)] focus:outline-none focus:border-[color:var(--color-accent)]" />
+        </div>
+
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5">
+          <h3 class="font-semibold mb-3">Intent decisions</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)] mb-4">Cycle through &nbsp;<span class="pb-chip pb-chip-untouched">untouched</span>&nbsp; → <span class="pb-chip pb-chip-allow">allow</span>&nbsp; → <span class="pb-chip pb-chip-throttle">throttle</span>&nbsp; → <span class="pb-chip pb-chip-deny">deny</span>&nbsp; → <span class="pb-chip pb-chip-untouched">untouched</span>&nbsp; by clicking.</p>
+
+          <div id="pb-intent-grid" class="space-y-5"></div>
+
+          <details class="mt-5">
+            <summary class="text-xs text-[color:var(--color-text-muted)] cursor-pointer">Add a custom extension intent (x-*) →</summary>
+            <div class="flex gap-2 mt-2">
+              <input id="pb-custom" type="text" placeholder="x-myvendor-pricecheck"
+                class="flex-1 px-3 py-1.5 rounded bg-[color:var(--color-bg)] border border-[color:var(--color-border)] text-sm font-mono text-[color:var(--color-text)] focus:outline-none focus:border-[color:var(--color-accent)]" />
+              <button id="pb-custom-add" class="pb-btn pb-btn-secondary">Add</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- ── RIGHT: live preview + JSON output ── -->
+      <div class="space-y-5">
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5">
+          <h3 class="font-semibold mb-3">Test it live</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)] mb-3">Try an agent declaring this intent. We apply the §4.5 match rules locally.</p>
+          <div class="flex gap-2 mb-3">
+            <input id="pb-test-intent" type="text" value="purchase"
+              class="flex-1 px-3 py-2 rounded bg-[color:var(--color-bg)] border border-[color:var(--color-border)] text-sm font-mono text-[color:var(--color-text)] focus:outline-none focus:border-[color:var(--color-accent)]" />
+          </div>
+          <div id="pb-test-result" class="pb-result pb-result-idle">
+            <span class="pb-result-icon">?</span>
+            <span class="pb-result-text">Type an intent above to see how your policy treats it.</span>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold">Generated <code class="text-xs">agentpki-intent-policy.json</code></h3>
+            <div class="flex gap-2">
+              <button id="pb-copy" class="pb-btn pb-btn-secondary">Copy</button>
+              <button id="pb-download" class="pb-btn pb-btn-secondary">Download</button>
+            </div>
+          </div>
+          <pre id="pb-output" class="pb-output">(start clicking intents on the left)</pre>
+          <p class="text-xs text-[color:var(--color-text-muted)] mt-3">
+            Host this at <code class="text-[color:var(--color-accent-bright)]">https://&lt;your-site&gt;/.well-known/agentpki-intent-policy.json</code> with <code>Content-Type: application/json</code>. Cache-Control recommended: <code>public, max-age=300, stale-while-revalidate=3600</code>.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Hosting instructions
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+    <h2 class="text-2xl font-semibold mb-3">How to host this</h2>
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30 p-4">
+        <p class="text-sm font-semibold mb-2">Cloudflare Pages</p>
+        <p class="text-xs text-[color:var(--color-text-muted)] mb-2">Drop the file in <code>public/.well-known/agentpki-intent-policy.json</code> and add an entry to <code>_headers</code>:</p>
+        <pre class="text-xs overflow-x-auto text-[color:var(--color-text-muted)] font-mono">{`/.well-known/agentpki-intent-policy.json
+  Content-Type: application/json`}</pre>
+      </div>
+      <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30 p-4">
+        <p class="text-sm font-semibold mb-2">Nginx</p>
+        <pre class="text-xs overflow-x-auto text-[color:var(--color-text-muted)] font-mono">{`location = /.well-known/agentpki-intent-policy.json {
+  alias /etc/site/intent-policy.json;
+  add_header Content-Type application/json;
+}`}</pre>
+      </div>
+      <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30 p-4">
+        <p class="text-sm font-semibold mb-2">Anywhere static</p>
+        <p class="text-xs text-[color:var(--color-text-muted)]">Vercel, Netlify, S3 + CloudFront, GitHub Pages, plain Nginx — anything that serves a static JSON file at a well-known URL works. Just verify Content-Type.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-lg border border-[color:var(--color-accent)]/40 bg-[color:var(--color-accent)]/[0.06] p-5">
+      <p class="font-semibold mb-2">Verify it landed correctly</p>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-3">After publishing, test the live verifier picks it up:</p>
+      <pre class="text-xs overflow-x-auto text-[color:var(--color-text)] font-mono">{`# Mint a token declaring purchase intent, verify against your site
+TOKEN=$(curl -s 'https://demo.agentpki.dev/mint?intent=purchase' | jq -r .token)
+curl -s -X POST 'https://verify.agentpki.dev/v1/verify' \\
+  -H 'content-type: application/json' \\
+  -d "{\\"token\\":\\"$TOKEN\\",\\"intent_check\\":{\\"site\\":\\"<your-site>\\"}}" | jq .intent_match`}</pre>
+    </div>
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .pb-chip {
+      display: inline-block; padding: 0.1rem 0.5rem; border-radius: 0.3rem;
+      font-size: 0.7rem; font-family: ui-monospace, monospace; font-weight: 600;
+    }
+    .pb-chip-untouched { background: rgba(120,120,140,0.2); color: var(--color-text-muted); }
+    .pb-chip-allow     { background: rgba(34,197,94,0.18); color: #4ade80; }
+    .pb-chip-throttle  { background: rgba(251,191,36,0.18); color: #fbbf24; }
+    .pb-chip-deny      { background: rgba(239,68,68,0.18); color: #f87171; }
+
+    /* Intent cycle button */
+    .pb-intent-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.3);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .pb-intent-row:hover { border-color: var(--color-border-bright); }
+    .pb-intent-cycle {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 5.5rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 0.35rem;
+      font-size: 0.72rem; font-weight: 700; font-family: ui-monospace, monospace;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .pb-intent-cycle:hover { transform: translateY(-1px); }
+    .pb-intent-cycle[data-state="untouched"] {
+      background: transparent;
+      color: var(--color-text-muted);
+      border-color: var(--color-border-bright);
+    }
+    .pb-intent-cycle[data-state="allow"]    { background: rgba(34,197,94,0.18);  color: #4ade80; border-color: rgba(34,197,94,0.4); }
+    .pb-intent-cycle[data-state="throttle"] { background: rgba(251,191,36,0.18); color: #fbbf24; border-color: rgba(251,191,36,0.4); }
+    .pb-intent-cycle[data-state="deny"]     { background: rgba(239,68,68,0.18);  color: #f87171; border-color: rgba(239,68,68,0.4); }
+    .pb-intent-body { flex: 1; min-width: 0; }
+    .pb-intent-name {
+      font-family: ui-monospace, monospace;
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 0.9rem;
+    }
+    .pb-intent-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-top: 0.1rem;
+    }
+    .pb-intent-extras {
+      display: flex; gap: 0.45rem; align-items: center;
+      flex-wrap: wrap; margin-top: 0.4rem;
+    }
+    .pb-intent-extras input {
+      width: 5rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.3rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+    }
+    .pb-intent-extras label {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      display: inline-flex; align-items: center; gap: 0.25rem;
+    }
+    .pb-intent-group-head {
+      font-size: 0.72rem;
+      font-family: ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .pb-group-label-adversarial { color: #f87171; }
+
+    /* Buttons / output */
+    .pb-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.4rem;
+      font-weight: 600; font-size: 0.85rem;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .pb-btn:hover { transform: translateY(-1px); }
+    .pb-btn-secondary {
+      background: rgba(167,139,250,0.12); color: var(--color-accent-bright); border-color: rgba(167,139,250,0.4);
+    }
+    .pb-output {
+      background: #0a0a14;
+      border: 1px solid var(--color-border);
+      border-radius: 0.4rem;
+      padding: 0.85rem;
+      font-size: 0.78rem;
+      color: #c8c8e0;
+      max-height: 24rem;
+      overflow: auto;
+      white-space: pre-wrap; word-break: break-all;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Test-intent result panel */
+    .pb-result {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.55rem;
+      font-size: 0.9rem;
+      border: 1px solid;
+    }
+    .pb-result-icon { font-size: 1.3rem; }
+    .pb-result-idle    { border-color: var(--color-border); background: rgba(20,20,30,0.4); color: var(--color-text-muted); }
+    .pb-result-allow   { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.08); color: #4ade80; }
+    .pb-result-throttle{ border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); color: #fbbf24; }
+    .pb-result-deny    { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.1);  color: #f87171; }
+    .pb-result-unmatched { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--color-accent-bright); }
+  </style>
+
+  <script is:inline define:vars={{ INTENT_CATALOG }}>
+    (function () {
+      // ── state ──
+      // decisions: { [intent: string]: { state: 'untouched'|'allow'|'throttle'|'deny', rpm?: number, daily?: number, require_attestation?: boolean, min_tier?: number } }
+      var state = {};
+      INTENT_CATALOG.forEach(function (i) { state[i.id] = { state: 'untouched' }; });
+
+      function cycleState(s) {
+        var order = ['untouched', 'allow', 'throttle', 'deny'];
+        return order[(order.indexOf(s) + 1) % order.length];
+      }
+
+      // ── render the intent grid ──
+      var grid = document.getElementById('pb-intent-grid');
+      var groups = {};
+      INTENT_CATALOG.forEach(function (i) {
+        (groups[i.group] = groups[i.group] || []).push(i);
+      });
+      var groupOrder = ['Read', 'Write', 'High', 'Adversarial'];
+      groupOrder.forEach(function (g) {
+        if (!groups[g]) return;
+        var head = document.createElement('div');
+        var advClass = g === 'Adversarial' ? ' pb-group-label-adversarial' : '';
+        head.className = 'pb-intent-group-head' + advClass;
+        head.textContent = g + ' intents';
+        grid.appendChild(head);
+        groups[g].forEach(function (i) { grid.appendChild(buildRow(i)); });
+      });
+
+      function buildRow(intent) {
+        var row = document.createElement('div');
+        row.className = 'pb-intent-row';
+        row.innerHTML =
+          '<button type="button" class="pb-intent-cycle" data-intent="' + intent.id + '" data-state="untouched">untouched</button>' +
+          '<div class="pb-intent-body">' +
+            '<div class="pb-intent-name">' + intent.id + '</div>' +
+            '<div class="pb-intent-desc">' + intent.desc + '</div>' +
+            '<div class="pb-intent-extras" data-extras="' + intent.id + '" style="display:none;">' +
+              '<label>rpm <input type="number" min="0" placeholder="-" data-rpm="' + intent.id + '" /></label>' +
+              '<label>daily <input type="number" min="0" placeholder="-" data-daily="' + intent.id + '" /></label>' +
+              '<label><input type="checkbox" data-attest="' + intent.id + '" /> require Mode B</label>' +
+              '<label>min tier <input type="number" min="1" max="3" placeholder="-" data-tier="' + intent.id + '" /></label>' +
+            '</div>' +
+          '</div>';
+        var btn = row.querySelector('.pb-intent-cycle');
+        var extras = row.querySelector('.pb-intent-extras');
+        btn.addEventListener('click', function () {
+          var current = state[intent.id].state;
+          var next = cycleState(current);
+          state[intent.id].state = next;
+          btn.setAttribute('data-state', next);
+          btn.textContent = next;
+          extras.style.display = (next === 'allow' || next === 'throttle') ? 'flex' : 'none';
+          render();
+        });
+        row.querySelectorAll('input').forEach(function (inp) {
+          inp.addEventListener('input', function () {
+            var rpm = row.querySelector('[data-rpm="' + intent.id + '"]').value;
+            var daily = row.querySelector('[data-daily="' + intent.id + '"]').value;
+            var attest = row.querySelector('[data-attest="' + intent.id + '"]').checked;
+            var tier = row.querySelector('[data-tier="' + intent.id + '"]').value;
+            state[intent.id].rpm = rpm ? parseInt(rpm, 10) : undefined;
+            state[intent.id].daily = daily ? parseInt(daily, 10) : undefined;
+            state[intent.id].require_attestation = attest || undefined;
+            state[intent.id].min_tier = tier ? parseInt(tier, 10) : undefined;
+            render();
+          });
+        });
+        return row;
+      }
+
+      // ── custom x-* intent add ──
+      document.getElementById('pb-custom-add').addEventListener('click', function () {
+        var v = document.getElementById('pb-custom').value.trim();
+        if (!/^x-[a-z0-9-]{1,40}$/.test(v)) { alert('Custom intents must match: x-[a-z0-9-]{1,40}'); return; }
+        if (state[v]) return;
+        var fake = { id: v, group: 'Custom', desc: 'Custom extension intent.' };
+        INTENT_CATALOG.push(fake);
+        state[v] = { state: 'untouched' };
+        var sep = document.createElement('div');
+        sep.className = 'pb-intent-group-head';
+        sep.textContent = 'Custom (x-*)';
+        if (!document.querySelector('[data-custom-group]')) {
+          sep.setAttribute('data-custom-group', '1');
+          grid.appendChild(sep);
+        }
+        grid.appendChild(buildRow(fake));
+        document.getElementById('pb-custom').value = '';
+        render();
+      });
+
+      // ── build the policy JSON ──
+      function buildPolicy() {
+        var site = document.getElementById('pb-site').value.trim() || 'example.com';
+        var abuse = document.getElementById('pb-abuse').value.trim();
+        var policyUrl = document.getElementById('pb-policy-url').value.trim();
+
+        var accepted = [];
+        var denied = [];
+        var throttled = [];
+
+        Object.keys(state).forEach(function (id) {
+          var d = state[id];
+          if (d.state === 'allow') {
+            var entry = { intent: id };
+            if (d.rpm || d.daily) entry.rate_limit = {};
+            if (d.rpm) entry.rate_limit.rpm = d.rpm;
+            if (d.daily) entry.rate_limit.daily = d.daily;
+            if (d.require_attestation) entry.require_attestation = true;
+            if (d.min_tier) entry.min_tier = d.min_tier;
+            accepted.push(entry);
+          } else if (d.state === 'throttle') {
+            var t = { intent: id };
+            if (d.rpm || d.daily) t.rate_limit = {};
+            if (d.rpm) t.rate_limit.rpm = d.rpm;
+            if (d.daily) t.rate_limit.daily = d.daily;
+            throttled.push(t);
+          } else if (d.state === 'deny') {
+            denied.push(id);
+          }
+        });
+
+        var doc = {
+          v: 1,
+          site: site,
+          updated_at: Math.floor(Date.now() / 1000),
+        };
+        if (accepted.length) doc.accepted = accepted;
+        if (denied.length) doc.denied = denied;
+        if (throttled.length) doc.throttled = throttled;
+        if (abuse || policyUrl) {
+          var contact = {};
+          if (abuse) contact.abuse = abuse.startsWith('mailto:') ? abuse : 'mailto:' + abuse;
+          doc.contact = contact;
+        }
+        if (policyUrl) doc.policy_url = policyUrl;
+        return doc;
+      }
+
+      // ── match logic (mirrors §4.5) ──
+      function matchIntent(intent, policy) {
+        if ((policy.denied || []).indexOf(intent) >= 0) return { d: 'deny', reason: 'in policy.denied' };
+        var t = (policy.throttled || []).filter(function (x) { return x.intent === intent; })[0];
+        if (t) return { d: 'throttle', reason: 'in policy.throttled', rate_limit: t.rate_limit };
+        var a = (policy.accepted || []).filter(function (x) { return x.intent === intent; })[0];
+        if (a) {
+          if (a.require_attestation) return { d: 'require_attestation', reason: 'requires Mode B' };
+          return { d: 'allow', rate_limit: a.rate_limit, reason: '' };
+        }
+        var w = (policy.accepted || []).filter(function (x) { return x.intent === '*'; })[0];
+        if (w) return { d: 'allow', rate_limit: w.rate_limit, reason: 'wildcard accepted' };
+        return { d: 'unmatched', reason: 'no rule matched' };
+      }
+
+      // ── render ──
+      function render() {
+        var doc = buildPolicy();
+        var hasRules = (doc.accepted || []).length + (doc.denied || []).length + (doc.throttled || []).length;
+        var out = document.getElementById('pb-output');
+        if (hasRules === 0) {
+          out.textContent = '(start clicking intents on the left)';
+        } else {
+          out.textContent = JSON.stringify(doc, null, 2);
+        }
+
+        // Re-run live test
+        var testIntent = document.getElementById('pb-test-intent').value.trim();
+        var resultEl = document.getElementById('pb-test-result');
+        if (!testIntent) {
+          resultEl.className = 'pb-result pb-result-idle';
+          resultEl.querySelector('.pb-result-icon').textContent = '?';
+          resultEl.querySelector('.pb-result-text').textContent = 'Type an intent above to see how your policy treats it.';
+          return;
+        }
+        if (hasRules === 0) {
+          resultEl.className = 'pb-result pb-result-idle';
+          resultEl.querySelector('.pb-result-icon').textContent = '?';
+          resultEl.querySelector('.pb-result-text').textContent = 'No rules yet — every intent will be unmatched.';
+          return;
+        }
+        var m = matchIntent(testIntent, doc);
+        var cls = m.d === 'allow' ? 'pb-result-allow' :
+                  m.d === 'throttle' ? 'pb-result-throttle' :
+                  m.d === 'deny' || m.d === 'require_attestation' ? 'pb-result-deny' :
+                  'pb-result-unmatched';
+        var icon = m.d === 'allow' ? '✓' : m.d === 'deny' ? '✗' : m.d === 'throttle' ? '⏳' : '?';
+        resultEl.className = 'pb-result ' + cls;
+        resultEl.querySelector('.pb-result-icon').textContent = icon;
+        var rateStr = m.rate_limit ? ' · ' + (m.rate_limit.rpm ? m.rate_limit.rpm + ' rpm' : '') + (m.rate_limit.daily ? ' · ' + m.rate_limit.daily + ' daily' : '') : '';
+        resultEl.querySelector('.pb-result-text').textContent =
+          '"' + testIntent + '" → ' + m.d + (m.reason ? ' (' + m.reason + ')' : '') + rateStr;
+      }
+
+      // ── wire up text inputs ──
+      ['pb-site', 'pb-abuse', 'pb-policy-url', 'pb-test-intent'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', render);
+      });
+
+      // ── copy / download ──
+      document.getElementById('pb-copy').addEventListener('click', function () {
+        var t = document.getElementById('pb-output').textContent;
+        navigator.clipboard.writeText(t);
+        var b = document.getElementById('pb-copy');
+        var old = b.textContent;
+        b.textContent = '✓ Copied';
+        setTimeout(function () { b.textContent = old; }, 1500);
+      });
+      document.getElementById('pb-download').addEventListener('click', function () {
+        var blob = new Blob([document.getElementById('pb-output').textContent], { type: 'application/json' });
+        var u = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = u; a.download = 'agentpki-intent-policy.json';
+        a.click();
+        URL.revokeObjectURL(u);
+      });
+
+      render();
+    })();
+  </script>
+</Base>

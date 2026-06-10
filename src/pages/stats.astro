@@ -1,0 +1,431 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Stats — AgentPKI"
+  description="Live status of the AgentPKI public infrastructure. Real-time trust contract self-test, issuer CRL state, build inventory, and surfaces currently shipped."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-12 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Live status &middot; updated on every page load</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mb-3">
+      AgentPKI by the numbers.
+    </h1>
+    <p class="text-[color:var(--color-text-muted)] max-w-3xl text-base sm:text-lg leading-relaxed">
+      Everything on this page reflects what&rsquo;s live in production <em>right now</em>. The trust-contract block re-fires every time you load this page &mdash; if it ever stops returning the expected three verdicts, the trust system regressed and we want to know about it.
+    </p>
+  </section>
+
+  <!-- ════════════ REAL VERIFIER COUNTERS (KV-backed) ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-8">
+    <div class="rounded-2xl border border-emerald-500/40 bg-emerald-950/15 p-6 relative overflow-hidden">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block w-3 h-3 rounded-full bg-emerald-400 animate-pulse" style="box-shadow:0 0 14px currentColor;"></span>
+        <p class="text-xs font-mono tracking-widest uppercase font-bold text-emerald-300">LIVE COUNTERS &middot; verify.agentpki.dev/v1/stats</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        <div class="rounded-xl border border-emerald-500/20 bg-black/40 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-emerald-300 mb-1">TOTAL VERIFICATIONS</p>
+          <div id="counter-total" class="text-3xl font-bold text-white tabular-nums">—</div>
+          <p class="text-xs text-emerald-200/60 mt-1">All-time, since counters shipped 2026-06-08</p>
+        </div>
+        <div class="rounded-xl border border-emerald-500/20 bg-black/40 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-emerald-300 mb-1">VERDICT: ALLOW</p>
+          <div id="counter-allow" class="text-3xl font-bold text-emerald-300 tabular-nums">—</div>
+          <p class="text-xs text-emerald-200/60 mt-1">Real signed tokens</p>
+        </div>
+        <div class="rounded-xl border border-rose-500/30 bg-black/40 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-rose-300 mb-1">VERDICT: DENY</p>
+          <div id="counter-deny" class="text-3xl font-bold text-rose-300 tabular-nums">—</div>
+          <p class="text-xs text-rose-200/60 mt-1">Combined all failure reasons</p>
+        </div>
+        <div class="rounded-xl border border-amber-500/30 bg-black/40 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-amber-300 mb-1">VERIFICATIONS TODAY</p>
+          <div id="counter-today" class="text-3xl font-bold text-amber-300 tabular-nums">—</div>
+          <p class="text-xs text-amber-200/60 mt-1" id="counter-today-date">UTC day</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-mono tracking-widest uppercase text-emerald-300 mb-3">DENY BREAKDOWN (all-time)</p>
+        <div id="deny-breakdown" class="font-mono text-xs space-y-1">…</div>
+      </div>
+
+      <div class="mt-4">
+        <p class="text-xs font-mono tracking-widest uppercase text-emerald-300 mb-3">LAST 7 DAYS</p>
+        <div id="last7-bars" class="flex items-end gap-1 h-20">…</div>
+      </div>
+
+      <p class="text-[10px] text-emerald-300/50 mt-4 font-mono">
+        Counters reflect real /v1/verify calls. Privacy: no token, jti, issuer, or sub is stored — only verdict counts.
+      </p>
+    </div>
+  </section>
+
+  <!-- ════════════ TRUST CONTRACT (live self-test) ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <div class="rounded-2xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 p-6">
+      <div class="flex items-center gap-3 mb-5">
+        <span id="status-dot" class="inline-block w-3 h-3 rounded-full bg-amber-400 animate-pulse" style="box-shadow:0 0 14px currentColor;"></span>
+        <p class="text-xs font-mono tracking-widest uppercase font-bold" id="status-label" style="color:#fbbf24;">Running trust-contract self-test...</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-4">
+        <!-- Allow scenario -->
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-black/30 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-[color:var(--color-text-dim)] mb-2">SCENARIO 1 of 3</p>
+          <h3 class="text-base font-semibold mb-1 text-[color:var(--color-text)]">Real signed token</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)] mb-3">Mint a clean PASETO from the demo issuer, verify it. Expect: <code class="text-emerald-300">allow</code>.</p>
+          <div class="text-xs font-mono space-y-1">
+            <div>verdict: <span id="s1-verdict" class="font-bold text-amber-300">…</span></div>
+            <div>elapsed: <span id="s1-elapsed" class="text-violet-300">—</span> <span class="text-[color:var(--color-text-dim)]">ms</span></div>
+            <div>match:   <span id="s1-match" class="text-[color:var(--color-text-dim)]">—</span></div>
+          </div>
+        </div>
+
+        <!-- Tamper scenario -->
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-black/30 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-[color:var(--color-text-dim)] mb-2">SCENARIO 2 of 3</p>
+          <h3 class="text-base font-semibold mb-1 text-[color:var(--color-text)]">Tampered signature</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)] mb-3">Mint, flip 4 chars of Ed25519 sig, verify. Expect: <code class="text-rose-300">deny + bad_signature</code>.</p>
+          <div class="text-xs font-mono space-y-1">
+            <div>verdict: <span id="s2-verdict" class="font-bold text-amber-300">…</span></div>
+            <div>reason:  <span id="s2-reason" class="text-rose-300">—</span></div>
+            <div>elapsed: <span id="s2-elapsed" class="text-violet-300">—</span> <span class="text-[color:var(--color-text-dim)]">ms</span></div>
+            <div>match:   <span id="s2-match" class="text-[color:var(--color-text-dim)]">—</span></div>
+          </div>
+        </div>
+
+        <!-- Revoked scenario -->
+        <div class="rounded-xl border border-[color:var(--color-border)] bg-black/30 p-4">
+          <p class="text-[10px] font-mono tracking-widest uppercase text-[color:var(--color-text-dim)] mb-2">SCENARIO 3 of 3</p>
+          <h3 class="text-base font-semibold mb-1 text-[color:var(--color-text)]">Revoked-key signing</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)] mb-3">Mint via <code>?revoked=1</code>, verify. Expect: <code class="text-rose-300">deny + revoked_key</code>.</p>
+          <div class="text-xs font-mono space-y-1">
+            <div>verdict: <span id="s3-verdict" class="font-bold text-amber-300">…</span></div>
+            <div>reason:  <span id="s3-reason" class="text-rose-300">—</span></div>
+            <div>elapsed: <span id="s3-elapsed" class="text-violet-300">—</span> <span class="text-[color:var(--color-text-dim)]">ms</span></div>
+            <div>match:   <span id="s3-match" class="text-[color:var(--color-text-dim)]">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 text-xs text-[color:var(--color-text-dim)] font-mono">
+        <span>Total elapsed: <span id="total-elapsed" class="text-[color:var(--color-text)]">…</span> ms</span>
+        <span class="mx-3">·</span>
+        <span>Verifier: <code class="text-violet-300">verify.agentpki.dev</code></span>
+        <span class="mx-3">·</span>
+        <span>Demo issuer: <code class="text-violet-300">demo.agentpki.dev</code></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ ISSUER DIRECTORY (live fetch) ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-2xl font-semibold mb-3">Demo issuer directory &middot; live</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
+      Fetched from <code class="text-violet-300">demo.agentpki.dev/.well-known/agentpki-issuer.json</code> on page load. The verifier consults this same file to decide every <code>allow</code> / <code>deny</code>.
+    </p>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="rounded-xl border border-emerald-500/30 bg-emerald-950/15 p-4">
+        <p class="text-[10px] font-mono tracking-widest uppercase text-emerald-300 mb-2">CURRENT KEYS (active)</p>
+        <div id="dir-current" class="font-mono text-xs text-[color:var(--color-text)] space-y-1">…</div>
+      </div>
+      <div class="rounded-xl border border-rose-500/30 bg-rose-950/15 p-4">
+        <p class="text-[10px] font-mono tracking-widest uppercase text-rose-300 mb-2">REVOKED KEYS (in CRL)</p>
+        <div id="dir-revoked" class="font-mono text-xs text-[color:var(--color-text)] space-y-1">…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ BUILD INVENTORY (static, easy to grep) ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <h2 class="text-2xl font-semibold mb-3">Built &amp; shipped</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
+      Hand-maintained list. Every entry links to a live URL or a public repo &mdash; nothing here is a roadmap claim.
+    </p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <a href="https://github.com/agentpki" class="stat-card group" target="_blank" rel="noreferrer">
+        <div class="stat-num">16</div>
+        <div class="stat-label">public GitHub repos</div>
+        <div class="stat-sub">github.com/agentpki</div>
+      </a>
+      <a href="/spec/v0.2" class="stat-card group">
+        <div class="stat-num">v0.2</div>
+        <div class="stat-label">protocol spec live</div>
+        <div class="stat-sub">CRL · abuse · replay · KV directory</div>
+      </a>
+      <a href="https://www.npmjs.com/package/@agentpki/sdk" class="stat-card group" target="_blank" rel="noreferrer">
+        <div class="stat-num">3</div>
+        <div class="stat-label">npm packages published</div>
+        <div class="stat-sub">@agentpki/sdk · @agentpki/scopes · agentpki</div>
+      </a>
+      <a href="https://pypi.org/project/agentpki/" class="stat-card group" target="_blank" rel="noreferrer">
+        <div class="stat-num">1</div>
+        <div class="stat-label">PyPI package</div>
+        <div class="stat-sub">pip install agentpki</div>
+      </a>
+      <a href="/api-docs" class="stat-card group">
+        <div class="stat-num">9</div>
+        <div class="stat-label">production endpoints</div>
+        <div class="stat-sub">documented in OpenAPI 3.1</div>
+      </a>
+      <a href="/check" class="stat-card group">
+        <div class="stat-num">5,000+</div>
+        <div class="stat-label">phishing domains in heuristic</div>
+        <div class="stat-sub">PhishStats · OpenPhish · URLhaus · daily</div>
+      </a>
+      <a href="https://github.com/agentpki/verify-action" class="stat-card group" target="_blank" rel="noreferrer">
+        <div class="stat-num">7</div>
+        <div class="stat-label">new dev surfaces this week</div>
+        <div class="stat-sub">CLI · MCP · scopes · OpenAPI · Browser SDK · GitHub Action · Postman</div>
+      </a>
+      <a href="https://github.com/topics/agentpki" class="stat-card group" target="_blank" rel="noreferrer">
+        <div class="stat-num">Apache 2.0 / MIT</div>
+        <div class="stat-label">all open source</div>
+        <div class="stat-sub">github.com/topics/agentpki</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ════════════ SURFACES LIVE ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+    <h2 class="text-2xl font-semibold mb-3">Surfaces currently live in production</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-4">Click any to test. Every one returns real responses from real infrastructure.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 font-mono text-xs">
+      <a class="surface-row" href="https://verify.agentpki.dev/v1/verify" target="_blank" rel="noreferrer">verify.agentpki.dev/v1/verify</a>
+      <a class="surface-row" href="https://demo.agentpki.dev/mint" target="_blank" rel="noreferrer">demo.agentpki.dev/mint</a>
+      <a class="surface-row" href="https://demo.agentpki.dev/.well-known/agentpki-issuer.json" target="_blank" rel="noreferrer">demo.agentpki.dev/.well-known/agentpki-issuer.json</a>
+      <a class="surface-row" href="https://dashboard.agentpki.dev" target="_blank" rel="noreferrer">dashboard.agentpki.dev</a>
+      <a class="surface-row" href="https://mcp.agentpki.dev/.well-known/mcp-server.json" target="_blank" rel="noreferrer">mcp.agentpki.dev</a>
+      <a class="surface-row" href="/check">agentpki.dev/check</a>
+      <a class="surface-row" href="/api-docs">agentpki.dev/api-docs</a>
+      <a class="surface-row" href="/openapi.yaml">agentpki.dev/openapi.yaml</a>
+      <a class="surface-row" href="/postman.json">agentpki.dev/postman.json</a>
+      <a class="surface-row" href="/v1/sdk.js">agentpki.dev/v1/sdk.js</a>
+      <a class="surface-row" href="/bootstrap">agentpki.dev/bootstrap</a>
+      <a class="surface-row" href="/bootstrap.ps1">agentpki.dev/bootstrap.ps1</a>
+      <a class="surface-row" href="/api/v1/bootstrap-claim">agentpki.dev/api/v1/bootstrap-claim</a>
+      <a class="surface-row" href="/demo">agentpki.dev/demo</a>
+      <a class="surface-row" href="/spec">agentpki.dev/spec</a>
+    </div>
+  </section>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  .stat-card {
+    display: block;
+    padding: 1.1rem 1rem;
+    border-radius: 0.85rem;
+    border: 1px solid var(--color-border-bright);
+    background: rgba(15, 15, 24, 0.5);
+    transition: border-color 0.15s, transform 0.15s, background 0.15s;
+    text-decoration: none;
+  }
+  .stat-card:hover {
+    border-color: var(--color-accent);
+    background: rgba(15, 15, 24, 0.85);
+    transform: translateY(-2px);
+  }
+  .stat-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-accent-bright);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+  }
+  .stat-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    line-height: 1.4;
+  }
+  .surface-row {
+    display: block;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.45rem;
+    border: 1px solid var(--color-border);
+    background: rgba(0, 0, 0, 0.25);
+    color: var(--color-accent-bright);
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .surface-row:hover {
+    border-color: var(--color-accent);
+    background: rgba(167, 139, 250, 0.05);
+    color: var(--color-text);
+  }
+</style>
+
+<script is:inline>
+(async function() {
+  const VERIFIER = 'https://verify.agentpki.dev';
+  const DEMO_ISSUER = 'https://demo.agentpki.dev';
+
+  // ─── Real KV-backed counters from /v1/stats ───
+  try {
+    const stats = await fetch(VERIFIER + '/v1/stats').then(r => r.json());
+    const total = stats.total ?? 0;
+    const allow = stats.total_by_verdict?.allow ?? 0;
+    const deny = stats.total_by_verdict?.deny ?? 0;
+    document.getElementById('counter-total').textContent = total.toLocaleString();
+    document.getElementById('counter-allow').textContent = allow.toLocaleString();
+    document.getElementById('counter-deny').textContent = deny.toLocaleString();
+
+    const days = stats.last_7_days || [];
+    const today = days[days.length - 1];
+    if (today) {
+      document.getElementById('counter-today').textContent = today.total.toLocaleString();
+      document.getElementById('counter-today-date').textContent = today.date + ' UTC';
+    }
+
+    const reasons = stats.total_by_reason || {};
+    const denyEl = document.getElementById('deny-breakdown');
+    const entries = Object.entries(reasons).filter(([_, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+    if (entries.length === 0) {
+      denyEl.innerHTML = '<div style="color:#6b7280;">No denies yet — verifier is freshly counting.</div>';
+    } else {
+      const total_denies = deny || entries.reduce((s, [_, n]) => s + n, 0);
+      denyEl.innerHTML = entries.map(([reason, n]) => {
+        const pct = total_denies > 0 ? Math.round((n / total_denies) * 100) : 0;
+        return `<div style="display:flex;align-items:center;gap:0.5rem;">
+          <span style="color:#fca5a5;font-weight:700;min-width:9rem;">${reason}</span>
+          <span style="background:#fca5a5;height:6px;border-radius:3px;width:${Math.max(2, pct)}%;max-width:60%;"></span>
+          <span style="color:#fecaca;">${n.toLocaleString()}</span>
+          <span style="color:#9ca3af;">(${pct}%)</span>
+        </div>`;
+      }).join('');
+    }
+
+    // 7-day bar chart
+    const maxDay = Math.max(1, ...days.map(d => d.total || 0));
+    const barsEl = document.getElementById('last7-bars');
+    barsEl.innerHTML = days.map(d => {
+      const h = Math.max(2, Math.round((d.total / maxDay) * 70));
+      const allowPct = d.total > 0 ? (d.allow / d.total) : 0;
+      const allowH = Math.round(h * allowPct);
+      const denyH = h - allowH;
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;" title="${d.date} · ${d.total} total · ${d.allow} allow · ${d.deny} deny">
+        <div style="display:flex;flex-direction:column;justify-content:flex-end;height:70px;width:100%;align-items:center;">
+          <div style="background:#fca5a5;width:80%;height:${denyH}px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#6ee7b7;width:80%;height:${allowH}px;border-radius:${denyH===0 ? '2px 2px 0 0' : '0'};"></div>
+        </div>
+        <div style="font-family:ui-monospace,monospace;font-size:9px;color:#86efac;">${d.date.slice(5)}</div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    document.getElementById('counter-total').textContent = 'err';
+    document.getElementById('deny-breakdown').textContent = 'Failed to fetch /v1/stats: ' + e.message;
+  }
+
+  function setText(id, text, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    if (color) el.style.color = color;
+  }
+  async function timed(fn) {
+    const t0 = performance.now();
+    const out = await fn();
+    return { out, wall_ms: Math.round(performance.now() - t0) };
+  }
+  async function verify(token) {
+    const r = await fetch(VERIFIER + '/v1/verify', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    return await r.json();
+  }
+
+  let totalMs = 0;
+  let allMatched = true;
+
+  // ─── Scenario 1: allow ───
+  try {
+    const { out: mint } = await timed(() => fetch(DEMO_ISSUER + '/mint').then(r => r.json()));
+    const { out: r1, wall_ms } = await timed(() => verify(mint.token));
+    totalMs += wall_ms;
+    const ok = r1.verdict === 'allow';
+    if (!ok) allMatched = false;
+    setText('s1-verdict', r1.verdict, ok ? '#6ee7b7' : '#fca5a5');
+    setText('s1-elapsed', String(r1.elapsed_ms));
+    setText('s1-match', ok ? '✓ expected' : '✗ unexpected', ok ? '#6ee7b7' : '#fca5a5');
+  } catch (e) { setText('s1-verdict', 'error', '#fca5a5'); allMatched = false; }
+
+  // ─── Scenario 2: tampered signature ───
+  try {
+    const { out: mint } = await timed(() => fetch(DEMO_ISSUER + '/mint').then(r => r.json()));
+    const parts = mint.token.split('.');
+    const tampered = parts[0] + '.' + parts[1] + '.' + parts[2].slice(0, -4) + 'AAAA.' + parts[3];
+    const { out: r2, wall_ms } = await timed(() => verify(tampered));
+    totalMs += wall_ms;
+    const ok = r2.verdict === 'deny' && r2.failure_reason === 'bad_signature';
+    if (!ok) allMatched = false;
+    setText('s2-verdict', r2.verdict, ok ? '#fca5a5' : '#fca5a5');
+    setText('s2-reason', r2.failure_reason || '—');
+    setText('s2-elapsed', String(r2.elapsed_ms));
+    setText('s2-match', ok ? '✓ expected' : '✗ unexpected', ok ? '#6ee7b7' : '#fca5a5');
+  } catch (e) { setText('s2-verdict', 'error', '#fca5a5'); allMatched = false; }
+
+  // ─── Scenario 3: revoked-key signing ───
+  try {
+    const { out: mint } = await timed(() => fetch(DEMO_ISSUER + '/mint?revoked=1').then(r => r.json()));
+    const { out: r3, wall_ms } = await timed(() => verify(mint.token));
+    totalMs += wall_ms;
+    const ok = r3.verdict === 'deny' && r3.failure_reason === 'revoked_key';
+    if (!ok) allMatched = false;
+    setText('s3-verdict', r3.verdict, '#fca5a5');
+    setText('s3-reason', r3.failure_reason || '—');
+    setText('s3-elapsed', String(r3.elapsed_ms));
+    setText('s3-match', ok ? '✓ expected' : '✗ unexpected', ok ? '#6ee7b7' : '#fca5a5');
+  } catch (e) { setText('s3-verdict', 'error', '#fca5a5'); allMatched = false; }
+
+  setText('total-elapsed', String(totalMs));
+  const dot = document.getElementById('status-dot');
+  const lbl = document.getElementById('status-label');
+  if (allMatched) {
+    dot.style.background = '#6ee7b7';
+    dot.style.color = '#6ee7b7';
+    dot.classList.remove('animate-pulse');
+    lbl.style.color = '#6ee7b7';
+    lbl.textContent = 'TRUST CONTRACT · ALL 3 VERDICTS AS EXPECTED';
+  } else {
+    dot.style.background = '#fca5a5';
+    dot.style.color = '#fca5a5';
+    lbl.style.color = '#fca5a5';
+    lbl.textContent = 'TRUST CONTRACT · UNEXPECTED VERDICT — INVESTIGATE';
+  }
+
+  // ─── Issuer directory live fetch ───
+  try {
+    const dir = await fetch(DEMO_ISSUER + '/.well-known/agentpki-issuer.json').then(r => r.json());
+    const cur = document.getElementById('dir-current');
+    cur.innerHTML = (dir.current_keys || []).map(k =>
+      `<div><span style="color:#6ee7b7;font-weight:700;">${k.kid}</span> <span style="color:#9ca3af;">(${k.alg || 'Ed25519'})</span></div>`
+    ).join('') || '<div style="color:#6b7280;">(none)</div>';
+    const rev = document.getElementById('dir-revoked');
+    rev.innerHTML = (dir.revoked_keys || []).map(k => {
+      const at = k.revoked_at ? new Date(k.revoked_at * 1000).toISOString().slice(0, 10) : '?';
+      return `<div><span style="color:#fca5a5;font-weight:700;">${k.kid}</span> <span style="color:#9ca3af;">· revoked ${at} · ${k.reason || 'unspecified'}</span></div>`;
+    }).join('') || '<div style="color:#6b7280;">(none)</div>';
+  } catch (e) {
+    document.getElementById('dir-current').textContent = 'fetch failed';
+    document.getElementById('dir-revoked').textContent = 'fetch failed';
+  }
+})();
+</script>

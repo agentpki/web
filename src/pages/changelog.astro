@@ -1,0 +1,489 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+// Each entry is { date: ISO, ships: [{ tag, title, body, links: [{label,href}] }] }
+// Newest at top. Tags drive the color stripe on the left of each card.
+//
+// TAG palette:
+//   protocol  → violet  (v0.1, v0.2 spec features)
+//   sdk       → emerald (TypeScript, Python, scopes, browser SDK, CLI)
+//   dev-tool  → blue    (CLI, VS Code, GitHub Action, MCP server, Postman, OpenAPI)
+//   page      → amber   (marketing site pages, demo, stats)
+//   extension → rose    (Chrome extension, eventual Firefox/Safari/Edge)
+//   infra     → cyan    (workers, KV, deployment infra)
+const log = [
+  {
+    date: '2026-06-09',
+    ships: [
+      {
+        tag: 'protocol', title: 'AgentPKI Provenance Phases 2-7 — full stack live',
+        body: 'Six phases shipped in a single sprint. (2) provenance.agentpki.dev reference Worker: POST /v1/sign-demo mints + signs, POST /v1/verify confirms signature+content hash+passport walk-back, POST /v1/verify-header parses Content-Provenance header. (3) @agentpki/sdk@0.3.0-alpha.1 ships a `provenance.*` namespace — `signContent`, `verifyContent`, `parseProvenanceHeader`, `buildProvenanceHeader`. (4) agentpki@0.5.0 CLI adds `agentpki provenance sign/verify/verify-header/transformations`, auto-detects content-type from extension, writes .c2pa.json sidecars. (5) /provenance Explorer — paste content + manifest (or header), live verification round-trip. (6) Vercel AI SDK middleware + MCP server adapter reference files. (7) Browser-extension detector with meta/comment/header scanning. Tampering test: end-to-end verify of `# hello → # tampered` correctly fails content_hash_mismatch.',
+        links: [
+          { label: 'agentpki.dev/provenance', href: '/provenance' },
+          { label: 'provenance.agentpki.dev', href: 'https://provenance.agentpki.dev' },
+          { label: 'github.com/agentpki/cli', href: 'https://github.com/agentpki/cli' },
+        ],
+      },
+      {
+        tag: 'protocol', title: 'AgentPKI Provenance v0.1 — agent-signed C2PA content (draft)',
+        body: 'New product line. 16-section spec at /spec/provenance-v0.1 adding an `agentpki.declaration` C2PA assertion that binds a passport-signed agent identity to a content hash. Covers signing flow + verification flow (7 + 5 steps), content binding for text/code/JSON/JSONL (sidecar + inline-comment + JSONL-header), HTTP `Content-Provenance` response header for streaming, multi-agent provenance chains (generated → edited → reviewed), X.509 bridging certificates for C2PA interop, and bridges to C2PA / IETF AIP / Vercel AI SDK / MCP. Phase 1 of 7 — Phases 2 (reference verifier), 3 (SDK), 4 (CLI), 5 (Provenance Explorer), 6 (Vercel/MCP adapters), 7 (browser extension) ship Q3–Q4 2026.',
+        links: [
+          { label: 'agentpki.dev/spec/provenance-v0.1', href: '/spec/provenance-v0.1' },
+          { label: 'spec index', href: '/spec' },
+        ],
+      },
+    ],
+  },
+  {
+    date: '2026-06-08',
+    ships: [
+      {
+        tag: 'sdk', title: 'v0.3-intent Phase 5 — SDK + CLI intent helpers (agentpki@0.4.0)',
+        body: '@agentpki/sdk: `PassportPayload.intent?: string[]` and FailureReason `"intent_denied"` added to types. CLI: `agentpki intent declare --intents=A,B [--site=X]` mints with intent + verifies; `agentpki intent verify <token> --site=X` runs intent_check; `agentpki intent audit [--site=X] [--verify-chain]` queries the public log and re-verifies the SHA-256 hash chain locally (RFC 8785-lite canonical JSON, exit 1 on broken chain — the witness primitive); `agentpki intent checkpoint` prints head. This is the agent-side half of §6.5 — anyone can run the audit subcommand and prove the log hasn\'t been tampered with since they last checked.',
+        links: [
+          { label: 'npm i -g agentpki@0.4.0', href: 'https://www.npmjs.com/package/agentpki' },
+          { label: 'github.com/agentpki/cli', href: 'https://github.com/agentpki/cli' },
+        ],
+      },
+      {
+        tag: 'protocol', title: 'v0.3-intent Phase 4 — public hash-chained audit log',
+        body: 'Verifier now writes every intent_check verify call to an append-only KV-backed ledger. Each entry binds (agent_id, issuer, jti, site, intent[], verdict, intent_overall) and a prev_hash that chains back to its predecessor (SHA-256 of canonical JSON, RFC 8785-lite). Genesis hash is 64 zeros. New endpoints: GET /v1/intent-log?after=&limit= returns entries (max 1000/page); GET /v1/intent-log/checkpoint returns the head hash anchor. Witnesses can mirror, recompute, and prove integrity. Public viewer at /intent-log auto-refreshes every 10s. Privacy §6.6 enforced — no tokens, no body sha, no IPs, no user-agents.',
+        links: [
+          { label: 'agentpki.dev/intent-log', href: '/intent-log' },
+          { label: '/v1/intent-log', href: 'https://verify.agentpki.dev/v1/intent-log' },
+          { label: '/v1/intent-log/checkpoint', href: 'https://verify.agentpki.dev/v1/intent-log/checkpoint' },
+          { label: 'spec §6', href: '/spec/v0.3-intent#6-intent-audit-log' },
+        ],
+      },
+      {
+        tag: 'page', title: 'v0.3-intent Phase 3 — interactive Policy Builder',
+        body: 'New /policy-builder lets any site author its v0.3 intent policy without writing JSON. Each canonical intent has a cycle-button (untouched → allow → throttle → deny) with optional rpm / daily / require_attestation / min_tier extras. Live preview pane runs §4.5 match locally against a test intent — see "purchase → deny" or "monitor → allow rate=60rpm" instantly. Copy / download the generated JSON. Hosting instructions for Cloudflare Pages, Nginx, anywhere static. Custom x-* extensions supported.',
+        links: [
+          { label: 'agentpki.dev/policy-builder', href: '/policy-builder' },
+          { label: '/spec/v0.3-intent §4', href: '/spec/v0.3-intent' },
+        ],
+      },
+      {
+        tag: 'protocol', title: 'v0.3-intent Phase 2 — verifier implementation live',
+        body: 'Verifier now parses the `intent` claim, fetches /.well-known/agentpki-intent-policy.json (KV-cached 5 min), computes per-intent disposition (allow / deny / throttle / require_attestation / no_policy / unmatched), and returns `intent_match` in the /v1/verify response. Demo issuer can mint with `?intent=purchase,monitor`. agentpki.dev publishes a moderate site policy (accepts monitor + read-public + index + archive; denies scrape-bulk + manipulate-rank + automate-account; throttles extract-train). Most-restrictive disposition rule §5.2 step 7 enforced — declaring `purchase` + `scrape-bulk` against a strict site yields overall deny. All six spec scenarios verified live.',
+        links: [
+          { label: '/spec/v0.3-intent', href: '/spec/v0.3-intent' },
+          { label: 'demo policy', href: 'https://demo.agentpki.dev/.well-known/agentpki-intent-policy.json' },
+          { label: 'agentpki.dev policy', href: '/.well-known/agentpki-intent-policy.json' },
+        ],
+      },
+      {
+        tag: 'protocol', title: 'AgentPKI v0.3-intent — declare-and-audit bot intent (draft)',
+        body: 'New spec extension: agents declare an `intent` claim ("purchase", "monitor", "scrape-bulk") at signing time; sites publish /.well-known/agentpki-intent-policy.json listing accepted/denied/throttled intents; the verifier computes a match and returns intent_match in /v1/verify. Hash-chained public audit log (RFC 6962-inspired) makes "this bot declared purchase but did scrape-bulk" cryptographically provable after the fact. Bots working *for* you or *against* you become distinguishable. 16-section spec at /spec/v0.3-intent — additive over v0.2. Phase 1 of 5: spec markdown. Phase 2 (verifier impl) next.',
+        links: [
+          { label: 'agentpki.dev/spec/v0.3-intent', href: '/spec/v0.3-intent' },
+          { label: 'spec index', href: '/spec' },
+        ],
+      },
+      {
+        tag: 'infra', title: 'Revocation notifications — webhook + Atom feed',
+        body: 'Two new ways to know the moment a signing key gets revoked. (1) Webhook: POST /v1/notify/subscribe with {webhook_url, events:["revoked_key"]} returns a sub_token. The verifier auto-fans-out to every active subscriber within 2 seconds of the first revoked_key verdict it observes (debounced per (issuer, kid) for 24h so you don\'t get spammed). KV-stored, SSRF-guarded. (2) Atom feed: every issuer now publishes /.well-known/agentpki-crl.atom — point Feedly/NetNewsWire/IFTTT at it, no subscription state on our side. Subscribe at /notifications.',
+        links: [
+          { label: 'agentpki.dev/notifications', href: '/notifications' },
+          { label: 'demo CRL feed', href: 'https://demo.agentpki.dev/.well-known/agentpki-crl.atom' },
+          { label: 'POST /v1/notify/subscribe', href: 'https://verify.agentpki.dev/' },
+        ],
+      },
+      {
+        tag: 'dev-tool', title: 'agentpki batch — fleet-wide token audit',
+        body: 'New CLI subcommand: `agentpki batch tokens.txt` verifies many tokens in parallel (default 8, max 32 concurrent) with a streaming verdict line per token and a final summary table: counts, deny-reason breakdown, by-issuer breakdown, median + p95 verifier latency, total wall time. Three modes: human (TTY), `--json` (single blob), `--ndjson` (one object per line — pipe to disk or jq). Skip blank lines + `#` comments. Exit codes 0/1/2 by allow/deny/error so it slots into CI. Bundled in agentpki@0.3.0.',
+        links: [
+          { label: 'npm i -g agentpki@0.3.0', href: 'https://www.npmjs.com/package/agentpki' },
+          { label: 'github.com/agentpki/cli', href: 'https://github.com/agentpki/cli' },
+        ],
+      },
+      {
+        tag: 'page', title: '/issuer-directory — public registry of every known issuer',
+        body: 'Edge Pages Function polls /.well-known/agentpki-issuer.json + agentpki-crl.json on every known issuer hostname in parallel, returns aggregated JSON cached 5 min. Page renders one card per issuer: name, tier, current key count, revoked key count, CRL freshness, probe latency, abuse contact, deep links to the raw issuer.json and CRL. Today: 2 issuers (agentpki.dev, demo.agentpki.dev). Submit your domain via dashboard.agentpki.dev — appears here within 5 min of standing up the well-known file.',
+        links: [
+          { label: 'agentpki.dev/issuer-directory', href: '/issuer-directory' },
+          { label: '/api/issuer-directory', href: '/api/issuer-directory' },
+        ],
+      },
+      {
+        tag: 'protocol', title: '/replay — Mode B replay-cache visualizer (live protocol)',
+        body: 'Click Mint Mode B bundle: demo issuer generates an ephemeral Ed25519 keypair, embeds its public key in the passport`s cnf.jwk.x, signs an RFC 9421 canonical request with the matching private key. Click Verify #1: allow + replay_checked=true (Durable Object recorded the jti). Click Verify #2: deny · replay_detected · "signature for jti=... first seen at ...". Real protocol round-trip, no animation. Demo issuer gained /mint-bundle endpoint.',
+        links: [
+          { label: 'agentpki.dev/replay', href: '/replay' },
+          { label: 'demo.agentpki.dev/mint-bundle', href: 'https://demo.agentpki.dev/mint-bundle' },
+          { label: 'spec/v0.2#replay', href: '/spec/v0.2' },
+        ],
+      },
+      {
+        tag: 'dev-tool', title: 'agentpki diff — field-by-field token comparison',
+        body: 'New CLI subcommand: `agentpki diff <tokenA> <tokenB>` side-by-side decodes both tokens, marks claims as `(=)`, `(≠) differs`, or `(Δ +N)` for numeric deltas (iat / exp), shows footer + signature comparison, and calls the verifier for both tokens to report live verdicts inline. Colorized TTY output, auto-strips when piped. `--json` for scripting, `--skip-verify` for offline diff, `- -` reads two newline-separated tokens from stdin. Use case: "my prod mint pipeline produces tokens that get denied but staging works — what changed?" Bundled in agentpki@0.2.0.',
+        links: [
+          { label: 'npm i -g agentpki', href: 'https://www.npmjs.com/package/agentpki' },
+          { label: 'github.com/agentpki/cli', href: 'https://github.com/agentpki/cli' },
+        ],
+      },
+      {
+        tag: 'infra', title: '/status — live operational health page',
+        body: 'Cloudflare Pages Function at /api/status probes 4 surfaces every 15s from the edge: full mint→verify pipeline (not just a /health endpoint that could be green while verify is broken), demo issuer mint, snapshot store, MCP server. Returns roll-up status: operational / degraded / down. /status page renders component cards with live latency, 7-day verdict ribbon (green / yellow / red per day based on allow share), incident log. Cache: 15s edge + 60s SWR.',
+        links: [
+          { label: 'agentpki.dev/status', href: '/status' },
+          { label: '/api/status', href: '/api/status' },
+        ],
+      },
+      {
+        tag: 'sdk', title: 'Embeddable verify widget — <agentpki-verify token>',
+        body: 'Drop a live verdict badge on any page. Two APIs from one 2.7 KB gzipped script: web component `<agentpki-verify token size theme>` for frameworks, data-attribute `<div data-agentpki-verify="…">` for plain HTML. Shadow DOM (no global CSS leak), MutationObserver auto-rescan for SPAs, three sizes × light/dark/auto themes, four verdict states (verified / revoked / unverified / error). Pinned-version URL + SRI hash for vendor compliance. Showcase + copy-paste at /widget.',
+        links: [
+          { label: 'agentpki.dev/widget', href: '/widget' },
+          { label: '/v1/widget.min.js', href: '/v1/widget.min.js' },
+          { label: 'widget-meta.json', href: '/v1/widget-meta.json' },
+        ],
+      },
+      {
+        tag: 'page', title: '/playground — protocol with no chrome',
+        body: 'Dedicated full-page interactive playground. Three panels: Token (paste / mint clean / mint with revoked kid / tamper sig|payload|footer / copy / share-as-URL), Decoded (live local-only JSON syntax highlight), Verify (real POST to /v1/verify with verdict banner + raw response). Shareable token URLs via ?token= param so devs can paste broken tokens for support. ~250 lines of JS, no framework.',
+        links: [{ label: 'agentpki.dev/playground', href: '/playground' }],
+      },
+      {
+        tag: 'page', title: '/api-docs upgraded with one-click client integrations',
+        body: 'New toolbar above Swagger UI: "Try in Postman" (opens Postman web with our collection JSON pre-loaded) · "Try in Insomnia" (insomnia:// scheme to import our OpenAPI yaml) · "openapi.yaml" + "postman.json" downloads · "Copy OpenAPI URL" button. Plus a paste-ready "First call · 30 seconds, no signup" code block at the top so curl-first developers don\'t have to scroll for a working example.',
+        links: [{ label: 'agentpki.dev/api-docs', href: '/api-docs' }],
+      },
+      {
+        tag: 'sdk', title: 'Browser SDK minified + version-pinned + SRI',
+        body: 'Three URLs: /v1/sdk.js (4.9 KB dev source, commented + readable) · /v1/sdk.min.js (3.6 KB raw, 1.6 KB gzipped, latest production) · /v1/sdk-v0.1.0.min.js (version-pinned, immutable, max-age=1y). All three carry SRI sha256-fwS61oHOxj4oU5SvLOovLwht+QcNkn+p4u6kb4VKKp8= via X-AgentPKI-SDK-SRI response header. Vendor-friendly: pin once, never refetch.',
+        links: [
+          { label: 'agentpki.dev/v1/sdk.min.js', href: '/v1/sdk.min.js' },
+          { label: 'agentpki.dev/v1/sdk-v0.1.0.min.js', href: '/v1/sdk-v0.1.0.min.js' },
+          { label: 'sdk-meta.json', href: '/v1/sdk-meta.json' },
+        ],
+      },
+      {
+        tag: 'infra', title: 'Public verification counters at verify.agentpki.dev/v1/stats',
+        body: 'Verifier now increments KV-backed counters on every /v1/verify call (non-blocking via ctx.waitUntil — zero latency added). Public JSON endpoint at /v1/stats exposes total, total_by_verdict, total_by_reason, and last_7_days breakdown. Privacy: no token, jti, issuer, or sub stored — only verdict counts. /stats marketing page now shows live counter tiles and a 7-day stacked bar chart.',
+        links: [
+          { label: 'verify.agentpki.dev/v1/stats', href: 'https://verify.agentpki.dev/v1/stats' },
+          { label: 'agentpki.dev/stats', href: '/stats' },
+        ],
+      },
+      {
+        tag: 'dev-tool', title: 'AgentPKI for VS Code v0.1.0',
+        body: 'Hover any v4.public token in any file → decoded claims inline (iss, sub, iat, exp with ⏰/⚠ tags, tier, scope, jti, kid, sig). CodeLens above every token for one-click Verify or Decode. Diagnostics flag expired or near-expiry tokens. Four palette commands including "Mint demo passport" (auto-copies to clipboard). Hover and decode are local-only; verify and mint only call out when explicitly invoked.',
+        links: [
+          { label: 'github.com/agentpki/vscode-agentpki', href: 'https://github.com/agentpki/vscode-agentpki' },
+        ],
+      },
+      {
+        tag: 'page', title: '/changelog — permanent shipping log',
+        body: 'Reverse-chronological archive of every public release. Color-coded category stripes (protocol / sdk / dev-tool / page / extension / infra). Linked from every page via the footer. The homepage "Just shipped" panel covers the most recent week; this page is the durable archive of everything before.',
+        links: [{ label: 'agentpki.dev/changelog', href: '/changelog' }],
+      },
+    ],
+  },
+  {
+    date: '2026-06-07',
+    ships: [
+      {
+        tag: 'page', title: '/stats page',
+        body: 'Live status page: runs the 3-scenario trust contract (allow / tampered / revoked) against the production verifier on page load, shows the demo issuer\'s CRL live, lists 16 GitHub repos + 15 production surfaces + spec version + heuristic phishing list count. If the trust contract ever regresses, the status dot turns red and shouts "INVESTIGATE."',
+        links: [{ label: 'agentpki.dev/stats', href: '/stats' }],
+      },
+      {
+        tag: 'dev-tool', title: 'agentpki/verify-action — GitHub Action',
+        body: '5-line YAML to drop AgentPKI verification into any CI workflow. Asserts allow / deny / specific failure_reason against the live verifier. Composite action — runs on ubuntu, macos, and self-hosted runners with no Node, Docker, or jq required. Self-tests itself daily against the live demo issuer.',
+        links: [
+          { label: 'github.com/agentpki/verify-action', href: 'https://github.com/agentpki/verify-action' },
+          { label: 'v1.0.0 release', href: 'https://github.com/agentpki/verify-action/releases/tag/v1.0.0' },
+        ],
+      },
+      {
+        tag: 'dev-tool', title: 'agentpki.dev/postman.json — Postman collection',
+        body: '7 folders, 9 requests covering Mint → Verify → Abuse → Snapshots → Heuristic → Directory → Bootstrap Claim. Mint request auto-populates {{sample_token}} via test script so the Verify request chains zero-setup. Imports cleanly into Postman or Insomnia.',
+        links: [{ label: 'agentpki.dev/postman.json', href: '/postman.json' }],
+      },
+      {
+        tag: 'page', title: 'Homepage "Just shipped" panel',
+        body: 'Glowing emerald-bordered panel on the homepage between the 4 main layer cards and the Layer 05+ teaser. 8 cards (CLI, MCP, Scopes, OpenAPI, Browser SDK, GitHub Action, Postman, VS Code, plus a "Try them together" CTA). Animated pulse dot + shimmer border. Pill counter ("8 NEW") visible from across the page.',
+        links: [{ label: 'See on homepage', href: '/#shipped' }],
+      },
+    ],
+  },
+  {
+    date: '2026-06-07',
+    note: 'morning shipment — 5 dev surfaces in one push',
+    ships: [
+      {
+        tag: 'dev-tool', title: 'agentpki CLI v0.1.0',
+        body: 'npm i -g agentpki. Subcommands: mint, verify, decode, tamper, check, crl, init, help. Pipe-friendly: every command writes the canonical result to stdout. `agentpki mint | agentpki verify -` and `agentpki mint | agentpki tamper - | agentpki verify -` work. Exit codes 0/1/2 make it CI-shaped.',
+        links: [{ label: 'github.com/agentpki/cli', href: 'https://github.com/agentpki/cli' }],
+      },
+      {
+        tag: 'dev-tool', title: 'MCP server at mcp.agentpki.dev',
+        body: '5 Model Context Protocol tools so Claude Desktop / Cursor / any MCP-aware client can verify, mint, decode, look up kid status, and check any URL\'s AgentPKI-Token header — all from chat. Cloudflare Workers. JSON-RPC 2.0 over HTTP.',
+        links: [
+          { label: 'github.com/agentpki/mcp-server', href: 'https://github.com/agentpki/mcp-server' },
+          { label: 'mcp.agentpki.dev', href: 'https://mcp.agentpki.dev' },
+        ],
+      },
+      {
+        tag: 'sdk', title: '@agentpki/scopes — capability templates',
+        body: 'Pre-built scope packages so issuers, agents, and verifiers all speak the same language. Categories: commerce, scheduling, news, medical, financial. Helpers: union(), satisfies(), parse(). Published to npm under @agentpki/scopes.',
+        links: [
+          { label: 'github.com/agentpki/sdk-scopes', href: 'https://github.com/agentpki/sdk-scopes' },
+          { label: 'npmjs.com/package/@agentpki/scopes', href: 'https://www.npmjs.com/package/@agentpki/scopes' },
+        ],
+      },
+      {
+        tag: 'dev-tool', title: 'OpenAPI 3.1 spec + Swagger UI at /api-docs',
+        body: 'Full machine-readable spec at /openapi.yaml covering every public endpoint (verifier, demo issuer, claim API, snapshot store, abuse pipeline, heuristic check, directory). /api-docs renders Swagger UI from it. Import to Postman, Insomnia, or any OpenAPI tool.',
+        links: [
+          { label: 'agentpki.dev/api-docs', href: '/api-docs' },
+          { label: 'agentpki.dev/openapi.yaml', href: '/openapi.yaml' },
+        ],
+      },
+      {
+        tag: 'sdk', title: 'Browser SDK CDN at /v1/sdk.js',
+        body: '5 KB drop-in script tag for any webpage. agentpki.verify(token), agentpki.decode(token), agentpki.mintDemo(), agentpki.tamper(), agentpki.checkUrl(). No build step. CORS open. Cache-Control: max-age=3600.',
+        links: [{ label: 'agentpki.dev/v1/sdk.js', href: '/v1/sdk.js' }],
+      },
+    ],
+  },
+  {
+    date: '2026-06-05',
+    ships: [
+      {
+        tag: 'dev-tool', title: 'agentpki/test-agent-template',
+        body: 'Real Node project with @agentpki/sdk pre-wired. Three npm scripts (demo:allow / demo:tamper / demo:revoked) that exercise the full trust contract end-to-end with honest exit codes — doubles as a CI regression check. Includes .devcontainer/devcontainer.json so Codespaces and StackBlitz both work out of the box. Bonus demo:agent shows the 5-line signed-Anthropic drop-in.',
+        links: [{ label: 'github.com/agentpki/test-agent-template', href: 'https://github.com/agentpki/test-agent-template' }],
+      },
+      {
+        tag: 'dev-tool', title: 'agentpki.dev/bootstrap — 3-scenario trust demo',
+        body: 'curl -fsSL https://agentpki.dev/bootstrap | sh (or iwr https://agentpki.dev/bootstrap.ps1 | iex on Windows). Prompts for email, derives a deterministic subdomain via /api/v1/bootstrap-claim, runs three scenarios (allow / tampered / revoked) against the live verifier, prints all three verdicts with real failure_reason codes plus a 24h shareable permalink. Six real HTTP calls in ~1 sec.',
+        links: [
+          { label: 'agentpki.dev/bootstrap', href: '/bootstrap' },
+          { label: 'agentpki.dev/bootstrap.ps1', href: '/bootstrap.ps1' },
+        ],
+      },
+      {
+        tag: 'page', title: '/demo redesign — 4 end-to-end paths + Tamper Lab + Revoked-Key Lab + CI test runner',
+        body: 'Interactive accordion of 4 paths (browser, cloud IDE, terminal, existing agent) — only one path open at a time, strong open-state styling. Tamper Lab and Revoked-Key Lab let the user pick what to corrupt or which kid to sign with, in 3 stages each. CI-style runner that streams all 3 trust-contract verdicts from the browser. All real HTTP, no animations.',
+        links: [{ label: 'agentpki.dev/demo', href: '/demo' }],
+      },
+    ],
+  },
+  {
+    date: '2026-06-03',
+    ships: [
+      {
+        tag: 'protocol', title: 'v0.2 protocol spec live',
+        body: 'Adds: CRL (/.well-known/agentpki-crl.json), abuse aggregation (POST /v1/abuse), replay cache (5-min jti window), KV-backed directory cache (<5ms cache hits). Spec markdown indexed at /spec/v0.1 and /spec/v0.2 for diff visibility.',
+        links: [{ label: 'agentpki.dev/spec/v0.2', href: '/spec/v0.2' }],
+      },
+    ],
+  },
+  {
+    date: '2026-06-01',
+    ships: [
+      {
+        tag: 'page', title: 'Web verifier UI at /check (phases 1-4)',
+        body: 'Paste any PASETO token, see a structured verdict card. Heuristic checks against 5,000+ phishing domains (PhishStats + OpenPhish + URLhaus, daily refresh GitHub Actions cron). Shareable result permalinks at /check/result/<id> with 24h TTL. /widget.js embed for third-party sites. Scam-reporting flow with optional consented screenshot.',
+        links: [
+          { label: 'agentpki.dev/check', href: '/check' },
+          { label: 'agentpki.dev/how-verification-works', href: '/how-verification-works' },
+        ],
+      },
+    ],
+  },
+  {
+    date: '2026-05-28',
+    ships: [
+      {
+        tag: 'extension', title: 'Chrome extension v0.1.0-alpha.1 submitted',
+        body: 'Watches outbound HTTPS for AgentPKI-Token response headers as you browse. Inline-verifies via verify.agentpki.dev. Popup shows trusted-issuer ✓ or reputation warning. Activity log. One-click abuse-report modal. Settings UI for trust-tier preferences. Built across a 7-day cycle. Submitted to Chrome Web Store (in review).',
+        links: [{ label: 'github.com/agentpki/extension', href: 'https://github.com/agentpki/extension' }],
+      },
+    ],
+  },
+  {
+    date: '2026-05-22',
+    ships: [
+      {
+        tag: 'infra', title: 'Hosted onboarding dashboard at dashboard.agentpki.dev',
+        body: 'Next.js + Postgres + magic-link auth via Resend. Bring a domain → verify via DNS TXT → generate Ed25519 signing keys (one-time reveal) → mint production passports. Full self-serve flow, including delete-issuer.',
+        links: [{ label: 'dashboard.agentpki.dev', href: 'https://dashboard.agentpki.dev' }],
+      },
+      {
+        tag: 'infra', title: 'Real-issuer Worker deployed at agentpki.dev',
+        body: 'Production-grade Cloudflare Worker template. Real-issuer with full wrangler.toml coverage and static-directory Path B fallback. We are our own first issuer.',
+        links: [{ label: 'github.com/agentpki/real-issuer', href: 'https://github.com/agentpki/real-issuer' }],
+      },
+    ],
+  },
+  {
+    date: '2026-05-20',
+    ships: [
+      {
+        tag: 'sdk', title: 'TypeScript SDK published — @agentpki/sdk on npm',
+        body: 'Exports signPassport, verifyPassport, AgentPKI client (drop-in fetch wrapper that attaches PASETO + RFC 9421 Content-Digest + Signature). 21/21 tests passing. Initial 0.1.0-alpha.1, then 0.2.0-alpha.1 with v0.2 features.',
+        links: [
+          { label: 'github.com/agentpki/sdk-typescript', href: 'https://github.com/agentpki/sdk-typescript' },
+          { label: 'npmjs.com/package/@agentpki/sdk', href: 'https://www.npmjs.com/package/@agentpki/sdk' },
+        ],
+      },
+      {
+        tag: 'sdk', title: 'Python SDK published — agentpki on PyPI',
+        body: 'Byte-compatible wire format with the TypeScript SDK. 21/21 tests passing.',
+        links: [
+          { label: 'github.com/agentpki/sdk-python', href: 'https://github.com/agentpki/sdk-python' },
+          { label: 'pypi.org/project/agentpki', href: 'https://pypi.org/project/agentpki/' },
+        ],
+      },
+      {
+        tag: 'infra', title: 'Reference verifier deployed at verify.agentpki.dev',
+        body: 'Cloudflare Worker. Sub-50ms p99 globally. KV-backed issuer-pubkey cache. Durable Object replay detection. CRL revocation checking.',
+        links: [{ label: 'github.com/agentpki/verifier', href: 'https://github.com/agentpki/verifier' }],
+      },
+      {
+        tag: 'protocol', title: 'v0.1 protocol spec',
+        body: 'RFC-style document at /spec/v0.1. PASETO v4 + Ed25519. Apache 2.0.',
+        links: [{ label: 'agentpki.dev/spec/v0.1', href: '/spec/v0.1' }],
+      },
+    ],
+  },
+];
+
+// Sort by date desc so the page never drifts even if entries are added out of order
+log.sort((a, b) => b.date.localeCompare(a.date));
+
+// Pre-format date for display
+function fmtDate(iso: string): string {
+  const d = new Date(iso + 'T00:00:00Z');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+}
+
+// Tag color stripe
+const tagStyles: Record<string, { color: string; label: string }> = {
+  'protocol':  { color: '#a78bfa', label: 'PROTOCOL' },
+  'sdk':       { color: '#6ee7b7', label: 'SDK' },
+  'dev-tool':  { color: '#93c5fd', label: 'DEV TOOL' },
+  'page':      { color: '#fbbf24', label: 'PAGE' },
+  'extension': { color: '#fca5a5', label: 'EXTENSION' },
+  'infra':     { color: '#67e8f9', label: 'INFRA' },
+};
+---
+<Base
+  title="Changelog — AgentPKI"
+  description="Everything we've shipped, with dates. Reverse-chronological log of protocol updates, SDKs, dev tools, marketing pages, and infrastructure."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-12 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Changelog &middot; newest first</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mb-3">
+      What shipped, when.
+    </h1>
+    <p class="text-[color:var(--color-text-muted)] max-w-3xl text-base sm:text-lg leading-relaxed">
+      Permanent record of every public release. The homepage&rsquo;s &ldquo;Just shipped&rdquo; panel covers the most recent week; this page is the durable archive of everything before that.
+    </p>
+  </section>
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+    {log.map((day) => (
+      <div class="mb-10">
+        <div class="flex items-baseline gap-4 mb-4 pb-2 border-b border-[color:var(--color-border)]">
+          <h2 class="text-xl font-semibold tracking-tight font-mono text-[color:var(--color-text)]">{fmtDate(day.date)}</h2>
+          {day.note && <span class="text-xs text-[color:var(--color-text-dim)] italic">{day.note}</span>}
+        </div>
+        <div class="space-y-4">
+          {day.ships.map((s) => {
+            const style = tagStyles[s.tag] || { color: '#9ca3af', label: s.tag.toUpperCase() };
+            return (
+              <div class="changelog-card" style={`--tag-color: ${style.color};`}>
+                <div class="changelog-card-stripe" aria-hidden="true"></div>
+                <div class="changelog-card-body">
+                  <div class="flex items-center gap-3 mb-2 flex-wrap">
+                    <span class="changelog-tag" style={`color: ${style.color}; border-color: ${style.color}40; background-color: ${style.color}10;`}>{style.label}</span>
+                    <h3 class="text-base sm:text-lg font-semibold text-[color:var(--color-text)] leading-tight">{s.title}</h3>
+                  </div>
+                  <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed mb-3">{s.body}</p>
+                  {s.links && s.links.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {s.links.map((l) => (
+                        <a href={l.href} target={l.href.startsWith('http') ? '_blank' : null} rel={l.href.startsWith('http') ? 'noreferrer' : null}
+                           class="changelog-link">{l.label} &rarr;</a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+
+    <div class="mt-10 p-5 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/50 text-sm text-[color:var(--color-text-muted)]">
+      <p class="mb-2">
+        <strong class="text-[color:var(--color-text)]">Want a feed?</strong> This page is plain markup; scrape it. If you want a real RSS/Atom feed, open an issue at <a class="text-[color:var(--color-accent-bright)] hover:underline" href="https://github.com/agentpki/web/issues" target="_blank" rel="noreferrer">github.com/agentpki/web/issues</a> &mdash; we&rsquo;ll add it.
+      </p>
+      <p>
+        Earlier history (pre-2026-05-20 prototype era) lives in the commit graph at <a class="text-[color:var(--color-accent-bright)] hover:underline" href="https://github.com/agentpki" target="_blank" rel="noreferrer">github.com/agentpki</a>.
+      </p>
+    </div>
+  </section>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  .changelog-card {
+    display: flex;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-bright);
+    background: rgba(15, 15, 24, 0.45);
+    overflow: hidden;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .changelog-card:hover {
+    border-color: var(--tag-color, var(--color-accent));
+    background: rgba(15, 15, 24, 0.7);
+  }
+  .changelog-card-stripe {
+    width: 5px;
+    background: var(--tag-color, var(--color-accent));
+    flex-shrink: 0;
+    box-shadow: 0 0 14px var(--tag-color, var(--color-accent));
+  }
+  .changelog-card-body {
+    padding: 1.1rem 1.3rem;
+    flex: 1;
+  }
+  .changelog-tag {
+    font-family: ui-monospace, monospace;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.3rem;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .changelog-link {
+    display: inline-block;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.18);
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.35rem;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .changelog-link:hover {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+  }
+</style>

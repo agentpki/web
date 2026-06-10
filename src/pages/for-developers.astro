@@ -1,0 +1,244 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For developers — AgentPKI"
+  description="Read the spec. Run the CLI. Hit the verifier. Apache 2.0, three spec versions published, working reference implementation on Cloudflare Workers. Here's everything that's shipped."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO — terse, code-forward -->
+  <section class="border-b border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-12">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For developers
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        Read the spec. Run the CLI. Hit the verifier.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        AgentPKI is an open protocol with a working reference implementation deployed on Cloudflare Workers. Everything is Apache 2.0, every spec version is published, every endpoint is documented, and the entire stack is live at edge latency.
+      </p>
+
+      <!-- 30-second quickstart -->
+      <div class="mt-8 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-5">
+        <p class="text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-muted)] mb-3">
+          30-second quickstart
+        </p>
+        <pre class="text-sm font-mono text-[color:var(--color-text)] overflow-x-auto" set:html={`<code># mint a passport, verify it
+TOKEN=$(curl -s https://demo.agentpki.dev/mint | jq -r .token)
+curl -s -X POST https://verify.agentpki.dev/v1/verify \\
+  -H 'content-type: application/json' \\
+  -d '{"token":"'$TOKEN'"}' | jq .verdict
+# → "allow"</code>`}></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT'S SHIPPED — the 4 main buckets -->
+  <section>
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Everything that's shipped.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Three product lines (core identity, declared intent, content provenance) and the tooling around them. Pick whichever surface matches what you're building.
+      </p>
+
+      <div class="grid lg:grid-cols-2 gap-5">
+
+        <!-- SPEC -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">SPEC</span>
+            <span class="dev-card-status">3 versions published</span>
+          </div>
+          <h3 class="dev-card-title">Open protocol specifications</h3>
+          <p class="dev-card-desc">
+            v0.1 core (passport, signing, verification), v0.2 operational (CRL, replay, abuse), v0.3-intent (bot intent registry). Plus AgentPKI Provenance v0.1 as a separate product line (agent-signed C2PA content).
+          </p>
+          <div class="dev-card-links">
+            <a href="/spec/v0.1">v0.1 core →</a>
+            <a href="/spec/v0.2">v0.2 operational →</a>
+            <a href="/spec/v0.3-intent">v0.3 intent →</a>
+            <a href="/spec/provenance-v0.1">Provenance v0.1 →</a>
+          </div>
+        </div>
+
+        <!-- VERIFIER + ISSUER -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">EDGE</span>
+            <span class="dev-card-status">~50ms p50</span>
+          </div>
+          <h3 class="dev-card-title">Reference verifier + issuer</h3>
+          <p class="dev-card-desc">
+            Live on Cloudflare Workers. KV-backed directory cache, Durable Object replay cache, public stats and audit-log endpoints. Demo issuer at demo.agentpki.dev mints test passports with no auth.
+          </p>
+          <div class="dev-card-links">
+            <a href="https://verify.agentpki.dev">verify.agentpki.dev →</a>
+            <a href="https://demo.agentpki.dev">demo.agentpki.dev →</a>
+            <a href="https://provenance.agentpki.dev">provenance.agentpki.dev →</a>
+            <a href="/api-docs">OpenAPI 3.1 docs →</a>
+          </div>
+        </div>
+
+        <!-- SDK + CLI -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">CLIENT</span>
+            <span class="dev-card-status">npm + PyPI</span>
+          </div>
+          <h3 class="dev-card-title">SDK + CLI</h3>
+          <p class="dev-card-desc">
+            <code>@agentpki/sdk</code> (TypeScript), <code>agentpki</code> (Python), <code>agentpki</code> CLI with mint / verify / decode / diff / batch / intent / provenance subcommands. Browser SDK CDN, MCP server, GitHub Action, VS Code extension.
+          </p>
+          <div class="dev-card-links">
+            <a href="https://github.com/agentpki/cli">github.com/agentpki/cli →</a>
+            <a href="/v1/sdk.min.js">Browser SDK CDN →</a>
+            <a href="https://github.com/agentpki/mcp-server">MCP server →</a>
+            <a href="https://github.com/agentpki/verify-action">GitHub Action →</a>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE TOOLS -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">PLAYGROUND</span>
+            <span class="dev-card-status">live, in browser</span>
+          </div>
+          <h3 class="dev-card-title">Interactive demos</h3>
+          <p class="dev-card-desc">
+            Mint a token, paste it, verify it, tamper it, watch it fail. Build an intent policy visually. Sign content and tamper it. Watch the Mode B replay cache fire.
+          </p>
+          <div class="dev-card-links">
+            <a href="/playground">Token playground →</a>
+            <a href="/policy-builder">Intent policy builder →</a>
+            <a href="/provenance">Provenance Explorer →</a>
+            <a href="/replay">Mode B replay visualizer →</a>
+          </div>
+        </div>
+
+        <!-- LIVE STATE -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">OPS</span>
+            <span class="dev-card-status">public read-only</span>
+          </div>
+          <h3 class="dev-card-title">Operational surfaces</h3>
+          <p class="dev-card-desc">
+            Public stats counter, status page with edge health probe, hash-chained intent audit log, issuer directory aggregator, revocation Atom feed + webhook subscribe.
+          </p>
+          <div class="dev-card-links">
+            <a href="/stats">Stats →</a>
+            <a href="/status">Status →</a>
+            <a href="/intent-log">Intent audit log →</a>
+            <a href="/issuer-directory">Issuer directory →</a>
+            <a href="/notifications">Revocation alerts →</a>
+          </div>
+        </div>
+
+        <!-- EMBEDDABLES -->
+        <div class="dev-card">
+          <div class="dev-card-head">
+            <span class="dev-card-tag">EMBED</span>
+            <span class="dev-card-status">2.7 KB gzipped</span>
+          </div>
+          <h3 class="dev-card-title">Drop-in widgets</h3>
+          <p class="dev-card-desc">
+            <code>&lt;agentpki-verify&gt;</code> web component for live verification badges on any page. Browser SDK CDN with SRI pinning. Chrome extension for verifying tokens encountered in the wild.
+          </p>
+          <div class="dev-card-links">
+            <a href="/widget">Widget showcase →</a>
+            <a href="/check">/check verifier →</a>
+            <a href="/how-verification-works">How verification works →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANGELOG -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        See what shipped, when.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-8 max-w-3xl">
+        Every release with date, scope, and links. Reverse-chronological. If you want to track what's coming, the spec drafts and GitHub issues are the right places.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="/changelog"
+           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+          Open changelog
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://github.com/agentpki" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+          github.com/agentpki
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .dev-card {
+      padding: 1.5rem 1.7rem 1.8rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: linear-gradient(170deg, rgba(20,20,30,0.5) 0%, rgba(20,20,30,0.2) 100%);
+    }
+    .dev-card-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .dev-card-tag {
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.3rem;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-weight: 700;
+    }
+    .dev-card-status {
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      color: var(--color-text-muted);
+    }
+    .dev-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.55rem;
+      color: var(--color-text);
+    }
+    .dev-card-desc {
+      color: var(--color-text-muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+    .dev-card-desc code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+    .dev-card-links {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+    .dev-card-links a {
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      text-decoration: none;
+    }
+    .dev-card-links a:hover { text-decoration: underline; }
+  </style>
+</Base>

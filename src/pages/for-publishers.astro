@@ -1,0 +1,311 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For publishers — AgentPKI Provenance"
+  description="Your article gets cloned by AI farms within hours. Today, you can't prove which is the original. AgentPKI Provenance signs your content cryptographically so readers, search engines, and platforms can verify in milliseconds."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO with the Sarah story setup
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For publishers
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        You wrote it. AgentPKI proves it.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        Your investigation goes live at 10:14 AM. By 2:00 PM, four AI farms have cloned it with subtle word changes, attributed it to fake bylines, and posted it on similar-looking domains. Search engines index all of them. Your original blurs into the noise. Your reputation gets laundered into someone else's traffic.
+      </p>
+      <p class="text-lg text-[color:var(--color-text)] font-medium max-w-3xl leading-relaxed mt-5">
+        AgentPKI Provenance is how you sign your work at publication time, and how anyone — reader, search engine, archive, court — can prove which is the original in milliseconds.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       THE SARAH STORY — narrative walkthrough
+       Stage 1 (no provenance): visible loss
+       Stage 2 (provenance): the cryptographic resolution
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3 text-balance">
+        Sarah publishes. The clones spread. Two timelines.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Sarah Lin is a freelance investigative writer with 18,000 Substack subscribers. Her piece on a healthcare-billing scam takes six weeks to research and one hour to write up. Here's what happens after she clicks publish — without AgentPKI, then with it.
+      </p>
+
+      <!-- Two timelines side by side -->
+      <div class="grid lg:grid-cols-2 gap-5 mb-12">
+
+        <!-- WITHOUT -->
+        <div class="story-col story-col-without">
+          <p class="story-col-header">Today — without provenance</p>
+          <ol class="story-timeline">
+            <li>
+              <span class="story-time">10:14 AM</span>
+              <span class="story-body">Sarah publishes. <em>Total verified-original count: 1.</em></span>
+            </li>
+            <li>
+              <span class="story-time">11:30 AM</span>
+              <span class="story-body">An AI scraping farm in Bangalore mirrors the article. They run Claude to paraphrase three paragraphs and swap the byline. <em>Online versions: 2.</em></span>
+            </li>
+            <li>
+              <span class="story-time">12:45 PM</span>
+              <span class="story-body">Three more farms across two continents do the same. <em>Online versions: 5. None look cryptographically different from the original.</em></span>
+            </li>
+            <li>
+              <span class="story-time">2:00 PM</span>
+              <span class="story-body">Reddit picks up one of the clones. It gets 8,000 upvotes. Sarah's original gets 200.</span>
+            </li>
+            <li>
+              <span class="story-time">4:30 PM</span>
+              <span class="story-body">Google's search results show the Reddit-favored clone above Sarah's piece. AI Overviews summarize from the clone.</span>
+            </li>
+            <li>
+              <span class="story-time">Day 7</span>
+              <span class="story-body">Sarah's name has been associated with 4 articles she didn't write. The healthcare company her piece exposed sues one of the AI-generated clones, naming Sarah as a defendant.</span>
+            </li>
+          </ol>
+          <p class="story-col-summary story-col-summary-bad">
+            The original loses to clones because nothing distinguishes them. Sarah's brand becomes provably unprovable.
+          </p>
+        </div>
+
+        <!-- WITH -->
+        <div class="story-col story-col-with">
+          <p class="story-col-header">With AgentPKI Provenance</p>
+          <ol class="story-timeline">
+            <li>
+              <span class="story-time">10:14 AM</span>
+              <span class="story-body">Sarah publishes. Substack's CMS signs the article with an AgentPKI manifest at the moment of publication. <strong>Cryptographic signature, bound to the exact bytes.</strong></span>
+            </li>
+            <li>
+              <span class="story-time">11:30 AM</span>
+              <span class="story-body">The Bangalore farm mirrors and paraphrases. Their version has no valid signature. Some bytes are different — even if they kept the signature, it'd fail.</span>
+            </li>
+            <li>
+              <span class="story-time">12:45 PM</span>
+              <span class="story-body">Search engines that respect provenance (Google, DuckDuckGo, Bing) demote unsigned content from suspicious domains and elevate the signed original.</span>
+            </li>
+            <li>
+              <span class="story-time">2:00 PM</span>
+              <span class="story-body">Reddit and Bluesky display a green "verified author: sarahlin.substack.com" badge on Sarah's link. Unsigned clones get no badge or a "no provenance" warning.</span>
+            </li>
+            <li>
+              <span class="story-time">4:30 PM</span>
+              <span class="story-body">Sarah's article ranks first. AI Overviews summarize her piece and attribute her by name.</span>
+            </li>
+            <li>
+              <span class="story-time">Day 7</span>
+              <span class="story-body">When the healthcare company subpoenas Substack, the cryptographic chain settles the question in a single court declaration: Sarah authored bytes X at timestamp Y, immutable.</span>
+            </li>
+          </ol>
+          <p class="story-col-summary story-col-summary-good">
+            The original wins because the original is the only one anyone can verify. Sarah's brand stays Sarah's.
+          </p>
+        </div>
+      </div>
+
+      <p class="text-sm text-[color:var(--color-text-muted)] italic">
+        Sarah is a composite — but every step in the "today" column is happening to investigative journalists, Substack writers, photographers, and independent researchers in 2026.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HOW IT WORKS — the publisher mechanic in three steps
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Three steps for a publisher.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        AgentPKI Provenance is a thin extension of C2PA, the Adobe/Microsoft/BBC content credentials standard. Existing C2PA tooling (Adobe Content Credentials, Truepic Lens) sees signed content and treats it normally. AgentPKI tooling adds the agent-attribution layer.
+      </p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3 class="step-title">Mint a publisher passport</h3>
+          <p class="step-desc">
+            Substack, Reuters, Wikipedia, or you-as-a-self-publisher generate an Ed25519 keypair and register a tier-2 issuer at dashboard.agentpki.dev. One-time setup.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3 class="step-title">Sign at publication time</h3>
+          <p class="step-desc">
+            Your CMS adds one API call before publish. The article's bytes are hashed (SHA-256), the hash is bound to your passport, the signature is attached as a sidecar JSON, an HTTP header, or an inline comment.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3 class="step-title">Anyone verifies</h3>
+          <p class="step-desc">
+            Readers, search engines, browser extensions, court records all hit a stateless verifier (provenance.agentpki.dev, or any verifier — open spec, no lock-in). They get back: "yes, Substack-authored at 10:14 AM, sha256 matches."
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       TRY IT — link to live Explorer
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16">
+      <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.04] p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-emerald-400 mb-3">
+          Hands-on
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-4 text-balance">
+          Try signing a piece of content right now.
+        </h2>
+        <p class="text-[color:var(--color-text-muted)] mb-7 max-w-2xl leading-relaxed">
+          Paste any text into the Provenance Explorer. We mint a publisher passport, sign your content, give you back a manifest and HTTP header. Then we let you tamper with the content and watch verification fail. Same code that will run when Substack deploys this.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/provenance"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition">
+            Open Provenance Explorer
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="/spec/provenance-v0.1"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-emerald-500/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+            Read the spec
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       WHAT WE'RE LOOKING FOR — anchor partners
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5">
+        Who we want to work with first.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-8 max-w-3xl leading-relaxed">
+        We're talking to publishers who would deploy AgentPKI Provenance as a reference integration — and become the case study every other publisher reads when deciding whether to adopt. We bring the protocol, the verifier, and the engineering integration support; you bring the editorial credibility.
+      </p>
+      <ul class="space-y-2 text-[color:var(--color-text-muted)] mb-8">
+        <li class="flex items-start gap-3"><span class="text-emerald-400 mt-0.5">→</span><span>Substack — author-controlled signing in a creator-economy platform</span></li>
+        <li class="flex items-start gap-3"><span class="text-emerald-400 mt-0.5">→</span><span>ProPublica — investigative journalism with the highest sourcing standards</span></li>
+        <li class="flex items-start gap-3"><span class="text-emerald-400 mt-0.5">→</span><span>Reuters, AP — wire services where content is licensed and forks need provenance attached</span></li>
+        <li class="flex items-start gap-3"><span class="text-emerald-400 mt-0.5">→</span><span>Independent journalists, photographers, researchers — anyone whose original work has commercial value</span></li>
+      </ul>
+      <button type="button" data-contact-modal data-contact-source="for-publishers"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    /* ── Story columns ── */
+    .story-col {
+      border: 1px solid var(--color-border);
+      border-radius: 0.95rem;
+      padding: 1.5rem 1.65rem;
+      display: flex; flex-direction: column;
+      background: linear-gradient(170deg, rgba(20,20,30,0.55) 0%, rgba(20,20,30,0.25) 100%);
+    }
+    .story-col-without { border-color: rgba(239,68,68,0.3); }
+    .story-col-with    { border-color: rgba(34,197,94,0.35); }
+
+    .story-col-header {
+      font-size: 0.72rem;
+      font-family: ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
+    }
+    .story-col-without .story-col-header { color: #f87171; }
+    .story-col-with    .story-col-header { color: #4ade80; }
+
+    .story-timeline {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.95rem;
+      flex: 1;
+    }
+    .story-timeline li {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr;
+      gap: 0.85rem;
+      align-items: baseline;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .story-time {
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.02em;
+      padding-top: 0.15rem;
+    }
+    .story-body { color: var(--color-text); }
+    .story-body em { color: var(--color-text-muted); font-style: italic; }
+    .story-body strong { color: #c4b5fd; font-weight: 600; }
+
+    .story-col-summary {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+    .story-col-summary-bad  { color: #fca5a5; }
+    .story-col-summary-good { color: #86efac; }
+
+    /* ── Step cards ── */
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem;
+      border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.55rem;
+      color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+  </style>
+</Base>

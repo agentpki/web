@@ -1,0 +1,232 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For everyone else — what AgentPKI means when you just use the internet"
+  description="You don't have to deploy anything. AgentPKI is infrastructure that the AI labs, sites, and publishers you interact with adopt. The result: more bots tell you what they're here for, more content tells you who wrote it, more scams become visible."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For everyone else
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        You don't deploy anything. The internet gets cleaner anyway.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        AgentPKI is infrastructure. AI labs, sites, publishers, browsers, search engines — they're the ones who adopt it. The result is that your everyday experience of the internet shifts: bots tell you what they're here for, content tells you who wrote it, AI-generated impersonations become provably fake. You don't install anything. You just notice it working.
+      </p>
+    </div>
+  </section>
+
+  <!-- DAILY SCENARIOS -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        What changes in your day.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Six concrete moments. Today on the left, after adoption on the right.
+      </p>
+
+      <div class="space-y-3.5">
+        <!-- Scenario 1 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">Concert tickets</p>
+            <p class="scenario-detail">A tour's announced; you race to buy. Scalper bots beat you to it; you pay 4× resale.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">Marketplace policy denies scalper-class intent. Your honest shopping assistant declares <code>purchase</code> and passes; scalpers don't.</p>
+          </div>
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">News article</p>
+            <p class="scenario-detail">You see a viral article attributed to a famous reporter. Maybe they wrote it. Maybe an AI cloned their style.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">A "verified author" badge in your browser. Click it: cryptographic chain back to the reporter's publication. Clones show "no provenance."</p>
+          </div>
+        </div>
+
+        <!-- Scenario 3 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">Product reviews</p>
+            <p class="scenario-detail">A camera has 1,200 5-star reviews. Most might be from review-farm AI. You can't tell which.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">Review platform's policy denies engagement-farming intent. Real verified-purchaser reviews stay; AI farms get filtered cryptographically, not heuristically.</p>
+          </div>
+        </div>
+
+        <!-- Scenario 4 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">Social media post</p>
+            <p class="scenario-detail">A post quoting a politician spreads. The quote is inflammatory. You don't know if it's real, edited, or generated.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">Quote carries a provenance chain back to the transcript source or news organization. Or it doesn't — and you know to be skeptical.</p>
+          </div>
+        </div>
+
+        <!-- Scenario 5 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">Your name online</p>
+            <p class="scenario-detail">Someone posts "AI-written" content under your name, attributing things you didn't say. No way to disprove it cleanly.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">Real you signs your own publications. Anything attributed to you without your signature is provably not you. Defamation cases get evidence.</p>
+          </div>
+        </div>
+
+        <!-- Scenario 6 -->
+        <div class="scenario-row">
+          <div class="scenario-context">
+            <p class="scenario-label">AI agent helping you</p>
+            <p class="scenario-detail">Your AI shopping assistant is suddenly blocked from half the sites it used to work on. Bot defense thinks it's a scraper.</p>
+          </div>
+          <div class="scenario-after">
+            <p class="scenario-label scenario-label-good">→ With AgentPKI</p>
+            <p class="scenario-detail">Your agent presents a verified passport with declared intent <code>purchase</code>. Sites with policies let it through cleanly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU CAN DO -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        What you can actually do today.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Most of this is the adoption curve playing out — but here are the things you can do right now that move it forward.
+      </p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="step-card">
+          <h3 class="step-title">Try the verifier on something</h3>
+          <p class="step-desc">
+            Paste any text into the <a href="/provenance" class="underline">Provenance Explorer</a> — sign it, then try tampering with the content and see verification fail in milliseconds. Same protocol that publishers will deploy.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Install the browser extension</h3>
+          <p class="step-desc">
+            We're shipping a Chrome extension that surfaces verification badges on sites you visit. <a href="/check" class="underline">/check</a> is the in-browser web version while the extension reviews complete.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Ask sites you use to deploy</h3>
+          <p class="step-desc">
+            Tell platforms you care about — your favorite marketplaces, social platforms, publishers — that you want cryptographic content attribution. Adoption follows demand.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Share what you read</h3>
+          <p class="step-desc">
+            Spread the word. The more people who understand that "no provenance = treat as suspect," the faster the equilibrium shifts. This page is shareable; so is <a href="/" class="underline">agentpki.dev</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONEST LIMITS -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16">
+      <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30 p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+          What this isn't
+        </p>
+        <h2 class="text-2xl font-semibold tracking-tight mb-4">
+          We're not promising to make the internet honest. We're promising to make dishonesty visible.
+        </h2>
+        <ul class="space-y-2.5 text-[color:var(--color-text-muted)] max-w-3xl">
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-text-muted)] mt-0.5">·</span><span><strong class="text-[color:var(--color-text)]">A signed lie is still a lie.</strong> Provenance tells you who said something, not whether it's true.</span></li>
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-text-muted)] mt-0.5">·</span><span><strong class="text-[color:var(--color-text)]">Adoption is gradual.</strong> Platforms that decline to enforce — X, parts of Meta — will lag. The "verified internet" tier emerges where sites care.</span></li>
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-text-muted)] mt-0.5">·</span><span><strong class="text-[color:var(--color-text)]">Copy-paste defeats provenance.</strong> If you screenshot signed content, the signature is gone. Cryptographic infrastructure works when content is served, not when it's screenshot-laundered.</span></li>
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-text-muted)] mt-0.5">·</span><span><strong class="text-[color:var(--color-text)]">Bad-faith actors can still operate.</strong> Without provenance. They become a distinguishable cohort that you (or platforms) can choose to treat skeptically.</span></li>
+        </ul>
+        <p class="text-[color:var(--color-text-muted)] mt-6 max-w-3xl">
+          What we're doing is shifting the equilibrium. Today the default for AI content is "untraceable." Tomorrow it's "untraceable, suspicious." That's the change you'll feel.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .scenario-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1.25rem 1.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0.65rem;
+      background: rgba(20,20,30,0.4);
+    }
+    @media (max-width: 768px) {
+      .scenario-row { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+    .scenario-context, .scenario-after { display: flex; flex-direction: column; gap: 0.35rem; }
+    .scenario-label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .scenario-label-good { color: #4ade80; }
+    .scenario-detail {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--color-text);
+    }
+    .scenario-detail code {
+      font-family: ui-monospace, monospace;
+      color: var(--color-accent-bright);
+      font-size: 0.85rem;
+    }
+
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-title {
+      font-size: 1.1rem; font-weight: 600;
+      margin-bottom: 0.55rem; color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem; line-height: 1.55;
+    }
+    .step-desc a { text-decoration: underline; }
+    .step-desc a:hover { color: var(--color-text); }
+  </style>
+</Base>

@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For bot-defense vendors — AgentPKI as a positive signal"
+  description="Cloudflare, Akamai, HUMAN, DataDome, Arkose, Kasada — your detection engine treats every unknown bot the same. AgentPKI gives you a new positive signal: 'verified bot with declared intent.' Plug it in alongside your existing heuristics."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For bot-defense vendors
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        Heuristics + verified-bot signal. Both in your stack.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        Your detection engine is excellent at telling humans from bots. It struggles to tell *good* bots from *bad* bots — because by behavior alone, they look the same. Customers complain when their shopping assistants get blocked. Scalpers get through eventually anyway. The structural limit isn't the engine; it's the input signal.
+      </p>
+      <p class="text-lg text-[color:var(--color-text)] font-medium max-w-3xl leading-relaxed mt-5">
+        AgentPKI is the positive signal you don't have today. Bots that bothered to identify themselves arrive with cryptographic passports + declared intent. Your engine gains a new high-precision class: "verified bot, intent matches site policy → allow." Heuristics still catch the rest.
+      </p>
+    </div>
+  </section>
+
+  <!-- WHY THIS IS A WIN FOR YOU SPECIFICALLY -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Three reasons this matters for a bot-defense vendor.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Not "ask your customer to deploy our protocol." This is "ingest one more signal in your existing product."
+      </p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <h3 class="step-title">Lower false-positive rate</h3>
+          <p class="step-desc">
+            "Customer's shopping assistant got blocked" is the #1 enterprise support ticket in bot management. A verified positive signal lets you allow these without lowering protection against unknown bots.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Differentiation vs your competitors</h3>
+          <p class="step-desc">
+            First major vendor to integrate verified-bot identity is the one that gets the press cycle, the analyst report, the case studies. Three of the top six aren't shipping anything in this category yet.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Revenue from agentic AI tail wind</h3>
+          <p class="step-desc">
+            Claude Computer Use, OpenAI Operator, Microsoft Copilot Agents are mass-launching in 2026. Their traffic to your customers' sites will explode. You're either the vendor that handles it well or the one that gets replaced.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT INTEGRATES -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        How the integration works.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Lightweight. We're a vendor-neutral protocol; your detection engine remains your IP. The integration adds one feature to the request analysis pipeline.
+      </p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3 class="step-title">Detect the passport</h3>
+          <p class="step-desc">
+            Look for an <code class="text-xs">Agentpki-Token</code> request header or query parameter. Most agents will adopt one of these conventions; the protocol is header-agnostic.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3 class="step-title">Verify at the edge</h3>
+          <p class="step-desc">
+            Call <code class="text-xs">verify.agentpki.dev/v1/verify</code> with the passport + the site as <code class="text-xs">intent_check.site</code>. p50 ~50ms. Or run your own verifier on the protocol open spec — we provide the reference impl.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3 class="step-title">Promote to allow / deny</h3>
+          <p class="step-desc">
+            Verdict <code class="text-xs">allow</code> + intent matches site policy → promote to your verified class. Verdict <code class="text-xs">deny</code> or no passport → continue through your existing detection logic.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE BRING -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16">
+      <div class="rounded-2xl border border-[color:var(--color-accent)]/30 bg-[color:var(--color-accent)]/[0.04] p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-3">
+          The partnership shape
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-4 text-balance">
+          We bring the protocol. You bring distribution.
+        </h2>
+        <ul class="space-y-2.5 text-[color:var(--color-text-muted)] mb-7 max-w-3xl">
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">From us:</strong> open spec, reference verifier on Cloudflare Workers edge, issuer directory we co-maintain, joint case studies with reference customers.</span></li>
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">From you:</strong> integration into your existing bot management product, joint go-to-market with us as the protocol partner, technical input on the v0.4 spec.</span></li>
+          <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Pricing model:</strong> per-verify metered, or fixed annual license. Sensible for both deployment scales. Volume discounts and OEM terms negotiable.</span></li>
+        </ul>
+        <button type="button" data-contact-modal data-contact-source="for-bot-defense"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+          Talk to founder about partnership
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5">
+        Who we want to talk to first.
+      </h2>
+      <ul class="space-y-2 text-[color:var(--color-text-muted)] mb-8">
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Cloudflare Bot Management</strong> — natural fit; the verifier already runs on Cloudflare</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">HUMAN Security</strong> — growth-stage, just acquired by TPG, hungry for product differentiation</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">DataDome, Arkose, Kasada</strong> — mid-market, fast move on new signals</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Akamai Bot Manager</strong> — enterprise distribution channel</span></li>
+      </ul>
+      <button type="button" data-contact-modal data-contact-source="for-bot-defense / who"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      font-weight: 700; font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .step-title {
+      font-size: 1.1rem; font-weight: 600;
+      margin-bottom: 0.55rem; color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem; line-height: 1.55;
+    }
+    .step-desc code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+  </style>
+</Base>

@@ -1,0 +1,156 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="API docs — AgentPKI"
+  description="OpenAPI 3.1 specification for every public AgentPKI HTTP endpoint. Generated from spec/openapi.yaml."
+>
+  <Nav />
+
+  <!-- Swagger UI loaded from CDN. Renders the spec at /openapi.yaml. -->
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-10 pb-4">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      OpenAPI 3.1 specification
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
+      AgentPKI HTTP API reference
+    </h1>
+    <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-6">
+      Every public endpoint across the verifier, demo issuer, claim API, snapshot store, abuse pipeline, and heuristic check. Renders the canonical
+      <a href="/openapi.yaml" class="underline text-[color:var(--color-accent-bright)]">openapi.yaml</a>
+      from the spec repo.
+    </p>
+
+    <!-- Quick-action toolbar: try in client / pin OpenAPI / download collection / sample curl -->
+    <div class="flex flex-wrap gap-2 mb-2">
+      <!-- Postman: opens the Postman web UI with our collection JSON URL preloaded -->
+      <a href={`https://app.getpostman.com/run-collection/import?collection-url=${encodeURIComponent('https://agentpki.dev/postman.json')}`}
+         target="_blank" rel="noreferrer"
+         class="api-action-btn api-action-postman">
+        <span class="api-action-icon">▶</span>
+        <span>Try in Postman</span>
+      </a>
+      <!-- Insomnia accepts an `insomnia://` scheme to import an OpenAPI URL directly -->
+      <a href="insomnia://run?uri=https%3A%2F%2Fagentpki.dev%2Fopenapi.yaml"
+         class="api-action-btn api-action-insomnia">
+        <span class="api-action-icon">▶</span>
+        <span>Try in Insomnia</span>
+      </a>
+      <a href="/openapi.yaml" class="api-action-btn api-action-secondary">
+        <span class="api-action-icon">⬇</span>
+        <span>openapi.yaml</span>
+      </a>
+      <a href="/postman.json" class="api-action-btn api-action-secondary">
+        <span class="api-action-icon">⬇</span>
+        <span>postman.json</span>
+      </a>
+      <button type="button" id="copy-spec-url" class="api-action-btn api-action-ghost">
+        <span class="api-action-icon">⎘</span>
+        <span id="copy-spec-url-label">Copy OpenAPI URL</span>
+      </button>
+    </div>
+
+    <!-- Quick start: paste-ready first-call.
+         NOTE: built via raw-HTML setter so Astro's JSX parser doesn't see the
+         curly braces / inline quotes in the shell snippet. -->
+    <div class="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-4 mb-4 mt-3">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-2">First call &middot; 30 seconds, no signup</p>
+      <pre class="text-xs sm:text-sm overflow-x-auto" set:html={`<code class="text-[color:var(--color-text)] font-mono"># Mint a demo passport, verify it, get back verdict: allow.
+TOKEN=$(curl -s https://demo.agentpki.dev/mint | jq -r .token)
+curl -s -X POST https://verify.agentpki.dev/v1/verify \\
+  -H 'content-type: application/json' \\
+  -d '{"token":"'$TOKEN'"}' | jq .</code>`}></pre>
+    </div>
+  </section>
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-12">
+    <!-- Swagger UI mount point. Background is set to match the dark theme. -->
+    <div id="swagger-ui" class="rounded-xl overflow-hidden border border-[color:var(--color-border)] bg-white"></div>
+  </section>
+
+  <Footer />
+
+  <script is:inline src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      // @ts-ignore
+      window.ui = SwaggerUIBundle({
+        url: '/openapi.yaml',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        tryItOutEnabled: true,
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 2,
+        docExpansion: 'list',
+      });
+
+      // Copy-spec-URL handler
+      const btn = document.getElementById('copy-spec-url');
+      const lbl = document.getElementById('copy-spec-url-label');
+      if (btn && lbl) {
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText('https://agentpki.dev/openapi.yaml');
+            const original = lbl.textContent;
+            lbl.textContent = '✓ Copied!';
+            setTimeout(() => { lbl.textContent = original; }, 2000);
+          } catch (e) {
+            lbl.textContent = 'Copy failed';
+          }
+        });
+      }
+    });
+  </script>
+</Base>
+
+<style is:global>
+  /* Swagger UI ships its own styles; we just contain them inside our chrome.
+     The white background inside the box is intentional — Swagger UI's dark mode
+     is incomplete and harder to skim for an API reference. */
+  #swagger-ui .topbar { display: none; }
+
+  /* Quick-action toolbar buttons */
+  .api-action-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    cursor: pointer;
+    border: 1px solid;
+  }
+  .api-action-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1rem; height: 1rem;
+    font-size: 0.85rem;
+  }
+  .api-action-postman {
+    background: #ff6c37; color: #fff; border-color: #ff6c37;
+  }
+  .api-action-postman:hover { background: #ff8154; border-color: #ff8154; }
+  .api-action-insomnia {
+    background: #4000bf; color: #fff; border-color: #4000bf;
+  }
+  .api-action-insomnia:hover { background: #5b21d6; border-color: #5b21d6; }
+  .api-action-secondary {
+    background: rgba(167, 139, 250, 0.12); color: var(--color-accent-bright);
+    border-color: rgba(167, 139, 250, 0.4);
+  }
+  .api-action-secondary:hover {
+    background: rgba(167, 139, 250, 0.2); border-color: var(--color-accent-bright);
+  }
+  .api-action-ghost {
+    background: transparent; color: var(--color-text-muted);
+    border-color: var(--color-border-bright);
+  }
+  .api-action-ghost:hover {
+    color: var(--color-text); border-color: var(--color-accent);
+    background: rgba(167, 139, 250, 0.08);
+  }
+</style>

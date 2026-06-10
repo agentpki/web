@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Issuer directory — AgentPKI"
+  description="Public registry of every known AgentPKI issuer. Live polled directory documents + CRL status. Aggregator over /.well-known/agentpki-issuer.json."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      Public issuer registry &middot; live polled
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
+      Every known AgentPKI issuer.
+    </h1>
+    <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] max-w-3xl mb-6 leading-relaxed">
+      Each card below is one production issuer. The data — name, tier, signing keys, revocation list — comes from the issuer's own
+      <code class="text-[color:var(--color-accent-bright)]">/.well-known/agentpki-issuer.json</code>,
+      polled fresh from the Cloudflare edge every 5 minutes. No allowlist; if your domain serves a v1+ issuer document it will appear here.
+    </p>
+    <div class="flex flex-wrap gap-3 text-xs font-mono text-[color:var(--color-text-muted)]">
+      <span>Source: <a href="/api/issuer-directory" class="underline text-[color:var(--color-accent-bright)]">/api/issuer-directory</a></span>
+      <span>·</span>
+      <span>Generated at: <span id="generated-at">—</span></span>
+      <span>·</span>
+      <span><span id="reachable-count">—</span>&nbsp;reachable</span>
+    </div>
+  </section>
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-8">
+    <div id="issuers" class="grid sm:grid-cols-2 gap-4">
+      <div class="id-card id-card-loading">Loading issuer registry…</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Submit your issuer
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+    <div class="rounded-xl border border-[color:var(--color-border)] p-6 bg-[color:var(--color-bg-elevated)]/40">
+      <h2 class="text-xl font-semibold mb-2">Your domain not listed?</h2>
+      <p class="text-[color:var(--color-text-muted)] mb-4 max-w-3xl">
+        Stand up an issuer in 60 seconds at <a href="https://dashboard.agentpki.dev" class="underline text-[color:var(--color-accent-bright)]">dashboard.agentpki.dev</a> — choose a domain, paste two DNS records, you're listed here within 5 minutes. Self-host on Cloudflare Workers, Vercel, Fly, your VPS, anywhere that can serve a static JSON file at a well-known path.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://dashboard.agentpki.dev" class="id-cta id-cta-primary">Spin up your issuer →</a>
+        <a href="/spec/v0.2" class="id-cta id-cta-secondary">Read the issuer-doc spec →</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .id-card {
+      border: 1px solid var(--color-border);
+      border-radius: 0.7rem;
+      padding: 1.25rem;
+      background: rgba(20,20,30,0.4);
+      transition: border-color 0.2s;
+    }
+    .id-card-loading {
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+    .id-card.reachable { border-color: rgba(34,197,94,0.35); }
+    .id-card.unreachable { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.05); }
+    .id-card-head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .id-card-name {
+      font-weight: 700; font-size: 1.1rem; color: var(--color-text);
+    }
+    .id-card-tier {
+      font-size: 0.7rem; padding: 0.15rem 0.5rem;
+      border-radius: 0.3rem;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+    }
+    .id-card-host {
+      font-family: ui-monospace, monospace;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.85rem;
+    }
+    .id-card-host a { color: inherit; }
+    .id-card-host a:hover { color: var(--color-accent-bright); }
+    .id-stats-row {
+      display: flex; gap: 1.5rem;
+      padding: 0.55rem 0;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.85rem;
+    }
+    .id-stat { display: flex; flex-direction: column; }
+    .id-stat-key { font-size: 0.7rem; color: var(--color-text-muted); font-family: ui-monospace, monospace; }
+    .id-stat-val { font-weight: 600; color: var(--color-text); }
+    .id-stat-val-warn { color: #fbbf24; }
+    .id-stat-val-ok { color: #4ade80; }
+    .id-stat-val-bad { color: #f87171; }
+    .id-meta-row {
+      margin-top: 0.55rem;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+    }
+    .id-meta-row code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      color: var(--color-text);
+      background: rgba(167,139,250,0.08);
+      padding: 0.05rem 0.3rem;
+      border-radius: 0.25rem;
+    }
+    .id-error {
+      margin-top: 0.55rem;
+      padding: 0.45rem 0.6rem;
+      background: rgba(239,68,68,0.1);
+      border-radius: 0.35rem;
+      color: #fca5a5;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+    }
+    .id-card-links {
+      display: flex; gap: 0.85rem; flex-wrap: wrap;
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+    }
+    .id-card-links a {
+      color: var(--color-accent-bright);
+      text-decoration: none;
+    }
+    .id-card-links a:hover { text-decoration: underline; }
+
+    .id-cta {
+      display: inline-flex; align-items: center;
+      padding: 0.55rem 1rem;
+      border-radius: 0.45rem;
+      font-weight: 600; font-size: 0.9rem;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+      border: 1px solid;
+    }
+    .id-cta:hover { transform: translateY(-1px); }
+    .id-cta-primary { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+    .id-cta-secondary { background: transparent; color: var(--color-accent-bright); border-color: rgba(167,139,250,0.4); }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function pluralize(n, s) { return n === 1 ? s : s + 's'; }
+      function formatAge(ts) {
+        if (!ts) return '—';
+        var diff = Math.floor(Date.now() / 1000 - ts);
+        if (diff < 60) return diff + 's ago';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        return Math.floor(diff / 86400) + 'd ago';
+      }
+
+      function renderIssuer(i) {
+        var classes = ['id-card', i.reachable ? 'reachable' : 'unreachable'];
+        var lines = [];
+        var name = i.summary ? i.summary.name : i.host;
+        var tier = i.summary && i.summary.tier !== null ? 'Tier ' + i.summary.tier : 'unknown';
+        var currentKeys = i.summary ? i.summary.current_keys : 0;
+        var revokedKeys = i.summary ? i.summary.revoked_keys : 0;
+        var abuseContact = i.summary ? i.summary.abuse_contact : null;
+
+        lines.push('<div class="id-card-head">');
+        lines.push('  <span class="id-card-name">' + escape(name) + '</span>');
+        lines.push('  <span class="id-card-tier">' + tier + '</span>');
+        lines.push('</div>');
+        lines.push('<div class="id-card-host"><a href="https://' + escape(i.host) + '/.well-known/agentpki-issuer.json" target="_blank" rel="noreferrer">' + escape(i.host) + '</a></div>');
+
+        if (i.reachable) {
+          lines.push('<div class="id-stats-row">');
+          lines.push('  <div class="id-stat"><span class="id-stat-key">current keys</span><span class="id-stat-val id-stat-val-ok">' + currentKeys + '</span></div>');
+          lines.push('  <div class="id-stat"><span class="id-stat-key">revoked keys</span><span class="id-stat-val ' + (revokedKeys > 0 ? 'id-stat-val-warn' : '') + '">' + revokedKeys + '</span></div>');
+          lines.push('  <div class="id-stat"><span class="id-stat-key">probe latency</span><span class="id-stat-val">' + i.latency_ms + ' ms</span></div>');
+          lines.push('</div>');
+
+          if (i.crl) {
+            var crlAge = i.crl.generated_at ? formatAge(i.crl.generated_at) : 'unknown';
+            var crlState = i.crl.reachable ? 'id-stat-val-ok' : 'id-stat-val-bad';
+            lines.push('<div class="id-meta-row">CRL: <span class="' + crlState + '">' + (i.crl.reachable ? 'reachable' : 'unreachable') + '</span>' +
+              ' &middot; <code>' + (i.crl.revoked_count != null ? i.crl.revoked_count : '?') + '</code> ' + pluralize(i.crl.revoked_count || 0, 'entry') +
+              ' &middot; generated ' + crlAge + '</div>');
+          }
+          if (abuseContact) {
+            lines.push('<div class="id-meta-row">Abuse contact: <code>' + escape(abuseContact) + '</code></div>');
+          }
+          lines.push('<div class="id-card-links">');
+          lines.push('  <a href="https://' + escape(i.host) + '/.well-known/agentpki-issuer.json" target="_blank" rel="noreferrer">issuer.json →</a>');
+          lines.push('  <a href="https://' + escape(i.host) + '/.well-known/agentpki-crl.json" target="_blank" rel="noreferrer">CRL →</a>');
+          if (i.host === 'demo.agentpki.dev') {
+            lines.push('  <a href="https://' + escape(i.host) + '/mint" target="_blank" rel="noreferrer">/mint →</a>');
+            lines.push('  <a href="/replay">try Mode B replay →</a>');
+          }
+          lines.push('</div>');
+        } else {
+          lines.push('<div class="id-error">unreachable: ' + escape(i.error || 'unknown') + '</div>');
+        }
+
+        var div = document.createElement('div');
+        div.className = classes.join(' ');
+        div.innerHTML = lines.join('\n');
+        return div;
+      }
+
+      function escape(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      fetch('/api/issuer-directory', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var box = document.getElementById('issuers');
+          box.innerHTML = '';
+          j.issuers.forEach(function (i) {
+            box.appendChild(renderIssuer(i));
+          });
+          document.getElementById('generated-at').textContent =
+            new Date(j.generated_at).toLocaleString();
+          document.getElementById('reachable-count').textContent =
+            j.issuer_count + ' / ' + j.issuers.length;
+        })
+        .catch(function (e) {
+          var box = document.getElementById('issuers');
+          box.innerHTML = '<div class="id-card unreachable" style="grid-column:1 / -1;">' +
+            '<div class="id-error">Failed to load registry: ' + escape(e.message || 'unknown') + '</div></div>';
+        });
+    })();
+  </script>
+</Base>

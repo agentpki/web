@@ -1,0 +1,362 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="API keys — AgentPKI"
+  description="Generate an API key for the Verifier API or the Signing-as-a-Service. Free tier is generous; paid tiers are SLA-backed."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-20 pb-10">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+      API keys
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-4 text-balance">
+      Generate an API key.
+    </h1>
+    <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+      Pick a product, pick a tier, give us an email. We mint your key. Save it — it's only shown once. Free tier requires no payment.
+    </p>
+  </section>
+
+  <!-- Two-tab picker -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+
+    <div class="key-tabs">
+      <button type="button" class="key-tab key-tab-active" data-tab="verifier">Verifier API</button>
+      <button type="button" class="key-tab" data-tab="signing">Signing-as-a-Service</button>
+    </div>
+
+    <!-- VERIFIER tab -->
+    <div class="key-panel" data-panel="verifier">
+      <h2 class="text-2xl font-semibold mb-2">Verifier API key</h2>
+      <p class="text-[color:var(--color-text-muted)] mb-6 max-w-2xl">
+        Authenticates calls to <code class="text-sm">verify.agentpki.dev/v1/verify</code>. Free tier doesn't require a key (shared per-IP 10K/month); paid tiers require Authorization Bearer.
+      </p>
+
+      <form id="verifier-form" class="key-form">
+        <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Email</label>
+        <input name="email" type="email" required placeholder="you@yourdomain.com"
+          class="key-input" />
+
+        <label class="block text-sm text-[color:var(--color-text-muted)] mt-3 mb-1">Plan</label>
+        <select name="plan" class="key-input">
+          <option value="free">Free — $0/month, 10K verifies, no payment required</option>
+          <option value="team" selected>Team — $49/month, 1M verifies</option>
+          <option value="pro">Pro — $499/month, 10M verifies + SLA</option>
+        </select>
+
+        <label class="block text-sm text-[color:var(--color-text-muted)] mt-3 mb-1">Display name (optional)</label>
+        <input name="name" type="text" placeholder="Acme Inc."
+          class="key-input" />
+
+        <p class="text-xs text-[color:var(--color-text-muted)] mt-3">
+          Team and Pro plans provision immediately. Billing setup follows — until then they behave as Free. You will see a payment link in the response.
+        </p>
+
+        <button type="submit" class="key-btn key-btn-primary mt-5">
+          Generate Verifier API key →
+        </button>
+      </form>
+
+      <div id="verifier-result" class="key-result hidden"></div>
+    </div>
+
+    <!-- SIGNING tab -->
+    <div class="key-panel hidden" data-panel="signing">
+      <h2 class="text-2xl font-semibold mb-2">Signing-as-a-Service credentials</h2>
+      <p class="text-[color:var(--color-text-muted)] mb-6 max-w-2xl">
+        Provisions a managed Ed25519 keypair, an api_key for <code class="text-sm">signing.agentpki.dev/v1/sign</code>, and a hosted issuer directory URL. Free tier is 100 signatures/month.
+      </p>
+
+      <form id="signing-form" class="key-form">
+        <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Email</label>
+        <input name="email" type="email" required placeholder="you@yourdomain.com"
+          class="key-input" />
+
+        <label class="block text-sm text-[color:var(--color-text-muted)] mt-3 mb-1">Plan</label>
+        <select name="plan" class="key-input">
+          <option value="hobby" selected>Hobby — $0/month, 100 signatures, no payment required</option>
+          <option value="publisher">Publisher — $99/month, 10K signatures + key rotation</option>
+          <option value="newsroom">Newsroom — $499/month, 100K signatures + SLA + compliance report</option>
+        </select>
+
+        <label class="block text-sm text-[color:var(--color-text-muted)] mt-3 mb-1">Publication / brand name (optional)</label>
+        <input name="name" type="text" placeholder="Your Substack"
+          class="key-input" />
+
+        <label class="block text-sm text-[color:var(--color-text-muted)] mt-3 mb-1">Issuer hostname (optional — paid tiers)</label>
+        <input name="issuer_host" type="text" placeholder="yourdomain.com"
+          class="key-input" />
+        <p class="text-xs text-[color:var(--color-text-muted)] mt-1">
+          Leave blank if you don't have a custom domain yet — we'll host one for you at signing.agentpki.dev.
+        </p>
+
+        <button type="submit" class="key-btn key-btn-primary mt-5">
+          Generate Signing credentials →
+        </button>
+      </form>
+
+      <div id="signing-result" class="key-result hidden"></div>
+    </div>
+
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .key-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.75rem; border-bottom: 1px solid var(--color-border); }
+    .key-tab {
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      background: none; border: none; cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .key-tab:hover { color: var(--color-text); }
+    .key-tab-active { color: var(--color-text); border-bottom-color: var(--color-accent); }
+    .key-panel { padding: 1.5rem 0; }
+    .key-panel.hidden { display: none; }
+
+    .key-form { display: flex; flex-direction: column; max-width: 32rem; }
+    .key-input {
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.4rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      font-size: 0.95rem;
+    }
+    .key-input:focus { outline: none; border-color: var(--color-accent); }
+
+    .key-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.2rem;
+      border-radius: 0.45rem;
+      font-weight: 600;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .key-btn:hover { transform: translateY(-1px); }
+    .key-btn-primary {
+      background: var(--color-accent); color: black; border-color: var(--color-accent);
+    }
+
+    .key-result {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.4rem;
+      border-radius: 0.6rem;
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.06);
+    }
+    .key-result.hidden { display: none; }
+    .key-result h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.85rem; color: #4ade80; }
+    .key-result-row { display: flex; gap: 0.6rem; padding: 0.35rem 0; font-size: 0.88rem; flex-wrap: wrap; }
+    .key-result-key { color: var(--color-text-muted); width: 9rem; font-family: ui-monospace, monospace; font-size: 0.75rem; flex-shrink: 0; }
+    .key-result-val { color: var(--color-text); font-family: ui-monospace, monospace; font-size: 0.8rem; word-break: break-all; flex: 1; min-width: 0; }
+    .key-result-val-sensitive {
+      color: #fbbf24;
+      background: rgba(251,191,36,0.08);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.3rem;
+      font-weight: 700;
+    }
+    .key-result-warn {
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 0.45rem;
+      font-size: 0.85rem;
+      color: #fbbf24;
+    }
+  </style>
+
+  <script is:inline>
+    // Tab switcher
+    document.querySelectorAll('.key-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.key-tab').forEach(function (b) { b.classList.remove('key-tab-active'); });
+        btn.classList.add('key-tab-active');
+        var tab = btn.getAttribute('data-tab');
+        document.querySelectorAll('.key-panel').forEach(function (p) {
+          if (p.getAttribute('data-panel') === tab) p.classList.remove('hidden');
+          else p.classList.add('hidden');
+        });
+      });
+    });
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // VERIFIER form submit
+    document.getElementById('verifier-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var plan = form.plan.value;
+      var data = {
+        email: form.email.value.trim(),
+        plan: plan,
+      };
+      if (form.name.value.trim()) data.name = form.name.value.trim();
+
+      var btn = form.querySelector('button');
+      var prev = btn.textContent;
+      btn.disabled = true;
+
+      // Paid plans route through Stripe Checkout
+      if (plan === 'team' || plan === 'pro') {
+        btn.textContent = 'Starting checkout…';
+        try {
+          var r = await fetch('https://verify.agentpki.dev/v1/checkout/session', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ email: data.email, product: 'verifier', plan: plan }),
+          });
+          var body = await r.json();
+          if (!r.ok) throw new Error(body.detail || body.error || 'unknown');
+          if (body.checkout_url) {
+            window.location.href = body.checkout_url;
+            return;
+          }
+          throw new Error('No checkout URL returned');
+        } catch (e) {
+          var rs = document.getElementById('verifier-result');
+          rs.style.borderColor = 'rgba(239,68,68,0.5)';
+          rs.style.background = 'rgba(239,68,68,0.06)';
+          rs.innerHTML = '<h3 style="color:#f87171;">✗ Checkout unavailable</h3><div style="font-size:0.9rem;color:var(--color-text);">' + escapeHtml(e.message) + '</div><div style="margin-top:0.5rem;font-size:0.85rem;color:var(--color-text-muted);">Email <a href="mailto:hello@agentpki.dev" style="text-decoration:underline;color:var(--color-accent-bright);">hello@agentpki.dev</a> for manual provisioning.</div>';
+          rs.classList.remove('hidden');
+          btn.disabled = false; btn.textContent = prev;
+        }
+        return;
+      }
+
+      // Free plan: direct provision
+      btn.textContent = 'Provisioning…';
+      try {
+        var r = await fetch('https://verify.agentpki.dev/v1/keys/provision', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        var body = await r.json();
+        if (!r.ok) throw new Error(body.detail || body.error || 'unknown');
+
+        var rs = document.getElementById('verifier-result');
+        rs.innerHTML =
+          '<h3>✓ Verifier API key provisioned</h3>' +
+          '<div class="key-result-row"><span class="key-result-key">api_key</span>' +
+            '<span class="key-result-val key-result-val-sensitive">' + escapeHtml(body.api_key) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">customer_id</span><span class="key-result-val">' + escapeHtml(body.customer_id) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">plan</span><span class="key-result-val">' + escapeHtml(body.plan) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">monthly_quota</span><span class="key-result-val">' + body.monthly_quota.toLocaleString() + ' verifies</span></div>' +
+          '<div class="key-result-warn">⚠ ' + escapeHtml(body.save_warning) + '</div>' +
+          '<div style="margin-top:1rem;font-size:0.85rem;color:var(--color-text-muted);">' +
+            '<strong style="color:var(--color-text);">Next step:</strong> include this header on every /v1/verify call:<br>' +
+            '<code style="display:inline-block;margin-top:0.4rem;padding:0.35rem 0.55rem;background:rgba(167,139,250,0.08);border-radius:0.3rem;font-size:0.78rem;">Authorization: Bearer ' + escapeHtml(body.api_key) + '</code>' +
+          '</div>';
+        rs.classList.remove('hidden');
+      } catch (err) {
+        var rs = document.getElementById('verifier-result');
+        rs.style.borderColor = 'rgba(239,68,68,0.5)';
+        rs.style.background = 'rgba(239,68,68,0.06)';
+        rs.innerHTML = '<h3 style="color:#f87171;">✗ Provisioning failed</h3><div style="font-size:0.9rem;color:var(--color-text);">' + escapeHtml(err.message) + '</div>';
+        rs.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = prev;
+      }
+    });
+
+    // SIGNING form submit
+    document.getElementById('signing-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var plan = form.plan.value;
+      var data = {
+        email: form.email.value.trim(),
+        plan: plan,
+      };
+      if (form.name.value.trim()) data.name = form.name.value.trim();
+      if (form.issuer_host.value.trim()) data.issuer_host = form.issuer_host.value.trim();
+
+      var btn = form.querySelector('button');
+      var prev = btn.textContent;
+      btn.disabled = true;
+
+      // Paid plans route through Stripe Checkout
+      if (plan === 'publisher' || plan === 'newsroom') {
+        btn.textContent = 'Starting checkout…';
+        try {
+          var r = await fetch('https://verify.agentpki.dev/v1/checkout/session', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ email: data.email, product: 'signing', plan: plan }),
+          });
+          var body = await r.json();
+          if (!r.ok) throw new Error(body.detail || body.error || 'unknown');
+          if (body.checkout_url) {
+            window.location.href = body.checkout_url;
+            return;
+          }
+          throw new Error('No checkout URL returned');
+        } catch (e) {
+          var rs = document.getElementById('signing-result');
+          rs.style.borderColor = 'rgba(239,68,68,0.5)';
+          rs.style.background = 'rgba(239,68,68,0.06)';
+          rs.innerHTML = '<h3 style="color:#f87171;">✗ Checkout unavailable</h3><div style="font-size:0.9rem;color:var(--color-text);">' + escapeHtml(e.message) + '</div><div style="margin-top:0.5rem;font-size:0.85rem;color:var(--color-text-muted);">Email <a href="mailto:hello@agentpki.dev" style="text-decoration:underline;color:var(--color-accent-bright);">hello@agentpki.dev</a> for manual provisioning.</div>';
+          rs.classList.remove('hidden');
+          btn.disabled = false; btn.textContent = prev;
+        }
+        return;
+      }
+
+      // Hobby plan: direct provision
+      btn.textContent = 'Provisioning…';
+      try {
+        var r = await fetch('https://signing.agentpki.dev/v1/customers', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        var body = await r.json();
+        if (!r.ok) throw new Error(body.detail || body.error || 'unknown');
+
+        var rs = document.getElementById('signing-result');
+        rs.innerHTML =
+          '<h3>✓ Signing credentials provisioned</h3>' +
+          '<div class="key-result-row"><span class="key-result-key">api_key</span>' +
+            '<span class="key-result-val key-result-val-sensitive">' + escapeHtml(body.api_key) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">customer_id</span><span class="key-result-val">' + escapeHtml(body.customer_id) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">plan</span><span class="key-result-val">' + escapeHtml(body.plan) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">monthly_quota</span><span class="key-result-val">' + body.monthly_quota.toLocaleString() + ' signatures</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">kid</span><span class="key-result-val">' + escapeHtml(body.kid) + '</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">public_key</span><span class="key-result-val">' + escapeHtml(body.public_key_b64.substring(0,40)) + '…</span></div>' +
+          '<div class="key-result-row"><span class="key-result-key">issuer_doc</span><span class="key-result-val"><a href="' + escapeHtml(body.issuer_doc_url) + '" target="_blank" style="color:var(--color-accent-bright);">' + escapeHtml(body.issuer_doc_url) + '</a></span></div>' +
+          '<div class="key-result-warn">⚠ ' + escapeHtml(body.save_warning) + '</div>' +
+          '<div style="margin-top:1rem;font-size:0.85rem;color:var(--color-text-muted);">' +
+            '<strong style="color:var(--color-text);">Next:</strong> POST your content (base64url) to signing.agentpki.dev/v1/sign with header:<br>' +
+            '<code style="display:inline-block;margin-top:0.4rem;padding:0.35rem 0.55rem;background:rgba(167,139,250,0.08);border-radius:0.3rem;font-size:0.78rem;">Authorization: Bearer ' + escapeHtml(body.api_key) + '</code>' +
+          '</div>';
+        rs.classList.remove('hidden');
+      } catch (err) {
+        var rs = document.getElementById('signing-result');
+        rs.style.borderColor = 'rgba(239,68,68,0.5)';
+        rs.style.background = 'rgba(239,68,68,0.06)';
+        rs.innerHTML = '<h3 style="color:#f87171;">✗ Provisioning failed</h3><div style="font-size:0.9rem;color:var(--color-text);">' + escapeHtml(err.message) + '</div>';
+        rs.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = prev;
+      }
+    });
+  </script>
+</Base>

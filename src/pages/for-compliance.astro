@@ -1,0 +1,210 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For AI compliance — AgentPKI as Article 50 attribution infrastructure"
+  description="EU AI Act Article 50 enforcement begins August 2026. China AIGC rules already in force. US state AI labeling laws cascading. AgentPKI Provenance produces machine-readable, cryptographic attribution that satisfies disclosure obligations."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For AI compliance teams
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        Disclosure obligations, machine-readable.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        EU AI Act Article 50 transparency obligations enter substantive application <strong class="text-[color:var(--color-text)]">August 2, 2026</strong>. China's AIGC measures are in force. ~12 US states have AI labeling laws passed or pending. The common requirement: AI-generated content must be detectable and attributable. The common gap today: there's no standard infrastructure to produce auditable evidence at scale.
+      </p>
+      <p class="text-lg text-[color:var(--color-text)] font-medium max-w-3xl leading-relaxed mt-5">
+        AgentPKI Provenance is the cryptographic attribution layer. Every piece of AI-generated content is signed by the agent that produced it; verifiers, auditors, and regulators get machine-checkable evidence. Same protocol works for EU, China, and US regimes simultaneously.
+      </p>
+    </div>
+  </section>
+
+  <!-- WHAT REGULATIONS REQUIRE & HOW WE MAP -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        What the regulators want — and how the protocol delivers it.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        We're not regulatory experts (talk to your counsel for definitive guidance). But the structural fit between the protocol and the disclosure regime is well-defined.
+      </p>
+
+      <div class="space-y-4">
+        <div class="compliance-row">
+          <div class="compliance-reg">
+            <p class="compliance-reg-name">EU AI Act Article 50 §1–4</p>
+            <p class="compliance-reg-detail">Providers and deployers must ensure AI-generated content is machine-readable as such. Detectable by automated means. Enforcement begins Aug 2, 2026.</p>
+          </div>
+          <div class="compliance-fit">
+            <p class="compliance-fit-name">AgentPKI Provenance v0.1</p>
+            <p class="compliance-fit-detail">Every AI-generated content piece carries a cryptographic <code class="text-xs">agentpki.declaration</code> assertion. Machine-readable, automated detection. Published spec, open verifier — auditors can validate without your software.</p>
+          </div>
+        </div>
+
+        <div class="compliance-row">
+          <div class="compliance-reg">
+            <p class="compliance-reg-name">EU AI Act Article 50 §2(a)–(c)</p>
+            <p class="compliance-reg-detail">Specific obligations for synthetic image/audio/video and text materially containing public-interest topics. Marking must survive standard transformations where possible.</p>
+          </div>
+          <div class="compliance-fit">
+            <p class="compliance-fit-name">C2PA-compatible signing</p>
+            <p class="compliance-fit-detail">AgentPKI Provenance is a C2PA assertion (Adobe/Microsoft/BBC standard). Survives standard transformations in C2PA-aware tooling. Both sidecar (.c2pa.json) and HTTP header (Content-Provenance) delivery.</p>
+          </div>
+        </div>
+
+        <div class="compliance-row">
+          <div class="compliance-reg">
+            <p class="compliance-reg-name">China AIGC Measures (Aug 2023, force)</p>
+            <p class="compliance-reg-detail">Generative AI services must label outputs and maintain logs of generation. State Cyberspace Administration audits possible.</p>
+          </div>
+          <div class="compliance-fit">
+            <p class="compliance-fit-name">Hash-chained audit log</p>
+            <p class="compliance-fit-detail">Every signed piece of content is recorded in a tamper-evident hash-chained ledger. Logs are queryable by (agent_id, time range, content_type). Witnesses can mirror and verify chain integrity (RFC 6962-inspired).</p>
+          </div>
+        </div>
+
+        <div class="compliance-row">
+          <div class="compliance-reg">
+            <p class="compliance-reg-name">US state AI labeling laws (CA, NY, IL, TX, FL, &amp; expanding)</p>
+            <p class="compliance-reg-detail">Varying requirements — most converge on "AI-generated content must be disclosed to consumers at point of consumption."</p>
+          </div>
+          <div class="compliance-fit">
+            <p class="compliance-fit-name">Same protocol, no second integration</p>
+            <p class="compliance-fit-detail">One signing implementation satisfies multiple regimes. Verifier emits the disclosure proof on demand. No state-by-state compliance fork.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-xs text-[color:var(--color-text-muted)] italic mt-7 max-w-3xl">
+        Disclaimer: this is technical architecture mapping, not legal advice. Your counsel must validate whether the protocol meets your specific obligations in your specific jurisdictions.
+      </p>
+    </div>
+  </section>
+
+  <!-- THREE STEPS -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Three steps for a compliance program.
+      </h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3 class="step-title">Inventory your AI surfaces</h3>
+          <p class="step-desc">
+            Where does your organization produce AI-generated content? Customer support copilots, marketing copy generators, code-gen tools, public chatbot outputs. Each becomes an "agent" with a passport.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3 class="step-title">Sign at generation time</h3>
+          <p class="step-desc">
+            Add the AgentPKI Provenance SDK call to each surface. One line per generation. The manifest gets attached as a sidecar, inline comment, or HTTP header — whatever your delivery model supports.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3 class="step-title">Auditable evidence on request</h3>
+          <p class="step-desc">
+            Auditor or regulator asks "show me your AI outputs from Q2 2026." You query the audit log; it returns hash-chained, signed evidence. Single source, multi-jurisdiction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE WANT -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5">
+        Who we want to work with first.
+      </h2>
+      <ul class="space-y-2 text-[color:var(--color-text-muted)] mb-8">
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">AI labs operating in the EU</strong> — OpenAI, Anthropic, Mistral, Aleph Alpha, Cohere; Article 50 is on them as providers</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Platforms with EU/state-regulated users</strong> — Meta, ByteDance, large social networks, B2C marketplaces</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Enterprise compliance teams</strong> — financial services, healthcare, legal, anywhere AI-generated content has regulated downstream consequences</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span><strong class="text-[color:var(--color-text)]">Compliance-as-a-service vendors</strong> — Hugging Face EU operations, Cetus, regional GDPR/AI Act vendors who would embed our protocol as their "agent attribution" layer</span></li>
+      </ul>
+      <button type="button" data-contact-modal data-contact-source="for-compliance"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .compliance-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1.25rem 1.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0.65rem;
+      background: rgba(20,20,30,0.4);
+    }
+    @media (max-width: 768px) {
+      .compliance-row { grid-template-columns: 1fr; }
+    }
+    .compliance-reg, .compliance-fit { display: flex; flex-direction: column; gap: 0.4rem; }
+    .compliance-reg-name {
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fbbf24;
+    }
+    .compliance-fit-name {
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #4ade80;
+    }
+    .compliance-reg-detail, .compliance-fit-detail {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--color-text-muted);
+    }
+    .compliance-fit-detail code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      font-weight: 700; font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .step-title {
+      font-size: 1.1rem; font-weight: 600;
+      margin-bottom: 0.55rem; color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem; line-height: 1.55;
+    }
+  </style>
+</Base>

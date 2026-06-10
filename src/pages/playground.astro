@@ -1,0 +1,469 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Playground — AgentPKI"
+  description="Interactive AgentPKI playground. Paste or mint a PASETO v4.public token, decode it, tamper it, verify it. No surrounding marketing chrome — just the protocol."
+>
+  <Nav />
+
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-10 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      Playground &middot; the protocol with no chrome
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
+      Build a token. Tamper it. Verify it.
+    </h1>
+    <p class="text-[color:var(--color-text-muted)] max-w-3xl mb-6">
+      Hand-crafted as the URL you share with someone who wants to <em>actually try</em> AgentPKI without reading the pitch. Mint a real PASETO from <code class="text-violet-300">demo.agentpki.dev</code>, watch the verifier&rsquo;s real verdicts, edit and re-verify. No signup. No install. Every byte you see is real.
+    </p>
+  </section>
+
+  <!-- ════════════ PANEL 1: TOKEN ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-6">
+    <div class="rounded-2xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/40 p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <span class="pg-step">1</span>
+          Token
+        </h2>
+        <div class="flex gap-2 flex-wrap">
+          <button id="pg-mint" class="pg-btn pg-btn-primary">▶ Mint a clean demo token</button>
+          <button id="pg-mint-revoked" class="pg-btn pg-btn-secondary" title="Mint with kid=demo-2026-q1-rotated">▶ Mint with revoked kid</button>
+          <button id="pg-clear" class="pg-btn pg-btn-ghost">Clear</button>
+        </div>
+      </div>
+      <textarea id="pg-token" class="pg-token-input" rows="4" spellcheck="false"
+                placeholder="Paste any v4.public.eyJ... token here, or hit one of the Mint buttons above."></textarea>
+      <div class="flex items-center gap-3 mt-3 flex-wrap">
+        <div class="flex gap-2 flex-wrap" id="pg-tamper-row">
+          <button class="pg-btn pg-btn-warn pg-tamper-btn" data-mode="sig">⚠ Tamper signature</button>
+          <button class="pg-btn pg-btn-warn pg-tamper-btn" data-mode="payload">⚠ Tamper payload</button>
+          <button class="pg-btn pg-btn-warn pg-tamper-btn" data-mode="footer">⚠ Tamper footer (kid)</button>
+        </div>
+        <div class="flex-1"></div>
+        <button id="pg-copy" class="pg-btn pg-btn-ghost"><span id="pg-copy-label">⎘ Copy token</span></button>
+        <button id="pg-share" class="pg-btn pg-btn-ghost"><span id="pg-share-label">🔗 Share URL</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PANEL 2: DECODED ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-6">
+    <div class="rounded-2xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/40 p-5 sm:p-6">
+      <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+        <span class="pg-step">2</span>
+        Decoded
+        <span class="text-xs font-mono text-[color:var(--color-text-dim)] ml-2">(local-only, no network)</span>
+      </h2>
+      <div class="grid lg:grid-cols-2 gap-4">
+        <div>
+          <p class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-muted)] mb-2">Payload claims</p>
+          <pre id="pg-payload" class="pg-pre">paste or mint a token above</pre>
+        </div>
+        <div>
+          <p class="text-[10px] font-mono uppercase tracking-widest text-[color:var(--color-text-muted)] mb-2">Footer + signature info</p>
+          <pre id="pg-meta" class="pg-pre">—</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PANEL 3: VERIFIER ════════════ -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+    <div class="rounded-2xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/40 p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <span class="pg-step">3</span>
+          Verify against the live verifier
+        </h2>
+        <button id="pg-verify" class="pg-btn pg-btn-primary">▶ POST /v1/verify</button>
+      </div>
+      <div id="pg-verdict-banner" class="pg-banner pg-banner-idle">
+        <div class="pg-banner-icon" id="pg-banner-icon">?</div>
+        <div class="flex-1">
+          <div class="pg-banner-title" id="pg-banner-title">No verdict yet</div>
+          <div class="pg-banner-sub" id="pg-banner-sub">Mint or paste a token above, then click "POST /v1/verify".</div>
+        </div>
+        <div class="pg-banner-elapsed" id="pg-banner-elapsed"></div>
+      </div>
+      <details class="mt-3">
+        <summary class="text-xs font-mono text-[color:var(--color-text-muted)] cursor-pointer hover:text-[color:var(--color-text)]">
+          Show raw verifier response JSON
+        </summary>
+        <pre id="pg-raw" class="pg-pre mt-2">—</pre>
+      </details>
+    </div>
+  </section>
+
+  <!-- Helpful tips footer -->
+  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-12">
+    <div class="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/30 p-5 text-sm text-[color:var(--color-text-muted)]">
+      <p class="mb-2"><strong class="text-[color:var(--color-text)]">Want this same flow from your code?</strong> The whole playground is ~150 lines of JS using our <a class="text-violet-300 hover:underline" href="/v1/sdk.min.js">Browser SDK</a>. The protocol surface is small on purpose.</p>
+      <p>
+        Other places to drive the same verifier:
+        <a class="text-violet-300 hover:underline" href="/api-docs">/api-docs</a> ·
+        <a class="text-violet-300 hover:underline" href="https://github.com/agentpki/cli">CLI</a> ·
+        <a class="text-violet-300 hover:underline" href="https://github.com/agentpki/mcp-server">MCP</a> ·
+        <a class="text-violet-300 hover:underline" href="https://github.com/agentpki/verify-action">GitHub Action</a> ·
+        <a class="text-violet-300 hover:underline" href="https://github.com/agentpki/vscode-agentpki">VS Code</a>.
+      </p>
+    </div>
+  </section>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  .pg-step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.4rem; height: 1.4rem;
+    border-radius: 50%;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border: 1px solid rgba(167, 139, 250, 0.35);
+  }
+  .pg-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    text-decoration: none;
+    background: rgba(167, 139, 250, 0.08);
+    color: var(--color-text);
+    border-color: var(--color-border-bright);
+  }
+  .pg-btn:hover {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: var(--color-accent);
+  }
+  .pg-btn:disabled {
+    opacity: 0.5; cursor: not-allowed;
+  }
+  .pg-btn-primary {
+    background: var(--color-accent);
+    color: #0a0a10;
+    border-color: var(--color-accent);
+    font-weight: 700;
+  }
+  .pg-btn-primary:hover {
+    background: var(--color-accent-bright);
+    border-color: var(--color-accent-bright);
+  }
+  .pg-btn-secondary {
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border-color: rgba(167, 139, 250, 0.4);
+  }
+  .pg-btn-warn {
+    background: rgba(248, 113, 113, 0.1);
+    color: #fca5a5;
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+  .pg-btn-warn:hover {
+    background: rgba(248, 113, 113, 0.2);
+    border-color: rgba(248, 113, 113, 0.6);
+  }
+  .pg-btn-ghost {
+    background: transparent;
+    color: var(--color-text-muted);
+  }
+  .pg-token-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid var(--color-border);
+    border-radius: 0.55rem;
+    padding: 0.85rem 1rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: var(--color-text);
+    line-height: 1.5;
+    resize: vertical;
+    word-break: break-all;
+  }
+  .pg-token-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .pg-pre {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.85rem 1rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: var(--color-text);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    max-height: 22rem;
+  }
+  .pg-pre .key { color: #c4b5fd; }
+  .pg-pre .str { color: #6ee7b7; }
+  .pg-pre .num { color: #93c5fd; }
+  .pg-banner {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.2rem;
+    border-radius: 0.7rem;
+    border: 1px solid;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .pg-banner-idle {
+    background: rgba(167, 139, 250, 0.04);
+    border-color: rgba(167, 139, 250, 0.25);
+  }
+  .pg-banner-allow {
+    background: rgba(52, 211, 153, 0.08);
+    border-color: rgba(52, 211, 153, 0.4);
+  }
+  .pg-banner-deny {
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.4);
+  }
+  .pg-banner-loading {
+    background: rgba(251, 191, 36, 0.06);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+  .pg-banner-icon {
+    flex-shrink: 0;
+    width: 2.5rem; height: 2.5rem;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    font-family: ui-monospace, monospace;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+  }
+  .pg-banner-allow .pg-banner-icon {
+    background: rgba(52, 211, 153, 0.22);
+    color: #6ee7b7;
+    border-color: rgba(52, 211, 153, 0.5);
+  }
+  .pg-banner-deny .pg-banner-icon {
+    background: rgba(248, 113, 113, 0.22);
+    color: #fca5a5;
+    border-color: rgba(248, 113, 113, 0.5);
+  }
+  .pg-banner-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    font-family: ui-monospace, monospace;
+  }
+  .pg-banner-sub {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin-top: 0.2rem;
+  }
+  .pg-banner-elapsed {
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    text-align: right;
+  }
+  .pg-banner-elapsed strong {
+    color: var(--color-text);
+    font-size: 1rem;
+    display: block;
+  }
+</style>
+
+<script is:inline>
+(function() {
+  const VERIFIER = 'https://verify.agentpki.dev';
+  const DEMO = 'https://demo.agentpki.dev';
+  const $ = (id) => document.getElementById(id);
+
+  // ─── Token & decoded panel ───
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function syntaxHighlight(json) {
+    return escapeHtml(json).replace(/(&quot;[^&]*?&quot;)(\s*:)|(&quot;[^&]*?&quot;)|(-?\d+(\.\d+)?)/g,
+      (m, key, _c, str, num) => {
+        if (key) return `<span class="key">${m}</span>`;
+        if (str) return `<span class="str">${m}</span>`;
+        if (num) return `<span class="num">${m}</span>`;
+        return m;
+      });
+  }
+  function b64uDecode(s) {
+    let t = s.replace(/-/g, '+').replace(/_/g, '/');
+    while (t.length % 4) t += '=';
+    const bin = atob(t);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function decode(token) {
+    const parts = token.split('.');
+    if (parts.length !== 4) throw new Error('Not a PASETO token (expected 4 parts).');
+    if (parts[0] !== 'v4' || parts[1] !== 'public') {
+      throw new Error(`Unsupported variant: ${parts[0]}.${parts[1]} (only v4.public).`);
+    }
+    const raw = b64uDecode(parts[2]);
+    if (raw.length < 64) throw new Error('Payload+signature blob too short.');
+    const payloadBytes = raw.slice(0, -64);
+    const sigBytes = raw.slice(-64);
+    const payload = JSON.parse(new TextDecoder().decode(payloadBytes));
+    let footer = null;
+    if (parts[3]) {
+      try { footer = JSON.parse(new TextDecoder().decode(b64uDecode(parts[3]))); }
+      catch { footer = { _raw: parts[3] }; }
+    }
+    const head = Array.from(sigBytes.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join('');
+    const tail = Array.from(sigBytes.slice(-8)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return {
+      payload, footer,
+      signature: { bytes: 64, alg: 'Ed25519', hex_preview: `${head}…${tail}` },
+    };
+  }
+  function refresh(token) {
+    const t = (token ?? $('pg-token').value).trim();
+    const pEl = $('pg-payload');
+    const mEl = $('pg-meta');
+    if (!t) {
+      pEl.textContent = 'paste or mint a token above';
+      mEl.textContent = '—';
+      return;
+    }
+    try {
+      const d = decode(t);
+      pEl.innerHTML = syntaxHighlight(JSON.stringify(d.payload, null, 2));
+      mEl.innerHTML = syntaxHighlight(JSON.stringify({ footer: d.footer, signature: d.signature }, null, 2));
+    } catch (e) {
+      pEl.innerHTML = `<span style="color:#fca5a5;">Decode failed: ${escapeHtml(e.message)}</span>`;
+      mEl.textContent = '—';
+    }
+  }
+  $('pg-token').addEventListener('input', () => refresh());
+
+  // ─── Mint controls ───
+  async function mint(revoked) {
+    const url = revoked ? `${DEMO}/mint?revoked=1` : `${DEMO}/mint`;
+    const res = await fetch(url);
+    const data = await res.json();
+    $('pg-token').value = data.token;
+    refresh();
+    return data.token;
+  }
+  $('pg-mint').addEventListener('click', async () => {
+    $('pg-mint').disabled = true;
+    try { await mint(false); } catch (e) { alert('Mint failed: ' + e.message); }
+    $('pg-mint').disabled = false;
+  });
+  $('pg-mint-revoked').addEventListener('click', async () => {
+    $('pg-mint-revoked').disabled = true;
+    try { await mint(true); } catch (e) { alert('Mint failed: ' + e.message); }
+    $('pg-mint-revoked').disabled = false;
+  });
+  $('pg-clear').addEventListener('click', () => { $('pg-token').value = ''; refresh(); });
+
+  // ─── Tamper controls ───
+  document.querySelectorAll('.pg-tamper-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = $('pg-token').value.trim();
+      if (!t) return alert('Paste or mint a token first.');
+      const parts = t.split('.');
+      if (parts.length !== 4) return alert('Not a PASETO token.');
+      const mode = btn.dataset.mode;
+      let tampered;
+      if (mode === 'sig') {
+        tampered = `${parts[0]}.${parts[1]}.${parts[2].slice(0, -4)}AAAA.${parts[3]}`;
+      } else if (mode === 'payload') {
+        const p = Math.min(20, Math.max(0, parts[2].length - 100));
+        tampered = `${parts[0]}.${parts[1]}.${parts[2].slice(0, p)}AAAA${parts[2].slice(p + 4)}.${parts[3]}`;
+      } else if (mode === 'footer') {
+        tampered = `${parts[0]}.${parts[1]}.${parts[2]}.AAAA${parts[3].slice(4)}`;
+      }
+      $('pg-token').value = tampered;
+      refresh();
+    });
+  });
+
+  // ─── Copy + share ───
+  $('pg-copy').addEventListener('click', async () => {
+    const t = $('pg-token').value.trim();
+    if (!t) return;
+    await navigator.clipboard.writeText(t);
+    const lbl = $('pg-copy-label');
+    const orig = lbl.textContent;
+    lbl.textContent = '✓ Copied';
+    setTimeout(() => { lbl.textContent = orig; }, 1500);
+  });
+  $('pg-share').addEventListener('click', async () => {
+    const t = $('pg-token').value.trim();
+    if (!t) return;
+    const url = `${location.origin}/playground/?token=${encodeURIComponent(t)}`;
+    await navigator.clipboard.writeText(url);
+    const lbl = $('pg-share-label');
+    const orig = lbl.textContent;
+    lbl.textContent = '✓ Share URL copied';
+    setTimeout(() => { lbl.textContent = orig; }, 1800);
+  });
+
+  // ─── Verify ───
+  function setBanner(state, title, sub, elapsed) {
+    const b = $('pg-verdict-banner');
+    b.classList.remove('pg-banner-idle', 'pg-banner-allow', 'pg-banner-deny', 'pg-banner-loading');
+    b.classList.add(`pg-banner-${state}`);
+    const iconMap = { idle: '?', allow: '✓', deny: '✗', loading: '⟳' };
+    $('pg-banner-icon').textContent = iconMap[state] ?? '?';
+    $('pg-banner-title').textContent = title;
+    $('pg-banner-sub').textContent = sub;
+    $('pg-banner-elapsed').innerHTML = elapsed != null ? `<strong>${elapsed}</strong>ms verifier` : '';
+  }
+  $('pg-verify').addEventListener('click', async () => {
+    const t = $('pg-token').value.trim();
+    if (!t) {
+      setBanner('idle', 'No token yet', 'Paste or mint a token first.');
+      return;
+    }
+    setBanner('loading', 'Verifying...', `POST ${VERIFIER}/v1/verify`);
+    $('pg-verify').disabled = true;
+    const t0 = performance.now();
+    try {
+      const res = await fetch(`${VERIFIER}/v1/verify`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ token: t }),
+      });
+      const body = await res.json();
+      const wallMs = Math.round(performance.now() - t0);
+      $('pg-raw').innerHTML = syntaxHighlight(JSON.stringify(body, null, 2));
+      if (body.verdict === 'allow') {
+        const issuer = body.passport?.issuer ?? 'unknown';
+        setBanner('allow', 'verdict: allow', `Issued by ${issuer} · wall ${wallMs}ms`, body.elapsed_ms);
+      } else {
+        const reason = body.failure_reason ?? 'unspecified';
+        const detail = body.failure_detail ?? '';
+        setBanner('deny', `verdict: deny · ${reason}`, detail || `wall ${wallMs}ms`, body.elapsed_ms);
+      }
+    } catch (e) {
+      setBanner('deny', 'Verifier error', e.message);
+    }
+    $('pg-verify').disabled = false;
+  });
+
+  // ─── ?token= URL param (for shareable token URLs) ───
+  const params = new URLSearchParams(location.search);
+  if (params.get('token')) {
+    $('pg-token').value = params.get('token');
+    refresh();
+  }
+})();
+</script>

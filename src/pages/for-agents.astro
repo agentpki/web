@@ -1,0 +1,186 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ContactModal from '../components/ContactModal.astro';
+---
+<Base
+  title="For agent builders — AgentPKI as your bot's passport"
+  description="Your AI agent is being blocked by bot defenders on half the sites it visits. Telling every site individually doesn't scale. AgentPKI gives your agent a cryptographic passport that sites can recognize automatically."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <!-- HERO -->
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-10">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        For agent builders
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-balance">
+        Your bot has a name. Give it a passport.
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed">
+        You're shipping an AI agent that browses, books, buys, posts, summarizes. Half the sites your agent visits block it because every bot looks the same to bot-defense vendors. Whitelisting individually doesn't scale — there are millions of sites. Per-vendor partnerships are slow. Pretending to be a human breaks the moment the site asks.
+      </p>
+      <p class="text-lg text-[color:var(--color-text)] font-medium max-w-3xl leading-relaxed mt-5">
+        AgentPKI gives your agent an Ed25519-signed passport. Sites that have adopted the protocol verify it in milliseconds and either accept your declared intent or reject it cleanly. Sites that haven't aren't worse off — your agent falls back to whatever they did before.
+      </p>
+    </div>
+  </section>
+
+  <!-- WHAT YOUR AGENT GAINS -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        What your agent gains by becoming a recognized identity.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        Pick any of these and it justifies the integration on its own.
+      </p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="step-card">
+          <h3 class="step-title">Auto-accept on adopting sites</h3>
+          <p class="step-desc">
+            Sites with an AgentPKI intent policy that accepts your declared intent let your agent through with zero negotiation. The site operator wrote the rules once; your agent follows them on every request.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Accountable behavior, not anonymous</h3>
+          <p class="step-desc">
+            Your bot's actions are signed and traceable to your issuer. This is a feature, not a cost — sites trust accountable agents more than anonymous ones, and your reputation accrues over time.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Declared intent = better routing</h3>
+          <p class="step-desc">
+            Tell sites what you're here to do (<code class="text-xs">purchase</code>, <code class="text-xs">monitor</code>, <code class="text-xs">read-public</code>). They can rate-limit appropriately, give you the right API path, and skip CAPTCHA challenges intended for the wrong intent class.
+          </p>
+        </div>
+        <div class="step-card">
+          <h3 class="step-title">Regulatory tail-wind</h3>
+          <p class="step-desc">
+            EU AI Act and US state AI labeling laws are starting to require identification of AI agents. Cryptographic passport infrastructure makes compliance machine-checkable instead of paper-based.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ISSUER ONBOARDING -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Becoming a recognized issuer.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-10 max-w-3xl">
+        You don't need permission to mint passports — the protocol is open, and you can stand up a tier-1 issuer at your own domain in minutes. Tier-2 verification (KYB-attested) and tier-3 (hardware-attested) add credibility for sites that require it.
+      </p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <h3 class="step-title">Stand up your issuer</h3>
+          <p class="step-desc">
+            Generate an Ed25519 keypair. Publish a directory document at <code class="text-xs">/.well-known/agentpki-issuer.json</code>. Sign your agent's passports with your private key. Tier 1, ready in 5 minutes.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <h3 class="step-title">Onboard via the dashboard</h3>
+          <p class="step-desc">
+            <a href="https://dashboard.agentpki.dev" class="underline text-[color:var(--color-accent-bright)]">dashboard.agentpki.dev</a> walks you through: pick a domain, paste two DNS records, get listed in the public issuer directory within 5 minutes.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <h3 class="step-title">Mint passports for every action</h3>
+          <p class="step-desc">
+            Your agent's framework (Vercel AI SDK, Anthropic SDK, MCP) calls your issuer for a short-lived passport per session. Verifiers check it; sites with policies accept or deny based on declared intent.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRY IT -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16">
+      <div class="rounded-2xl border border-[color:var(--color-accent)]/30 bg-[color:var(--color-accent)]/[0.04] p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-3">
+          Hands-on
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-4 text-balance">
+          Mint a token now, watch it verify.
+        </h2>
+        <p class="text-[color:var(--color-text-muted)] mb-7 max-w-2xl leading-relaxed">
+          The demo issuer at <code>demo.agentpki.dev</code> mints a passport for you with no auth. Run through the three story-paths — including the AI-agent integration walkthrough with Anthropic SDK and Claude — to see the protocol fire end-to-end.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/demo"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+            Open agent integration demo
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="/spec/v0.1" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+            Read core protocol spec
+          </a>
+          <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition">
+            Stand up your issuer →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE WANT TO TALK TO -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5">
+        Who we want to onboard as tier-2 issuers.
+      </h2>
+      <ul class="space-y-2 text-[color:var(--color-text-muted)] mb-8">
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>AI labs whose agents act on the public internet: Anthropic, OpenAI, Mistral, Cohere</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>Agentic platforms: Cursor, Replit Agent, Perplexity, Microsoft Copilot Agents, Vercel AI SDK ecosystem</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>SaaS tools that operate browser automation on behalf of customers (RPA, scraping infrastructure that wants to be honest)</span></li>
+        <li class="flex items-start gap-3"><span class="text-[color:var(--color-accent-bright)] mt-0.5">→</span><span>Hardware vendors: signed device identity for IoT and edge AI</span></li>
+      </ul>
+      <button type="button" data-contact-modal data-contact-source="for-agents"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <Footer />
+  <ContactModal />
+
+  <style is:global>
+    .step-card {
+      padding: 1.5rem 1.5rem 1.75rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20,20,30,0.4);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-family: ui-monospace, monospace;
+      font-weight: 700; font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .step-title {
+      font-size: 1.1rem; font-weight: 600;
+      margin-bottom: 0.55rem; color: var(--color-text);
+    }
+    .step-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem; line-height: 1.55;
+    }
+    .step-desc code { font-family: ui-monospace, monospace; color: var(--color-accent-bright); }
+  </style>
+</Base>
