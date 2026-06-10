@@ -1,0 +1,420 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+// Animated walkthrough of the Mode B replay-cache pattern. Shown above the
+// live demo as a visual prelude.
+import '../styles/spec-flows.css';
+import replayFlowHtml from '../snippets/flow-replay.html?raw';
+---
+<Base
+  title="Replay-cache visualizer — AgentPKI"
+  description="Watch v0.2 replay protection fire live. Mint a Mode B passport bundle. Verify it once — allow. Verify it again — deny, replay_detected. Real Cloudflare Durable Object, no mock."
+>
+  <Nav />
+
+  <section class="max-w-5xl mx-auto px-6 pt-14 pb-6">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
+      v0.2 protocol &middot; Mode B &middot; live demonstration
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
+      The replay cache, in your browser.
+    </h1>
+    <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] max-w-3xl mb-6 leading-relaxed">
+      Click <strong class="text-[color:var(--color-text)]">Mint Mode B bundle</strong>. The demo issuer generates an ephemeral Ed25519 keypair, embeds the public key in the passport's <code>cnf.jwk.x</code> claim, and signs a canonical RFC 9421 request with the matching private key. Click <strong class="text-[color:var(--color-text)]">Verify (1st time)</strong>: the verifier consults a global Cloudflare Durable Object, marks the (jti, signature) pair as seen, returns <code>allow</code>. Click <strong class="text-[color:var(--color-text)]">Verify (2nd time)</strong>: the DO sees the same pair, returns <code>deny · replay_detected</code>. Real protocol, no animation.
+    </p>
+    <p class="text-sm text-[color:var(--color-text-muted)]">
+      <a href="/spec/v0.2#replay-cache" class="underline text-[color:var(--color-accent-bright)]">Spec § replay-cache</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/agentpki/verifier/blob/main/src/replay.ts" class="underline text-[color:var(--color-accent-bright)]">verifier/src/replay.ts</a>
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Animated walkthrough of the Mode B replay-cache pattern
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-5xl mx-auto px-6 pb-10">
+    <h2 class="text-xl sm:text-2xl font-semibold tracking-tight mb-2">The pattern, animated</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      Before you click Mint below, here's the full lifecycle in seven steps —
+      from key generation through Durable Object lookup. Same shape as the live
+      demo. Click <strong class="text-[color:var(--color-text)]">Play</strong>.
+    </p>
+    <div class="spec-flows">
+      <Fragment set:html={replayFlowHtml} />
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step controls + log
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-5xl mx-auto px-6 pb-10">
+    <!-- Step buttons -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <button id="step-mint" class="rp-btn rp-btn-primary">
+        <span class="rp-step-num">1</span>
+        <span>Mint Mode B bundle</span>
+      </button>
+      <button id="step-verify1" class="rp-btn rp-btn-secondary" disabled>
+        <span class="rp-step-num">2</span>
+        <span>Verify (1st time)</span>
+      </button>
+      <button id="step-verify2" class="rp-btn rp-btn-secondary" disabled>
+        <span class="rp-step-num">3</span>
+        <span>Verify (2nd time — replay)</span>
+      </button>
+      <button id="step-reset" class="rp-btn rp-btn-ghost">
+        <span>↻ Reset</span>
+      </button>
+    </div>
+
+    <!-- 3-column ledger of what happened -->
+    <div class="grid sm:grid-cols-3 gap-4 mb-6">
+      <div class="rp-ledger" id="ledger-mint">
+        <div class="rp-ledger-head">
+          <span class="rp-ledger-num">1</span>
+          <span class="rp-ledger-title">Mint</span>
+          <span class="rp-ledger-state" data-state="pending">pending</span>
+        </div>
+        <div class="rp-ledger-body">
+          <div class="rp-ledger-row"><span class="rp-ledger-key">jti</span><span class="rp-ledger-val" id="mint-jti">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">cnf.jwk.x</span><span class="rp-ledger-val" id="mint-cnf">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">sig</span><span class="rp-ledger-val" id="mint-sig">—</span></div>
+        </div>
+      </div>
+
+      <div class="rp-ledger" id="ledger-v1">
+        <div class="rp-ledger-head">
+          <span class="rp-ledger-num">2</span>
+          <span class="rp-ledger-title">Verify #1</span>
+          <span class="rp-ledger-state" data-state="pending">pending</span>
+        </div>
+        <div class="rp-ledger-body">
+          <div class="rp-ledger-row"><span class="rp-ledger-key">verdict</span><span class="rp-ledger-val" id="v1-verdict">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">replay_checked</span><span class="rp-ledger-val" id="v1-rc">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">elapsed_ms</span><span class="rp-ledger-val" id="v1-elapsed">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">reason</span><span class="rp-ledger-val" id="v1-reason">—</span></div>
+        </div>
+      </div>
+
+      <div class="rp-ledger" id="ledger-v2">
+        <div class="rp-ledger-head">
+          <span class="rp-ledger-num">3</span>
+          <span class="rp-ledger-title">Verify #2</span>
+          <span class="rp-ledger-state" data-state="pending">pending</span>
+        </div>
+        <div class="rp-ledger-body">
+          <div class="rp-ledger-row"><span class="rp-ledger-key">verdict</span><span class="rp-ledger-val" id="v2-verdict">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">replay_checked</span><span class="rp-ledger-val" id="v2-rc">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">elapsed_ms</span><span class="rp-ledger-val" id="v2-elapsed">—</span></div>
+          <div class="rp-ledger-row"><span class="rp-ledger-key">reason</span><span class="rp-ledger-val" id="v2-reason">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Big verdict banner -->
+    <div id="rp-banner" class="rp-banner rp-banner-idle">
+      <span class="rp-banner-icon">⊕</span>
+      <span class="rp-banner-text">No bundle minted yet. Click step 1 above.</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Raw JSON viewer
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <details class="rp-details">
+      <summary>View raw bundle + verifier responses</summary>
+      <div class="grid sm:grid-cols-3 gap-3 mt-4">
+        <div>
+          <p class="text-xs font-mono uppercase text-[color:var(--color-text-muted)] mb-1">demo bundle</p>
+          <pre class="rp-json" id="raw-bundle">(not minted)</pre>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase text-[color:var(--color-text-muted)] mb-1">verify #1 response</p>
+          <pre class="rp-json" id="raw-v1">(not run)</pre>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase text-[color:var(--color-text-muted)] mb-1">verify #2 response</p>
+          <pre class="rp-json" id="raw-v2">(not run)</pre>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .rp-btn {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      padding: 0.65rem 1.1rem;
+      border-radius: 0.55rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s, background 0.15s;
+    }
+    .rp-btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .rp-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .rp-btn-primary {
+      background: var(--color-accent); color: white; border-color: var(--color-accent);
+    }
+    .rp-btn-secondary {
+      background: rgba(167,139,250,0.12); color: var(--color-accent-bright); border-color: rgba(167,139,250,0.4);
+    }
+    .rp-btn-ghost {
+      background: transparent; color: var(--color-text-muted); border-color: var(--color-border-bright);
+    }
+    .rp-step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.5rem; height: 1.5rem;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .rp-btn-secondary .rp-step-num {
+      background: rgba(167,139,250,0.25);
+    }
+
+    /* Ledger cards */
+    .rp-ledger {
+      border: 1px solid var(--color-border);
+      border-radius: 0.6rem;
+      padding: 0.85rem 1rem 0.5rem;
+      background: rgba(20,20,30,0.4);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rp-ledger-head {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rp-ledger-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.5rem; height: 1.5rem; border-radius: 50%;
+      background: rgba(167,139,250,0.15);
+      color: var(--color-accent-bright);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .rp-ledger-title {
+      font-weight: 600; flex: 1;
+    }
+    .rp-ledger-state {
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.3rem;
+      background: rgba(120,120,140,0.2);
+      color: var(--color-text-muted);
+    }
+    .rp-ledger-state[data-state="ok"] { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .rp-ledger-state[data-state="deny"] { background: rgba(239,68,68,0.2); color: #f87171; }
+    .rp-ledger-state[data-state="loading"] { background: rgba(167,139,250,0.2); color: var(--color-accent-bright); }
+    .rp-ledger-row {
+      display: flex; justify-content: space-between; gap: 0.5rem;
+      font-size: 0.78rem;
+      padding: 0.2rem 0;
+      font-family: ui-monospace, monospace;
+    }
+    .rp-ledger-key { color: var(--color-text-muted); }
+    .rp-ledger-val {
+      color: var(--color-text);
+      text-align: right;
+      max-width: 60%;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .rp-ledger[data-state="ok"] { border-color: rgba(34,197,94,0.5); background: rgba(34,197,94,0.05); }
+    .rp-ledger[data-state="deny"] { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.05); }
+
+    /* Banner */
+    .rp-banner {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 1.1rem 1.4rem;
+      border-radius: 0.7rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border: 1px solid;
+    }
+    .rp-banner-icon { font-size: 1.5rem; }
+    .rp-banner-idle {
+      border-color: var(--color-border);
+      background: rgba(20,20,30,0.4);
+      color: var(--color-text-muted);
+    }
+    .rp-banner-allow {
+      border-color: rgba(34,197,94,0.4);
+      background: rgba(34,197,94,0.08);
+      color: #4ade80;
+    }
+    .rp-banner-deny {
+      border-color: rgba(239,68,68,0.5);
+      background: rgba(239,68,68,0.1);
+      color: #f87171;
+    }
+    .rp-banner-loading {
+      border-color: rgba(167,139,250,0.4);
+      background: rgba(167,139,250,0.08);
+      color: var(--color-accent-bright);
+    }
+
+    /* Raw JSON viewer */
+    .rp-details {
+      border: 1px solid var(--color-border);
+      border-radius: 0.6rem;
+      padding: 0.85rem 1rem;
+      background: rgba(20,20,30,0.4);
+    }
+    .rp-details summary {
+      cursor: pointer; font-weight: 600;
+      color: var(--color-text);
+    }
+    .rp-json {
+      background: #0a0a14;
+      border: 1px solid var(--color-border);
+      border-radius: 0.4rem;
+      padding: 0.7rem;
+      font-size: 0.7rem;
+      max-height: 24rem;
+      overflow: auto;
+      color: #c8c8e0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      var bundle = null;
+      var verifyBody = null;
+
+      var els = {
+        stepMint: document.getElementById('step-mint'),
+        stepV1: document.getElementById('step-verify1'),
+        stepV2: document.getElementById('step-verify2'),
+        stepReset: document.getElementById('step-reset'),
+        banner: document.getElementById('rp-banner'),
+        bannerIcon: document.querySelector('#rp-banner .rp-banner-icon'),
+        bannerText: document.querySelector('#rp-banner .rp-banner-text'),
+        ledgerMint: document.getElementById('ledger-mint'),
+        ledgerV1: document.getElementById('ledger-v1'),
+        ledgerV2: document.getElementById('ledger-v2'),
+      };
+
+      function setBanner(state, text) {
+        els.banner.className = 'rp-banner rp-banner-' + state;
+        var iconMap = { idle: '⊕', loading: '⟳', allow: '✓', deny: '✗' };
+        els.bannerIcon.textContent = iconMap[state] || '⊕';
+        els.bannerText.textContent = text;
+      }
+
+      function setLedger(ledgerEl, state) {
+        ledgerEl.setAttribute('data-state', state);
+        var stateEl = ledgerEl.querySelector('.rp-ledger-state');
+        stateEl.setAttribute('data-state', state);
+        stateEl.textContent = state;
+      }
+
+      function shorten(s, n) {
+        if (!s) return '—';
+        s = String(s);
+        return s.length > n ? s.slice(0, n) + '…' : s;
+      }
+
+      // ── Step 1: Mint bundle
+      els.stepMint.addEventListener('click', async function () {
+        setBanner('loading', 'Minting Mode B bundle from demo.agentpki.dev…');
+        setLedger(els.ledgerMint, 'loading');
+        try {
+          var url = 'https://demo.agentpki.dev/mint-bundle?url=' +
+            encodeURIComponent('https://example.com/api/articles/' + Math.floor(Math.random() * 1000)) +
+            '&method=GET';
+          var r = await fetch(url);
+          bundle = await r.json();
+          verifyBody = bundle.verify_request_body;
+          document.getElementById('mint-jti').textContent = shorten(bundle.passport_preview.jti, 24);
+          document.getElementById('mint-cnf').textContent = shorten(bundle.passport_preview.cnf.jwk.x, 24);
+          document.getElementById('mint-sig').textContent = shorten(bundle.mode_b_request.signature, 24);
+          document.getElementById('raw-bundle').textContent = JSON.stringify(bundle, null, 2);
+          setLedger(els.ledgerMint, 'ok');
+          setBanner('idle', 'Bundle minted. Click step 2 to call the verifier.');
+          els.stepV1.disabled = false;
+          els.stepMint.disabled = true;
+        } catch (e) {
+          setLedger(els.ledgerMint, 'deny');
+          setBanner('deny', 'Mint failed: ' + (e.message || 'unknown'));
+        }
+      });
+
+      async function doVerify(slot) {
+        if (!verifyBody) return;
+        var prefix = slot === 1 ? 'v1' : 'v2';
+        var ledger = slot === 1 ? els.ledgerV1 : els.ledgerV2;
+        var rawEl = document.getElementById('raw-' + prefix);
+        setLedger(ledger, 'loading');
+        setBanner('loading', 'POSTing to verify.agentpki.dev/v1/verify (Mode B)…');
+        try {
+          var r = await fetch('https://verify.agentpki.dev/v1/verify', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(verifyBody),
+          });
+          var body = await r.json();
+          document.getElementById(prefix + '-verdict').textContent = body.verdict || '—';
+          document.getElementById(prefix + '-rc').textContent = String(body.replay_checked);
+          document.getElementById(prefix + '-elapsed').textContent = body.elapsed_ms != null ? body.elapsed_ms + ' ms' : '—';
+          document.getElementById(prefix + '-reason').textContent = body.failure_reason || '—';
+          rawEl.textContent = JSON.stringify(body, null, 2);
+
+          if (body.verdict === 'allow') {
+            setLedger(ledger, 'ok');
+            if (slot === 1) {
+              setBanner('allow', 'Verify #1: allow — first time this (jti, signature) was seen, replay_checked=true. Now click step 3.');
+              els.stepV2.disabled = false;
+              els.stepV1.disabled = true;
+            } else {
+              setBanner('allow', 'Verify #2: allow — but this should have been deny. Either the replay cache is disabled or the DO race fell open.');
+            }
+          } else {
+            setLedger(ledger, 'deny');
+            if (slot === 2 && body.failure_reason === 'replay_detected') {
+              setBanner('deny', 'Verify #2: DENY · replay_detected — the verifier saw this (jti, signature) at verify #1 and blocked the replay. v0.2 working as designed.');
+              els.stepV2.disabled = true;
+            } else {
+              setBanner('deny', 'Verify #' + slot + ' denied: ' + (body.failure_reason || 'unknown') + ' · ' + (body.failure_detail || ''));
+            }
+          }
+        } catch (e) {
+          setLedger(ledger, 'deny');
+          setBanner('deny', 'Verify failed: ' + (e.message || 'unknown'));
+        }
+      }
+
+      els.stepV1.addEventListener('click', function () { doVerify(1); });
+      els.stepV2.addEventListener('click', function () { doVerify(2); });
+
+      els.stepReset.addEventListener('click', function () {
+        bundle = null; verifyBody = null;
+        els.stepMint.disabled = false;
+        els.stepV1.disabled = true;
+        els.stepV2.disabled = true;
+        setLedger(els.ledgerMint, 'pending');
+        setLedger(els.ledgerV1, 'pending');
+        setLedger(els.ledgerV2, 'pending');
+        ['mint-jti','mint-cnf','mint-sig',
+         'v1-verdict','v1-rc','v1-elapsed','v1-reason',
+         'v2-verdict','v2-rc','v2-elapsed','v2-reason'].forEach(function (id) {
+          document.getElementById(id).textContent = '—';
+        });
+        document.getElementById('raw-bundle').textContent = '(not minted)';
+        document.getElementById('raw-v1').textContent = '(not run)';
+        document.getElementById('raw-v2').textContent = '(not run)';
+        setBanner('idle', 'No bundle minted yet. Click step 1 above.');
+      });
+    })();
+  </script>
+  <script src="/spec-flows.js" defer></script>
+</Base>

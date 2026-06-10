@@ -1,0 +1,86 @@
+  <div class="flow-panel active" id="panel-signin">
+
+    <div class="scenario">
+      <div class="scenario-icon emerald">🔑</div>
+      <div class="scenario-text">
+        <strong>Scenario:</strong> A customer comes back to <code>/account</code>. No password. Email + magic link, click, signed in. Session cookie set; <code>/v1/auth/me</code> returns plan, usage, key fingerprint, billing portal link.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="m6d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+          <g class="actor" id="f6-account">
+            <rect x="40" y="30" width="160" height="56" rx="8" />
+            <text x="120" y="52" font-size="13">📊 /account page</text>
+            <text x="120" y="70" class="sub">email input</text>
+          </g>
+          <g class="actor" id="f6-verifier">
+            <rect x="220" y="30" width="160" height="56" rx="8" />
+            <text x="300" y="52" font-size="13">🔐 Verifier</text>
+            <text x="300" y="70" class="sub">/v1/auth/request-link</text>
+          </g>
+          <g class="actor" id="f6-email">
+            <rect x="400" y="30" width="160" height="56" rx="8" />
+            <text x="480" y="52" font-size="13">✉️ Email inbox</text>
+            <text x="480" y="70" class="sub">link expires in 15 min</text>
+          </g>
+          <g class="actor" id="f6-customer">
+            <rect x="220" y="180" width="160" height="56" rx="8" />
+            <text x="300" y="202" font-size="13">👤 Customer</text>
+            <text x="300" y="220" class="sub">clicks the link</text>
+          </g>
+          <g class="actor" id="f6-verify">
+            <rect x="40" y="320" width="160" height="56" rx="8" />
+            <text x="120" y="342" font-size="13">🔐 /v1/auth/verify</text>
+            <text x="120" y="360" class="sub">issue session cookie</text>
+          </g>
+          <g class="actor" id="f6-me">
+            <rect x="220" y="320" width="160" height="56" rx="8" />
+            <text x="300" y="342" font-size="13">🍪 /v1/auth/me</text>
+            <text x="300" y="360" class="sub">profile + usage</text>
+          </g>
+          <g class="actor" id="f6-dash">
+            <rect x="400" y="320" width="160" height="56" rx="8" />
+            <text x="480" y="342" font-size="13">📊 dashboard</text>
+            <text x="480" y="360" class="sub">key · plan · billing</text>
+          </g>
+
+          <path id="f6-arr-1" class="arrow" d="M200,58 L220,58" marker-end="url(#m6d)" />
+          <text id="f6-lbl-1" class="label" x="180" y="48">POST email</text>
+
+          <path id="f6-arr-2" class="arrow" d="M380,58 L400,58" marker-end="url(#m6d)" />
+          <text id="f6-lbl-2" class="label" x="370" y="48">send link</text>
+
+          <path id="f6-arr-3" class="arrow" d="M460,86 Q420,140 360,200" marker-end="url(#m6d)" />
+          <text id="f6-lbl-3" class="label" x="445" y="155">click</text>
+
+          <path id="f6-arr-4" class="arrow" d="M220,228 Q160,280 130,320" marker-end="url(#m6d)" />
+          <text id="f6-lbl-4" class="label" x="135" y="290">GET ?token=...</text>
+
+          <path id="f6-arr-5" class="arrow" d="M200,350 L220,350" marker-end="url(#m6d)" />
+          <text id="f6-lbl-5" class="label" x="195" y="340">cookie set</text>
+
+          <path id="f6-arr-6" class="arrow" d="M380,350 L400,350" marker-end="url(#m6d)" />
+          <text id="f6-lbl-6" class="label" x="385" y="340">render</text>
+        </svg>
+      </div>
+      <div class="narration">
+        <div>
+          <div class="narration-step" id="f6-step">Step 0 of 6</div>
+          <div class="narration-title" id="f6-title">Ready to start.</div>
+          <div class="narration-body" id="f6-body">Click <strong>Play</strong> to watch a returning customer sign in.</div>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill emerald" id="f6-progress"></div></div>
+        <div class="controls">
+          <button class="ctrl ctrl-primary emerald" id="f6-play">▶ Play</button>
+          <button class="ctrl" id="f6-step-btn">Step ›</button>
+          <button class="ctrl" id="f6-reset">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+

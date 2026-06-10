@@ -2,6 +2,11 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+
+// Animated 3-tab walkthrough of the three verdict outcomes (Allow / Tampered
+// / Revoked). Scoped to .spec-flows via CSS nesting; JS at /spec-flows.js.
+import '../styles/spec-flows.css';
+import verdictFlowsHtml from '../snippets/flows-verdict.html?raw';
 ---
 <Base>
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
@@ -82,6 +87,17 @@ import Footer from '../components/Footer.astro';
           cryptographically established. Treat unverified agents the way
           you'd treat an unknown phone caller.
         </p>
+      </div>
+
+      <h3 id="verdicts" style="margin-top: 2.5rem;">See it in action</h3>
+      <p>
+        One verdict per tab. Each is a click-by-click walkthrough of how the
+        verifier reaches that conclusion — what the issuer signed, what the
+        verifier checked, why <code>allow</code> / <code>bad_signature</code> /
+        <code>revoked_key</code>.
+      </p>
+      <div class="spec-flows">
+        <Fragment set:html={verdictFlowsHtml} />
       </div>
     </section>
 
@@ -186,6 +202,8 @@ import Footer from '../components/Footer.astro';
   </main>
 
   <Footer />
+
+  <script src="/spec-flows.js" defer></script>
 </Base>
 
 <style>

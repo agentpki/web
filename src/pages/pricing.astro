@@ -3,249 +3,413 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+
+// Animated walkthrough of Stripe Checkout → webhook → key provisioning,
+// shown right after the pricing tiers so users see what subscribing actually triggers.
+import '../styles/spec-flows.css';
+import subscribeFlowHtml from '../snippets/flow-subscribe.html?raw';
 ---
-<Base title="Pricing — AgentPKI" description="Free during alpha. Pay only when you scale. Hosted issuer, enterprise tiers, bot-defense vendor rev share.">
+<Base
+  title="Pricing — AgentPKI"
+  description="Free tier for evaluation and hobbyists, Team and Pro tiers for production deployments, Enterprise for SLA-backed dedicated infrastructure. Apache 2.0 open protocol, paid managed infrastructure."
+>
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
   <div class="bg-layer bg-grid" aria-hidden="true"></div>
 
   <Nav />
 
-  <!-- ─────────── HERO STRIP ─────────── -->
-  <section class="border-b border-[color:var(--color-border)]">
-    <div class="max-w-6xl mx-auto px-6 pt-16 pb-12 lg:pt-20 lg:pb-16 text-center">
-      <span class="inline-block px-3 py-1 mb-5 rounded-full border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 text-xs font-mono uppercase tracking-widest text-[color:var(--color-text-dim)]">pricing</span>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">Free forever to start. Pay only as you scale.</h1>
-      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto leading-relaxed">
-        The protocol, SDKs, reference verifier, and bot-defense middleware are Apache&nbsp;2.0 / MIT open source. We sell the hosted operational layer on top — pick the lane that matches your scale.
+  <section class="relative aurora-glow overflow-hidden">
+    <div class="max-w-5xl mx-auto px-6 pt-20 pb-10 text-center">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+        Pricing
+      </p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] mb-5 text-balance">
+        Open protocol. <span class="hero-accent-text">Paid managed infrastructure.</span>
+      </h1>
+      <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl mx-auto leading-relaxed">
+        Run the entire stack yourself — protocol, SDKs, verifier, signing — for $0. Or use our managed infrastructure with API keys, rate limits, SLA, and a single bill. The free tier is generous; paid tiers exist because real production deployments need uptime guarantees and operational support.
       </p>
     </div>
   </section>
 
-  <!-- ─────────── ALPHA DISCLOSURE BANNER ─────────── -->
-  <section>
-    <div class="max-w-6xl mx-auto px-6 pt-10">
-      <div class="px-5 py-4 rounded-xl border border-amber-500/30 bg-amber-500/[0.04] flex items-start gap-3">
-        <svg class="w-5 h-5 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <div class="text-sm text-[color:var(--color-text-muted)]">
-          <strong class="text-[color:var(--color-text)]">Pricing preview · we're in alpha.</strong>
-          Tiers below show our intended pricing model. Today everything is <strong class="text-amber-200">free for alpha customers</strong> — locked in at the alpha rate for 6 months after the paid tiers go live (target Q3&nbsp;2026). Email <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">hello@agentpki.dev</a> to be considered.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─────────── TIER CARDS ─────────── -->
-  <section>
-    <div class="max-w-6xl mx-auto px-6 py-16">
-      <div class="grid lg:grid-cols-3 gap-5">
-        <!-- TIER 1: free / hobbyist -->
-        <div class="relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col">
-          <div class="flex items-baseline gap-2 mb-4">
-            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">tier · open</span>
-          </div>
-          <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-4xl font-semibold tracking-tight">Free</span>
-            <span class="text-sm text-[color:var(--color-text-muted)]">· forever</span>
-          </div>
-          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For individual developers, OSS projects, and small teams self-serving.</p>
-
-          <div class="space-y-2.5 text-sm flex-1">
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">T1 DNS-verified issuer</strong> — 1 domain, unlimited passports</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Self-hosted reference verifier (open source)</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>SDKs (TS + Python), CLI, all spec docs</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bot-defense reference middleware (30 LOC)</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-text-dim)] mt-0.5">—</span><span class="text-[color:var(--color-text-muted)]">Community support · best-effort uptime</span></div>
-          </div>
-
-          <a href="https://dashboard.agentpki.dev" class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition">
-            Sign up free &rarr;
-          </a>
-          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">No credit card · 2-minute setup</p>
-        </div>
-
-        <!-- TIER 2: hosted issuer (featured) -->
-        <div class="relative rounded-2xl border-2 border-[color:var(--color-accent)]/60 bg-gradient-to-b from-[color:var(--color-accent)]/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(167,139,250,0.4)]">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-accent)] text-black text-xs font-mono uppercase tracking-widest font-semibold">most popular</span>
-          </div>
-          <div class="flex items-baseline gap-2 mb-4">
-            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)]">tier · hosted</span>
-          </div>
-          <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-4xl font-semibold tracking-tight">$99</span>
-            <span class="text-sm text-[color:var(--color-text-muted)]">/mo · per issuer</span>
-          </div>
-          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For SaaS teams shipping agents — hosted issuer, no Worker to run yourself.</p>
-
-          <div class="space-y-2.5 text-sm flex-1">
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Everything in Free</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">Hosted issuer</strong> — we run the Worker, rotate keys, ship the CRL</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>100k mints/mo included · $0.001/mint after</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Dashboard analytics, audit log, abuse pipeline</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>99.9% SLA · email support · 24h response</span></div>
-          </div>
-
-          <button type="button" data-contact-modal data-contact-source="pricing / Hosted tier · join alpha waitlist"
-                  class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[color:var(--color-accent)] text-black text-sm font-semibold hover:bg-[color:var(--color-accent-bright)] transition cursor-pointer">
-            Talk to Founder &rarr;
-          </button>
-          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">Free for 6 months once paid tier ships</p>
-        </div>
-
-        <!-- TIER 3: enterprise -->
-        <div class="relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col">
-          <div class="flex items-baseline gap-2 mb-4">
-            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">tier · enterprise</span>
-          </div>
-          <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-4xl font-semibold tracking-tight">Custom</span>
-          </div>
-          <p class="text-sm text-[color:var(--color-text-muted)] mt-2 mb-6">For banks, regulated industries, bot-defense vendors, and large agent fleets.</p>
-
-          <div class="space-y-2.5 text-sm flex-1">
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Everything in Hosted</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span><strong class="text-[color:var(--color-text)]">T2 KYB</strong> + <strong class="text-[color:var(--color-text)]">T3 hardware</strong>-attested issuers</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Dedicated verifier with regional residency</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>SOC&nbsp;2 Type II · HIPAA · EU AI Act attestation</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>99.99% SLA · 24/7 on-call · dedicated CSM</span></div>
-            <div class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">✓</span><span>Bot-defense vendor rev-share available</span></div>
-          </div>
-
-          <button type="button" data-contact-modal data-contact-source="pricing / Enterprise tier"
-                  class="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border border-[color:var(--color-border-bright)] text-sm font-medium hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg)]/40 transition cursor-pointer">
-            Talk to Founder &rarr;
-          </button>
-          <p class="mt-3 text-[11px] text-[color:var(--color-text-dim)] text-center">48h response · NDAs available</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─────────── CUSTOMER × USE-CASE MATRIX ─────────── -->
-  <section class="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/20">
-    <div class="max-w-6xl mx-auto px-6 py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Who uses which tier</h2>
-      <p class="text-[color:var(--color-text-muted)] mb-8">A quick map of which lane fits which kind of customer.</p>
-      <div class="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-[color:var(--color-border)] text-left">
-                <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Customer type</th>
-                <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Typical scale</th>
-                <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Best-fit tier</th>
-                <th class="px-5 py-4 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-text-dim)]">Outcome they get</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[color:var(--color-border)]">
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">Solo dev / OSS project</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">&lt; 10k mints/mo</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-text-dim)]/15 text-[color:var(--color-text-muted)] font-mono text-[11px]">Free</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Real cryptographic identity for their agent without running infrastructure</td>
-              </tr>
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">SaaS shipping AI agents</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">10k–1M mints/mo</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/20 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Hosted $99/mo</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Issue + rotate keys + audit, no Worker to operate. Customers' bot-defense vendors stop blocking their agent traffic.</td>
-              </tr>
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">Website / API operator</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">any</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-text-dim)]/15 text-[color:var(--color-text-muted)] font-mono text-[11px]">Free verifier</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Distinguish legit AI agents from scrapers at the edge, set a per-route policy</td>
-              </tr>
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">Bot-defense vendor</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">100M+ verifies/mo</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · rev share</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Native AgentPKI signal in their decision pipeline, false-positive reduction, co-marketing as "AgentPKI inside"</td>
-              </tr>
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">Bank / regulated enterprise</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">10–500 issuers</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · T2/T3</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">KYB-verified issuance, SOC&nbsp;2 / EU AI Act paper trail, hardware-attested keys, residency control</td>
-              </tr>
-              <tr class="hover:bg-[color:var(--color-bg)]/30 transition">
-                <td class="px-5 py-4 font-medium">Agent marketplace / federation</td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">multi-tenant</td>
-                <td class="px-5 py-4"><span class="px-2 py-1 rounded-md bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-bright)] font-mono text-[11px]">Enterprise · federation</span></td>
-                <td class="px-5 py-4 text-[color:var(--color-text-muted)]">Cross-org passport scoping (vendor A's agents allowed at vendor B's API under negotiated terms)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <p class="mt-5 text-xs text-[color:var(--color-text-dim)]">Mints/verifies/issuers numbers are guidance, not hard caps. Need something different? <a href="mailto:hello@agentpki.dev" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">Email us</a> — we tailor.</p>
-    </div>
-  </section>
-
-  <!-- ─────────── FAQ ─────────── -->
   <section class="border-t border-[color:var(--color-border)]">
-    <div class="max-w-3xl mx-auto px-6 py-16">
-      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">Common questions</h2>
-      <div class="space-y-6">
-        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5 open:bg-[color:var(--color-bg-elevated-2)]">
-          <summary class="cursor-pointer font-medium flex items-center justify-between">
-            <span>What's truly free, forever?</span>
-            <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
-          </summary>
-          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">The spec, both SDKs, the reference verifier, and the bot-defense middleware are open source (Apache&nbsp;2.0 for the spec, MIT for the code) and free forever. The Free tier of the hosted dashboard is also free forever — you can run an issuer + mint passports without ever paying.</p>
-        </details>
-        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5">
-          <summary class="cursor-pointer font-medium flex items-center justify-between">
-            <span>When do paid tiers actually go live?</span>
-            <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
-          </summary>
-          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">Target Q3&nbsp;2026 (paid Hosted tier with Stripe billing). Alpha customers — anyone who emails us before that — get the alpha rate locked in for 6 months after paid tiers ship.</p>
-        </details>
-        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5">
-          <summary class="cursor-pointer font-medium flex items-center justify-between">
-            <span>How does the bot-defense vendor rev share work?</span>
-            <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
-          </summary>
-          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">A bot-defense vendor (Cloudflare, DataDome, hCaptcha, Arkose, Castle, etc.) embeds AgentPKI verification as a signal in their decision pipeline. When their customers benefit, we share the upside: typically $0.01–0.10 per verify or a fixed quarterly fee. Specifics negotiated per deal.</p>
-        </details>
-        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5">
-          <summary class="cursor-pointer font-medium flex items-center justify-between">
-            <span>What's the deal with T1 / T2 / T3?</span>
-            <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
-          </summary>
-          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">Three trust tiers, in increasing strength: <strong>T1 — DNS-verified</strong> (you proved control of your domain; free), <strong>T2 — KYB-verified</strong> (we manually verified your business identity; Enterprise tier), <strong>T3 — hardware-attested</strong> (your signing key lives in a TPM/HSM with attestation; Enterprise tier). T1 launches with the platform. T2/T3 ship alongside paid tiers.</p>
-        </details>
-        <details class="group rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-5">
-          <summary class="cursor-pointer font-medium flex items-center justify-between">
-            <span>Can I self-host everything?</span>
-            <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg>
-          </summary>
-          <p class="mt-3 text-sm text-[color:var(--color-text-muted)] leading-relaxed">Yes — completely. The <a href="https://github.com/agentpki/real-issuer" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">real-issuer</a> repo is a production-grade Worker template. The <a href="https://github.com/agentpki/verifier" class="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-bright)]">verifier</a> repo is the same Worker we run at verify.agentpki.dev. Fork either or both, deploy to your own Cloudflare account, never depend on us. The protocol is the product; we just sell convenience on top.</p>
-        </details>
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      <div class="mb-20">
+        <div class="flex items-baseline justify-between mb-8 flex-wrap gap-4">
+          <div>
+            <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-2">Product 1</p>
+            <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight">Verifier API</h2>
+            <p class="text-sm text-[color:var(--color-text-muted)] mt-1 max-w-xl">
+              Hosted verification at <code class="text-xs">verify.agentpki.dev</code>. Mint, verify, intent_check, replay cache, audit log.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-[color:var(--color-text-muted)]">
+            USD &middot; per month &middot; launch pricing, may change
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-4">
+
+          <div class="tier-card">
+            <p class="tier-name">Free</p>
+            <p class="tier-price">$0</p>
+            <p class="tier-period">forever</p>
+            <p class="tier-cap">10,000 verifies / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">All v0.3 + Provenance v0.1 features</li>
+              <li class="tier-ok">No API key required</li>
+              <li class="tier-ok">Shared rate limit by IP</li>
+              <li class="tier-ok">Community support</li>
+              <li class="tier-no">No SLA</li>
+              <li class="tier-no">No retention guarantee</li>
+            </ul>
+            <a href="/playground" class="tier-cta tier-cta-ghost">Start playing →</a>
+          </div>
+
+          <div class="tier-card tier-card-popular">
+            <span class="tier-badge">Most started here</span>
+            <p class="tier-name">Team</p>
+            <p class="tier-price">$49</p>
+            <p class="tier-period">/ month</p>
+            <p class="tier-cap">1,000,000 verifies / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">Everything in Free</li>
+              <li class="tier-ok">API key for authenticated quota</li>
+              <li class="tier-ok">Email support (24h response)</li>
+              <li class="tier-ok">Audit log 30-day retention</li>
+              <li class="tier-ok">$0.00005 per call over quota</li>
+              <li class="tier-no">No SLA credit</li>
+            </ul>
+            <button type="button" class="tier-cta tier-cta-primary" data-checkout="verifier:team">Subscribe → Stripe</button>
+          </div>
+
+          <div class="tier-card">
+            <p class="tier-name">Pro</p>
+            <p class="tier-price">$499</p>
+            <p class="tier-period">/ month</p>
+            <p class="tier-cap">10,000,000 verifies / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">Everything in Team</li>
+              <li class="tier-ok">Mode B replay-cache priority</li>
+              <li class="tier-ok">Intent audit log 1-year retention</li>
+              <li class="tier-ok">99.9% uptime SLA</li>
+              <li class="tier-ok">Webhook notifications included</li>
+              <li class="tier-ok">$0.00002 per call over quota</li>
+            </ul>
+            <button type="button" class="tier-cta tier-cta-ghost" data-checkout="verifier:pro">Subscribe → Stripe</button>
+          </div>
+
+          <div class="tier-card">
+            <p class="tier-name">Enterprise</p>
+            <p class="tier-price tier-price-custom">Custom</p>
+            <p class="tier-period">per-vendor terms</p>
+            <p class="tier-cap">Unlimited verifies</p>
+            <ul class="tier-list">
+              <li class="tier-ok">Dedicated verifier endpoint</li>
+              <li class="tier-ok">EU / US / APAC data residency</li>
+              <li class="tier-ok">99.99% uptime SLA</li>
+              <li class="tier-ok">SSO + SAML, audit reports</li>
+              <li class="tier-ok">On-prem licensing available</li>
+              <li class="tier-ok">SOC 2 attestation roadmap</li>
+            </ul>
+            <button type="button" data-contact-modal data-contact-source="pricing / verifier enterprise" class="tier-cta tier-cta-ghost">Contact sales →</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-baseline justify-between mb-8 flex-wrap gap-4">
+          <div>
+            <p class="text-xs font-mono tracking-widest uppercase text-emerald-400 mb-2">Product 2</p>
+            <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight">Signing-as-a-Service</h2>
+            <p class="text-sm text-[color:var(--color-text-muted)] mt-1 max-w-xl">
+              You publish content. We hold your Ed25519 keys (encrypted at rest), you POST content, we return signed manifests. Hosted at <code class="text-xs">signing.agentpki.dev</code>.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-4">
+
+          <div class="tier-card">
+            <p class="tier-name">Hobby</p>
+            <p class="tier-price">$0</p>
+            <p class="tier-period">forever</p>
+            <p class="tier-cap">100 signatures / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">One issuer keypair, we manage</li>
+              <li class="tier-ok">Content-Provenance header output</li>
+              <li class="tier-ok">Sidecar manifest output</li>
+              <li class="tier-ok">Community support</li>
+              <li class="tier-no">No key rotation API</li>
+              <li class="tier-no">No SLA</li>
+            </ul>
+            <a href="/keys" class="tier-cta tier-cta-ghost">Sign up →</a>
+          </div>
+
+          <div class="tier-card tier-card-popular tier-card-emerald">
+            <span class="tier-badge tier-badge-emerald">Recommended for writers</span>
+            <p class="tier-name">Publisher</p>
+            <p class="tier-price">$99</p>
+            <p class="tier-period">/ month</p>
+            <p class="tier-cap">10,000 signatures / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">Everything in Hobby</li>
+              <li class="tier-ok">Key rotation API</li>
+              <li class="tier-ok">Hosted issuer directory</li>
+              <li class="tier-ok">Custom-domain CNAME</li>
+              <li class="tier-ok">Email support</li>
+              <li class="tier-ok">$0.01 per signature over quota</li>
+            </ul>
+            <button type="button" class="tier-cta tier-cta-primary tier-cta-emerald" data-checkout="signing:publisher">Subscribe → Stripe</button>
+          </div>
+
+          <div class="tier-card">
+            <p class="tier-name">Newsroom</p>
+            <p class="tier-price">$499</p>
+            <p class="tier-period">/ month</p>
+            <p class="tier-cap">100,000 signatures / month</p>
+            <ul class="tier-list">
+              <li class="tier-ok">Everything in Publisher</li>
+              <li class="tier-ok">Multiple writer keypairs (~50)</li>
+              <li class="tier-ok">Audit log + compliance report PDF</li>
+              <li class="tier-ok">99.9% signing SLA</li>
+              <li class="tier-ok">Webhook on each signature</li>
+              <li class="tier-ok">$0.004 per signature over quota</li>
+            </ul>
+            <button type="button" class="tier-cta tier-cta-ghost" data-checkout="signing:newsroom">Subscribe → Stripe</button>
+          </div>
+
+          <div class="tier-card">
+            <p class="tier-name">Enterprise</p>
+            <p class="tier-price tier-price-custom">Custom</p>
+            <p class="tier-period">per-publisher terms</p>
+            <p class="tier-cap">Unlimited signatures</p>
+            <ul class="tier-list">
+              <li class="tier-ok">HSM / KMS key custody</li>
+              <li class="tier-ok">EU data residency</li>
+              <li class="tier-ok">SOC 2 attestation roadmap</li>
+              <li class="tier-ok">99.99% signing SLA</li>
+              <li class="tier-ok">SSO + SAML</li>
+              <li class="tier-ok">Custom integration support</li>
+            </ul>
+            <button type="button" data-contact-modal data-contact-source="pricing / signing enterprise" class="tier-cta tier-cta-ghost">Contact sales →</button>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ─────────── FINAL CTA ─────────── -->
-  <section class="border-t border-[color:var(--color-border)] aurora-glow relative">
-    <div class="max-w-4xl mx-auto px-6 py-24 text-center relative">
-      <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight">Pick a lane, or talk to us.</h2>
-      <p class="mt-5 text-lg text-[color:var(--color-text-muted)] max-w-2xl mx-auto">
-        Free tier is self-serve from the dashboard. Hosted + Enterprise tiers go through us — fastest path is email.
+  <!-- What happens when you click Subscribe — animated walkthrough -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-14">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">What happens when you click Subscribe →</h2>
+      <p class="text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+        Stripe Checkout → webhook → automatic key provisioning → email with your API key. Eight-step walkthrough — same call sequence
+        the live system runs.
       </p>
-      <div class="mt-10 flex flex-wrap gap-3 justify-center">
-        <a href="https://dashboard.agentpki.dev" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[color:var(--color-accent)] text-black font-medium text-base hover:bg-[color:var(--color-accent-bright)] transition">
-          Sign up free
+      <div class="spec-flows">
+        <Fragment set:html={subscribeFlowHtml} />
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-14">
+      <div class="rounded-2xl border border-[color:var(--color-accent)]/30 bg-[color:var(--color-accent)]/[0.04] p-7 lg:p-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-accent-bright)] mb-3">
+          Bot-defense + AI infrastructure vendors
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-4 text-balance">
+          Different model for partnership channels.
+        </h2>
+        <p class="text-[color:var(--color-text-muted)] mb-6 max-w-3xl leading-relaxed">
+          Cloudflare, Akamai, HUMAN, DataDome, Arkose, Kasada, and adjacent vendors integrate AgentPKI as a signal inside their existing products. We don't charge per-verify in those deployments. Pricing is OEM licensing or revenue share, negotiated per-vendor. Reach out for terms.
+        </p>
+        <button type="button" data-contact-modal data-contact-source="pricing / partner"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+          Discuss partnership terms
           <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <button type="button" data-contact-modal data-contact-source="pricing / footer CTA"
-                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[color:var(--color-border-bright)] hover:border-[color:var(--color-accent)]/50 hover:bg-[color:var(--color-bg-elevated)]/60 transition cursor-pointer">
-          Talk to Founder
         </button>
       </div>
     </div>
   </section>
 
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-3xl mx-auto px-6 py-16 lg:py-20">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">FAQ</h2>
+      <dl class="space-y-7">
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">Can I self-host instead?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            Yes. Entire protocol is Apache 2.0; reference implementation runs on any Cloudflare Workers account for ~$5/month + usage. Trade-off is operational lift; managed pricing buys you that lift back.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">What happens at the rate limit?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            Free tier: shared 10K/month per IP, HTTP 429 after. Paid tiers: per-API-key quota with overage pricing. Usage surfaced via X-RateLimit headers and Retry-After.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">Is there a free trial of paid tiers?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            The Free tier IS the trial. It supports real prototyping (10K verifies = ~250K test runs of the demo flows). If prototyping needs more, you're in revenue territory.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">Where do you store our signing keys?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            Hobby / Publisher / Newsroom: AES-256-GCM encrypted at rest in Cloudflare KV, keyed with a KEK held in Workers Secrets. Enterprise: HSM custody available with your KMS provider (AWS KMS, GCP KMS, Azure Key Vault).
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">What if EU AI Act enforcement starts and I'm still on Hobby?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            You'll want Newsroom or Enterprise for the audit log + compliance report. Migration is one API call; your keys, signatures, and audit history all carry over.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg font-semibold text-[color:var(--color-text)] mb-2">Annual billing?</dt>
+          <dd class="text-[color:var(--color-text-muted)] leading-relaxed">
+            2 months free on annual for Team / Pro / Publisher / Newsroom. Enterprise is annual by default.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-3xl mx-auto px-6 py-16 text-center">
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-5 text-balance">
+        Most teams start on Free. Talk to me before you commit on Enterprise.
+      </h2>
+      <p class="text-[color:var(--color-text-muted)] mb-8 leading-relaxed">
+        I'm the founder. If you're considering AgentPKI for production, I want to make sure the protocol fits your problem before money changes hands. Honest 30 minutes.
+      </p>
+      <button type="button" data-contact-modal data-contact-source="pricing / closing"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[color:var(--color-accent)] text-black font-semibold hover:bg-[color:var(--color-accent-bright)] transition">
+        Talk to founder
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Email-to-checkout modal -->
+  <div id="checkout-modal" class="checkout-modal hidden">
+    <div class="checkout-modal-backdrop"></div>
+    <div class="checkout-modal-card">
+      <h3 id="checkout-modal-title" class="text-xl font-semibold mb-3">Subscribe</h3>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-4">Enter your email to start Stripe Checkout. We'll email you the api_key after payment is confirmed.</p>
+      <input id="checkout-email" type="email" placeholder="you@yourdomain.com" class="checkout-modal-input" />
+      <div class="flex gap-2 mt-3">
+        <button id="checkout-go" type="button" class="tier-cta tier-cta-primary">Continue to checkout →</button>
+        <button id="checkout-cancel" type="button" class="tier-cta tier-cta-ghost">Cancel</button>
+      </div>
+      <p id="checkout-err" class="text-sm acct-msg-err hidden mt-3"></p>
+    </div>
+  </div>
+
   <Footer />
   <ContactModal />
+
+  <script is:inline>
+    (function () {
+      var modal = document.getElementById('checkout-modal');
+      var titleEl = document.getElementById('checkout-modal-title');
+      var emailEl = document.getElementById('checkout-email');
+      var errEl = document.getElementById('checkout-err');
+      var currentSel = '';
+
+      function openModal(sel, label) {
+        currentSel = sel;
+        titleEl.textContent = 'Subscribe to ' + label;
+        errEl.classList.add('hidden');
+        emailEl.value = '';
+        modal.classList.remove('hidden');
+        setTimeout(function () { emailEl.focus(); }, 50);
+      }
+      function closeModal() { modal.classList.add('hidden'); }
+
+      document.querySelectorAll('[data-checkout]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var sel = btn.getAttribute('data-checkout') || '';
+          openModal(sel, btn.textContent.replace(/[^a-zA-Z ]/g, '').trim() || sel);
+        });
+      });
+      document.getElementById('checkout-cancel').addEventListener('click', closeModal);
+      document.querySelector('.checkout-modal-backdrop').addEventListener('click', closeModal);
+
+      document.getElementById('checkout-go').addEventListener('click', async function () {
+        var btn = this;
+        var email = emailEl.value.trim();
+        if (!email.includes('@')) { errEl.textContent = 'Enter a valid email.'; errEl.classList.remove('hidden'); return; }
+        var parts = currentSel.split(':');
+        if (parts.length !== 2) { errEl.textContent = 'Invalid selection.'; errEl.classList.remove('hidden'); return; }
+        btn.disabled = true;
+        var prev = btn.textContent;
+        btn.textContent = 'Loading checkout…';
+        try {
+          var r = await fetch('https://verify.agentpki.dev/v1/checkout/session', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ email: email, product: parts[0], plan: parts[1] }),
+          });
+          var body = await r.json();
+          if (!r.ok) {
+            errEl.textContent = body.detail || body.error || 'Checkout could not start.';
+            errEl.classList.remove('hidden');
+            if (body.error === 'stripe_not_configured' || body.error === 'plan_not_priced_yet') {
+              errEl.innerHTML += ' Email <a href="mailto:hello@agentpki.dev" style="text-decoration:underline;">hello@agentpki.dev</a> for manual provisioning.';
+            }
+            return;
+          }
+          window.location.href = body.checkout_url;
+        } catch (e) {
+          errEl.textContent = 'Network error: ' + e.message;
+          errEl.classList.remove('hidden');
+        } finally {
+          btn.disabled = false; btn.textContent = prev;
+        }
+      });
+    })();
+  </script>
+
+  <style is:global>
+    .checkout-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .checkout-modal.hidden { display: none; }
+    .checkout-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .checkout-modal-card { position: relative; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 0.7rem; padding: 1.75rem; max-width: 28rem; width: 100%; }
+    .checkout-modal-input { width: 100%; padding: 0.55rem 0.75rem; border-radius: 0.4rem; background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-text); }
+    .checkout-modal-input:focus { outline: none; border-color: var(--color-accent); }
+    .acct-msg-err { color: #f87171; }
+  </style>
+
+  <style is:global>
+    .tier-card { display: flex; flex-direction: column; padding: 1.75rem 1.5rem; border-radius: 0.75rem; border: 1px solid var(--color-border); background: rgba(20, 20, 30, 0.45); position: relative; transition: border-color 0.2s, background 0.2s; }
+    .tier-card-popular { border-color: rgba(167, 139, 250, 0.55); background: linear-gradient(170deg, rgba(167, 139, 250, 0.07) 0%, rgba(20,20,30,0.4) 100%); box-shadow: 0 24px 60px -36px rgba(167, 139, 250, 0.4); }
+    .tier-card-emerald { border-color: rgba(16, 185, 129, 0.55); background: linear-gradient(170deg, rgba(16, 185, 129, 0.07) 0%, rgba(20,20,30,0.4) 100%); box-shadow: 0 24px 60px -36px rgba(16, 185, 129, 0.4); }
+    .tier-badge { position: absolute; top: -0.7rem; left: 1rem; padding: 0.2rem 0.55rem; background: var(--color-accent); color: #000; font-size: 0.65rem; font-family: ui-monospace, monospace; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border-radius: 0.3rem; }
+    .tier-badge-emerald { background: #34d399; }
+    .tier-name { font-size: 0.78rem; font-family: ui-monospace, monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; margin-bottom: 0.7rem; }
+    .tier-price { font-size: 2.7rem; font-weight: 700; color: var(--color-text); line-height: 1; }
+    .tier-price-custom { font-size: 2rem; }
+    .tier-period { font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: 0.85rem; }
+    .tier-cap { font-size: 0.9rem; color: var(--color-accent-bright); font-weight: 600; padding: 0.5rem 0.7rem; background: rgba(167, 139, 250, 0.08); border-radius: 0.35rem; margin-bottom: 1.25rem; }
+    .tier-card-emerald .tier-cap { color: #6ee7b7; background: rgba(16, 185, 129, 0.08); }
+    .tier-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1; font-size: 0.85rem; }
+    .tier-list li { color: var(--color-text-muted); padding-left: 1.2rem; position: relative; }
+    .tier-ok::before { content: '✓'; position: absolute; left: 0; color: #34d399; font-weight: 700; }
+    .tier-no::before { content: '–'; position: absolute; left: 0; color: var(--color-text-muted); font-weight: 700; }
+    .tier-no { color: var(--color-text-muted); opacity: 0.6; }
+    .tier-cta { display: inline-flex; align-items: center; justify-content: center; padding: 0.6rem 1rem; border-radius: 0.45rem; font-weight: 600; font-size: 0.9rem; border: 1px solid; cursor: pointer; transition: opacity 0.15s, transform 0.15s, background 0.15s; }
+    .tier-cta:hover { transform: translateY(-1px); }
+    .tier-cta-primary { background: var(--color-accent); color: black; border-color: var(--color-accent); }
+    .tier-cta-emerald { background: #10b981 !important; }
+    .tier-cta-ghost { background: transparent; color: var(--color-text); border-color: var(--color-border-bright); }
+    .tier-cta-ghost:hover { border-color: var(--color-accent); }
+  </style>
+
+  <script src="/spec-flows.js" defer></script>
 </Base>

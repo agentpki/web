@@ -1,0 +1,79 @@
+  <div class="flow-panel active" id="panel-replay">
+
+    <div class="scenario">
+      <div class="scenario-icon danger">🔄</div>
+      <div class="scenario-text">
+        <strong>Scenario:</strong> Mode B requests carry an RFC 9421 signature bound to a specific URL + body. If an attacker replays the same signed request, the verifier's Durable Object replay cache catches it. Second attempt: <code>replay_detected</code>.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="m4d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+          <g class="actor" id="f4-agent">
+            <rect x="40" y="30" width="160" height="58" rx="8" />
+            <text x="120" y="52" font-size="13">🤖 Agent (Mode B)</text>
+            <text x="120" y="70" class="sub">passport + signed request</text>
+          </g>
+          <g class="actor" id="f4-verifier">
+            <rect x="400" y="30" width="160" height="58" rx="8" />
+            <text x="480" y="52" font-size="13">🔐 Verifier</text>
+            <text x="480" y="70" class="sub">RFC 9421 sig check</text>
+          </g>
+          <g class="actor" id="f4-do">
+            <rect x="220" y="180" width="160" height="58" rx="8" />
+            <text x="300" y="200" font-size="13">🧠 Replay cache (DO)</text>
+            <text x="300" y="218" class="sub">stores (jti, sig)</text>
+            <text x="300" y="230" class="sub">global single-instance</text>
+          </g>
+          <g class="actor" id="f4-adv">
+            <rect x="40" y="270" width="160" height="58" rx="8" />
+            <text x="120" y="292" font-size="13">😈 Adversary</text>
+            <text x="120" y="310" class="sub">captures + replays</text>
+          </g>
+
+          <path id="f4-arr-1" class="arrow" d="M200,58 L400,58" marker-end="url(#m4d)" />
+          <text id="f4-lbl-1" class="label" x="240" y="48">request #1</text>
+
+          <path id="f4-arr-2" class="arrow" d="M460,90 Q400,140 360,180" marker-end="url(#m4d)" />
+          <text id="f4-lbl-2" class="label" x="460" y="145">record (jti, sig)</text>
+
+          <g id="f4-verdict1" class="verdict-pill">
+            <rect x="380" y="100" width="200" height="36" rx="6" fill="rgba(34,197,94,0.1)" stroke="var(--green)" stroke-width="1.2" />
+            <text x="480" y="123" font-size="11" fill="var(--green)" text-anchor="middle" font-weight="700">#1: allow, replay_checked=true</text>
+          </g>
+
+          <path id="f4-arr-3" class="arrow" d="M200,298 Q300,330 400,90" marker-end="url(#m4d)" />
+          <text id="f4-lbl-3" class="label" x="240" y="350">request #2 (replay)</text>
+
+          <path id="f4-arr-4" class="arrow" d="M440,80 Q380,150 360,210" marker-end="url(#m4d)" />
+          <text id="f4-lbl-4" class="label" x="440" y="170">lookup (jti, sig)</text>
+
+          <g id="f4-verdict2" class="verdict-pill">
+            <rect x="380" y="360" width="200" height="48" rx="8" fill="rgba(239,68,68,0.1)" stroke="var(--red)" stroke-width="1.5" />
+            <text x="480" y="383" font-size="13" fill="var(--red)" text-anchor="middle" font-weight="700">#2: deny</text>
+            <text x="480" y="400" font-size="10" fill="var(--red)" text-anchor="middle" font-family="ui-monospace,monospace">failure_reason: replay_detected</text>
+          </g>
+
+          <path id="f4-arr-5" class="arrow" d="M480,90 L480,360" marker-end="url(#m4d)" />
+        </svg>
+      </div>
+      <div class="narration">
+        <div>
+          <div class="narration-step" id="f4-step">Step 0 of 5</div>
+          <div class="narration-title" id="f4-title">Ready to start.</div>
+          <div class="narration-body" id="f4-body">Click <strong>Play</strong> to watch the same Mode B request get accepted, then replayed and caught.</div>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="f4-progress"></div></div>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="f4-play">▶ Play</button>
+          <button class="ctrl" id="f4-step-btn">Step ›</button>
+          <button class="ctrl" id="f4-reset">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+

@@ -1,0 +1,165 @@
+/*
+ * Spec flows — styles for the 6 animated flow diagrams on /spec/flows.
+ * Scoped via CSS nesting under .spec-flows so generic class names (.tab,
+ * .flow-panel, .actor, .scenario) don't collide with site-wide styles.
+ */
+.spec-flows {
+  --bg: #0a0a14; --bg-elev: #14141f;
+  --text: #e2e8f0; --muted: #94a3b8; --dim: #64748b;
+  --border: #1f2937; --border-hi: #334155;
+  --violet: #a78bfa; --violet-hi: #c4b5fd;
+  --green: #4ade80; --red: #f87171; --amber: #fbbf24;
+  --emerald: #10b981; --emerald-hi: #34d399;
+  & * { box-sizing: border-box; }
+
+  /* Tabs (scroll on overflow) */
+  .tabs {
+    display: flex; gap: 0.4rem; margin: 2.5rem 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; padding-bottom: 0;
+    scrollbar-width: thin;
+  }
+  .tab {
+    padding: 0.7rem 0.95rem; background: none; border: none;
+    color: var(--muted); font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap; display: inline-flex; align-items: center; gap: 0.45rem;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--violet); }
+  .tab.tab-green.active { border-bottom-color: var(--emerald); }
+  .tab-letter {
+    display: inline-block; width: 1.2rem; height: 1.2rem; line-height: 1.2rem;
+    text-align: center; background: rgba(167,139,250,0.15);
+    color: var(--violet-hi); border-radius: 0.25rem;
+    font-family: ui-monospace, monospace; font-size: 0.65rem; font-weight: 700;
+  }
+  .tab.tab-green .tab-letter {
+    background: rgba(16,185,129,0.15); color: var(--emerald-hi);
+  }
+
+  .flow-panel { display: none; }
+  .flow-panel.active { display: block; }
+
+  .scenario {
+    border: 1px solid var(--border); background: var(--bg-elev);
+    border-radius: 0.65rem; padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+    display: flex; gap: 1rem; align-items: start;
+  }
+  .scenario-icon {
+    width: 2.2rem; height: 2.2rem; flex-shrink: 0; border-radius: 50%;
+    background: rgba(167,139,250,0.15); color: var(--violet-hi);
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .scenario-icon.emerald {
+    background: rgba(16,185,129,0.15); color: var(--emerald-hi);
+  }
+  .scenario-icon.danger {
+    background: rgba(239,68,68,0.15); color: var(--red);
+  }
+  .scenario-text { font-size: 0.93rem; color: var(--text); }
+  .scenario-text code {
+    color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.85rem;
+  }
+
+  .stage { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  @media (min-width: 900px) {
+    .stage { grid-template-columns: 1fr 18rem; }
+  }
+  .diagram-wrap {
+    border: 1px solid var(--border); border-radius: 0.65rem;
+    background: radial-gradient(at 50% 0%, rgba(167,139,250,0.04), transparent 50%), var(--bg-elev);
+    padding: 1rem; min-height: 28rem;
+  }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+
+  .narration {
+    border: 1px solid var(--border); border-radius: 0.65rem;
+    background: var(--bg-elev); padding: 1.25rem;
+    display: flex; flex-direction: column;
+  }
+  .narration-step {
+    font-size: 0.7rem; font-family: ui-monospace, monospace;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .narration-title {
+    font-size: 1.02rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.6rem; text-wrap: balance;
+  }
+  .narration-body {
+    font-size: 0.86rem; color: var(--muted); line-height: 1.55;
+    flex: 1; margin-bottom: 1rem;
+  }
+  .narration-body code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+  .narration-body strong { color: var(--text); }
+
+  .controls { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-top: auto; }
+  .ctrl {
+    padding: 0.5rem 0.85rem; background: transparent; color: var(--text);
+    border: 1px solid var(--border-hi); border-radius: 0.4rem;
+    font-size: 0.85rem; cursor: pointer; font-weight: 600;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .ctrl:hover { border-color: var(--violet); background: rgba(167,139,250,0.05); }
+  .ctrl-primary { background: var(--violet); color: #000; border-color: var(--violet); }
+  .ctrl-primary:hover { background: var(--violet-hi); border-color: var(--violet-hi); }
+  .ctrl-primary.emerald { background: var(--emerald); border-color: var(--emerald); }
+  .ctrl-primary.emerald:hover { background: var(--emerald-hi); border-color: var(--emerald-hi); }
+
+  .progress-bar {
+    margin-top: 0.85rem; height: 3px;
+    background: rgba(167,139,250,0.1); border-radius: 999px; overflow: hidden;
+  }
+  .progress-bar-fill { height: 100%; background: var(--violet); transition: width 0.4s ease; width: 0%; }
+  .progress-bar-fill.emerald { background: var(--emerald); }
+
+  /* SVG styling */
+  .actor rect, .actor circle {
+    fill: var(--bg); stroke: var(--border-hi); stroke-width: 1.5;
+    transition: stroke 0.3s, fill 0.3s;
+  }
+  .actor text {
+    fill: var(--muted); font-size: 12px; font-family: ui-sans-serif;
+    text-anchor: middle; font-weight: 600; transition: fill 0.3s; pointer-events: none;
+  }
+  .actor.active rect, .actor.active circle { stroke: var(--violet); fill: rgba(167,139,250,0.06); }
+  .actor.active text { fill: var(--text); }
+  .actor.success rect, .actor.success circle { stroke: var(--green); fill: rgba(34,197,94,0.06); }
+  .actor.success text { fill: var(--text); }
+  .actor.danger rect, .actor.danger circle { stroke: var(--red); fill: rgba(239,68,68,0.06); }
+  .actor.danger text { fill: var(--text); }
+  .actor .sub {
+    font-size: 9.5px; font-family: ui-monospace, monospace; fill: var(--dim);
+  }
+  .actor.active .sub { fill: var(--violet-hi); }
+  .actor.danger .sub { fill: var(--red); }
+
+  .arrow { stroke: var(--border-hi); stroke-width: 1.5; fill: none;
+    transition: stroke 0.3s, stroke-width 0.3s; }
+  .arrow.active { stroke: var(--violet); stroke-width: 2.5; }
+  .arrow.success { stroke: var(--green); stroke-width: 2.5; }
+  .arrow.danger { stroke: var(--red); stroke-width: 2.5; }
+
+  .ahd-default { fill: var(--border-hi); transition: fill 0.3s; }
+  .ahd-violet { fill: var(--violet); }
+  .ahd-green { fill: var(--green); }
+  .ahd-red { fill: var(--red); }
+
+  .label {
+    fill: var(--dim); font-size: 10.5px; font-family: ui-monospace, monospace;
+    transition: fill 0.3s;
+  }
+  .label.active { fill: var(--violet-hi); }
+  .label.success { fill: var(--green); }
+  .label.danger { fill: var(--red); }
+
+  /* Verdict pill that appears at end of some flows */
+  .verdict-pill {
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .verdict-pill.shown { opacity: 1; }
+
+}
+/* End of .spec-flows wrapper. */

@@ -1,0 +1,86 @@
+  <div class="flow-panel active" id="panel-subscribe">
+
+    <div class="scenario">
+      <div class="scenario-icon emerald">💳</div>
+      <div class="scenario-text">
+        <strong>Scenario:</strong> A customer subscribes to the <code>Team</code> plan from <code>/pricing</code>. Stripe handles payment; the webhook fires to AgentPKI; the verifier provisions an api_key; Resend emails it to the customer. End-to-end in seconds.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="m5d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+          <g class="actor" id="f5-customer">
+            <rect x="40" y="30" width="150" height="56" rx="8" />
+            <text x="115" y="52" font-size="13">👤 Customer</text>
+            <text x="115" y="70" class="sub">on /pricing</text>
+          </g>
+          <g class="actor" id="f5-checkout">
+            <rect x="225" y="30" width="150" height="56" rx="8" />
+            <text x="300" y="52" font-size="13">💳 Stripe Checkout</text>
+            <text x="300" y="70" class="sub">hosted</text>
+          </g>
+          <g class="actor" id="f5-webhook">
+            <rect x="410" y="30" width="150" height="56" rx="8" />
+            <text x="485" y="52" font-size="13">📨 Webhook</text>
+            <text x="485" y="70" class="sub">/v1/webhooks/stripe</text>
+          </g>
+          <g class="actor" id="f5-verifier">
+            <rect x="225" y="180" width="150" height="56" rx="8" />
+            <text x="300" y="202" font-size="13">🔐 Verifier</text>
+            <text x="300" y="220" class="sub">provisionApiKey()</text>
+          </g>
+          <g class="actor" id="f5-kv">
+            <rect x="40" y="180" width="150" height="56" rx="8" />
+            <text x="115" y="202" font-size="13">💾 KV storage</text>
+            <text x="115" y="220" class="sub">apikey:apk_…</text>
+          </g>
+          <g class="actor" id="f5-email">
+            <rect x="410" y="180" width="150" height="56" rx="8" />
+            <text x="485" y="202" font-size="13">✉️ Resend email</text>
+            <text x="485" y="220" class="sub">api_key delivered</text>
+          </g>
+          <g class="actor" id="f5-account">
+            <rect x="225" y="340" width="150" height="56" rx="8" />
+            <text x="300" y="362" font-size="13">📊 /account</text>
+            <text x="300" y="380" class="sub">usage + billing portal</text>
+          </g>
+
+          <path id="f5-arr-1" class="arrow" d="M190,58 L225,58" marker-end="url(#m5d)" />
+          <text id="f5-lbl-1" class="label" x="180" y="50">Subscribe</text>
+
+          <path id="f5-arr-2" class="arrow" d="M375,58 L410,58" marker-end="url(#m5d)" />
+          <text id="f5-lbl-2" class="label" x="395" y="50">payment</text>
+
+          <path id="f5-arr-3" class="arrow" d="M485,86 Q420,140 360,200" marker-end="url(#m5d)" />
+          <text id="f5-lbl-3" class="label" x="440" y="140">subscription.created</text>
+
+          <path id="f5-arr-4" class="arrow" d="M225,210 L190,210" marker-end="url(#m5d)" />
+          <text id="f5-lbl-4" class="label" x="195" y="200">write key</text>
+
+          <path id="f5-arr-5" class="arrow" d="M375,210 L410,210" marker-end="url(#m5d)" />
+          <text id="f5-lbl-5" class="label" x="395" y="200">send email</text>
+
+          <path id="f5-arr-6" class="arrow" d="M300,236 L300,340" marker-end="url(#m5d)" />
+          <text id="f5-lbl-6" class="label" x="312" y="295">link key → /account</text>
+        </svg>
+      </div>
+      <div class="narration">
+        <div>
+          <div class="narration-step" id="f5-step">Step 0 of 6</div>
+          <div class="narration-title" id="f5-title">Ready to start.</div>
+          <div class="narration-body" id="f5-body">Click <strong>Play</strong> to watch a Team subscription land an api_key in the customer's inbox.</div>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill emerald" id="f5-progress"></div></div>
+        <div class="controls">
+          <button class="ctrl ctrl-primary emerald" id="f5-play">▶ Play</button>
+          <button class="ctrl" id="f5-step-btn">Step ›</button>
+          <button class="ctrl" id="f5-reset">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+

@@ -1,0 +1,313 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+// Animated walkthrough of the magic-link sign-in flow (email -> 1-time link
+// -> HttpOnly cookie -> dashboard). Shown below the sign-in form for users
+// who want to see the mechanism before they hand over their email.
+import '../styles/spec-flows.css';
+import signinFlowHtml from '../snippets/flow-signin.html?raw';
+---
+<Base
+  title="Account — AgentPKI"
+  description="Sign in to manage your AgentPKI API keys, see usage, and access the billing portal."
+>
+  <div class="bg-layer bg-mesh" aria-hidden="true"></div>
+  <div class="bg-layer bg-grid" aria-hidden="true"></div>
+
+  <Nav />
+
+  <section class="max-w-4xl mx-auto px-6 pt-20 pb-10">
+    <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-4">
+      Account
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-4 text-balance" id="account-title">
+      Sign in to AgentPKI.
+    </h1>
+    <p class="text-lg text-[color:var(--color-text-muted)] max-w-3xl leading-relaxed" id="account-subtitle">
+      Enter your email; we send a one-time sign-in link.
+    </p>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-6 pb-16">
+
+    <!-- Email entry -->
+    <div id="signin-form" class="acct-card">
+      <label class="block text-sm text-[color:var(--color-text-muted)] mb-1">Email</label>
+      <input id="signin-email" type="email" placeholder="you@yourdomain.com"
+        class="acct-input mb-3" />
+      <button type="button" id="signin-btn" class="acct-btn acct-btn-primary">
+        Email me a sign-in link →
+      </button>
+      <p id="signin-result" class="mt-4 text-sm hidden"></p>
+      <p class="text-xs text-[color:var(--color-text-muted)] mt-4">
+        The link expires in 15 minutes and can only be used once.
+      </p>
+    </div>
+
+    <!-- Account dashboard (hidden until signed in) -->
+    <div id="dashboard" class="hidden">
+      <div class="acct-row">
+        <div class="acct-card">
+          <p class="acct-label">Signed in as</p>
+          <p id="dashboard-email" class="acct-strong"></p>
+        </div>
+        <div class="acct-card acct-card-sm">
+          <button type="button" id="logout-btn" class="acct-btn acct-btn-ghost">Sign out</button>
+        </div>
+      </div>
+
+      <div class="acct-card mt-4" id="verifier-card">
+        <p class="acct-label">Verifier API key</p>
+        <div id="verifier-empty" class="hidden">
+          <p class="text-[color:var(--color-text-muted)] mb-3">No verifier API key yet.</p>
+          <a href="/keys" class="acct-btn acct-btn-primary">Generate one →</a>
+        </div>
+        <div id="verifier-active" class="hidden">
+          <div class="acct-meta-row"><span class="acct-meta-key">Key</span><code id="verifier-key" class="acct-meta-val"></code></div>
+          <div class="acct-meta-row"><span class="acct-meta-key">Plan</span><span id="verifier-plan" class="acct-meta-val"></span></div>
+          <div class="acct-meta-row"><span class="acct-meta-key">Used this month</span><span id="verifier-used" class="acct-meta-val"></span></div>
+          <div class="acct-meta-row"><span class="acct-meta-key">Status</span><span id="verifier-status" class="acct-meta-val"></span></div>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button type="button" id="verifier-portal-btn" class="acct-btn acct-btn-ghost">Manage billing →</button>
+            <a href="/keys" class="acct-btn acct-btn-ghost">Provision additional key →</a>
+          </div>
+          <p id="portal-result" class="mt-3 text-xs text-[color:var(--color-text-muted)] hidden"></p>
+        </div>
+      </div>
+
+      <div class="acct-card mt-4" id="signing-card">
+        <p class="acct-label">Signing-as-a-Service</p>
+        <div id="signing-empty" class="hidden">
+          <p class="text-[color:var(--color-text-muted)] mb-3">No signing credentials yet.</p>
+          <a href="/keys" class="acct-btn acct-btn-primary">Generate credentials →</a>
+        </div>
+        <div id="signing-active" class="hidden">
+          <div class="acct-meta-row"><span class="acct-meta-key">Key</span><code id="signing-key" class="acct-meta-val"></code></div>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button type="button" id="signing-portal-btn" class="acct-btn acct-btn-ghost">Manage billing →</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-xs text-[color:var(--color-text-muted)] mt-6 text-center max-w-md mx-auto leading-relaxed">
+        For full key history, rotation, and revocation, the api_key holder authenticates directly via the verifier API.
+        See <a href="/for-developers" class="underline">/for-developers</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- How sign-in works — animated walkthrough -->
+  <section class="max-w-5xl mx-auto px-6 pb-16">
+    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">How sign-in works</h2>
+    <p class="text-sm text-[color:var(--color-text-muted)] mb-5 max-w-3xl">
+      No passwords. You hand over an email, we send a one-time signed token,
+      clicking it sets an HttpOnly cookie. Six steps end-to-end.
+    </p>
+    <div class="spec-flows">
+      <Fragment set:html={signinFlowHtml} />
+    </div>
+  </section>
+
+  <Footer />
+
+  <style is:global>
+    .acct-card {
+      padding: 1.5rem 1.5rem 1.5rem;
+      border-radius: 0.7rem;
+      border: 1px solid var(--color-border);
+      background: rgba(20, 20, 30, 0.45);
+      max-width: 40rem;
+    }
+    .acct-card-sm { display: flex; align-items: center; padding: 1.5rem; }
+    .acct-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .acct-row .acct-card { flex: 1; max-width: none; }
+    .acct-label {
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .acct-strong { font-size: 1.1rem; font-weight: 600; color: var(--color-text); }
+    .acct-input {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.4rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      font-size: 0.95rem;
+    }
+    .acct-input:focus { outline: none; border-color: var(--color-accent); }
+    .acct-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.05rem;
+      border-radius: 0.45rem;
+      font-weight: 600; font-size: 0.9rem;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s, background 0.15s;
+    }
+    .acct-btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .acct-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .acct-btn-primary { background: var(--color-accent); color: black; border-color: var(--color-accent); }
+    .acct-btn-ghost { background: transparent; color: var(--color-text); border-color: var(--color-border-bright); }
+    .acct-btn-ghost:hover { border-color: var(--color-accent); }
+    .acct-meta-row {
+      display: flex; gap: 0.6rem;
+      padding: 0.35rem 0;
+      font-size: 0.88rem;
+      flex-wrap: wrap;
+    }
+    .acct-meta-key { color: var(--color-text-muted); width: 9rem; font-family: ui-monospace, monospace; font-size: 0.75rem; flex-shrink: 0; }
+    .acct-meta-val { color: var(--color-text); font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .acct-msg-ok { color: #4ade80; }
+    .acct-msg-err { color: #f87171; }
+  </style>
+
+  <script is:inline>
+    var VERIFIER = 'https://verify.agentpki.dev';
+
+    function $(id) { return document.getElementById(id); }
+    function show(id) { $(id).classList.remove('hidden'); }
+    function hide(id) { $(id).classList.add('hidden'); }
+
+    // ── Check session on load ──
+    async function init() {
+      // If URL has ?token=..., exchange it via the verifier
+      var url = new URL(window.location.href);
+      var token = url.searchParams.get('token');
+      if (token) {
+        try {
+          await fetch(VERIFIER + '/v1/auth/verify?token=' + encodeURIComponent(token), {
+            credentials: 'include',
+            redirect: 'manual',
+          });
+        } catch (e) {
+          // The verify endpoint returns 302; fetch with redirect:manual surfaces it.
+          // We just need the Set-Cookie to land. Proceed to check session below.
+        }
+        window.history.replaceState({}, '', '/account');
+      }
+      // Check session
+      try {
+        var r = await fetch(VERIFIER + '/v1/auth/me', { credentials: 'include' });
+        if (r.ok) {
+          var me = await r.json();
+          renderDashboard(me);
+          return;
+        }
+      } catch (e) { /* fall through to sign-in */ }
+      // Not signed in — show form
+    }
+
+    function renderDashboard(me) {
+      $('account-title').textContent = 'Welcome back.';
+      $('account-subtitle').textContent = 'Manage your API keys and billing.';
+      hide('signin-form');
+      show('dashboard');
+      $('dashboard-email').textContent = me.email;
+
+      if (me.verifier && me.verifier.api_key_masked) {
+        show('verifier-active');
+        $('verifier-key').textContent = me.verifier.api_key_masked;
+        $('verifier-plan').textContent = me.verifier.plan;
+        $('verifier-used').textContent = (me.verifier.used_this_month || 0).toLocaleString() + ' verifies';
+        $('verifier-status').textContent = me.verifier.revoked ? '⚠ revoked' : '✓ active';
+      } else {
+        show('verifier-empty');
+      }
+
+      if (me.signing && me.signing.api_key_masked) {
+        show('signing-active');
+        $('signing-key').textContent = me.signing.api_key_masked;
+      } else {
+        show('signing-empty');
+      }
+    }
+
+    // ── Sign in click ──
+    $('signin-btn').addEventListener('click', async function () {
+      var email = $('signin-email').value.trim();
+      if (!email.includes('@')) { showResult('Enter a valid email.', 'err'); return; }
+      var btn = this;
+      btn.disabled = true;
+      var prev = btn.textContent;
+      btn.textContent = 'Sending…';
+      try {
+        var r = await fetch(VERIFIER + '/v1/auth/request-link', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ email: email }),
+        });
+        var body = await r.json();
+        if (body._error_for_debug === 'email_not_configured') {
+          showResult('Email service is being set up. Email hello@agentpki.dev directly to access your account.', 'err');
+        } else {
+          showResult('Check your email for a sign-in link. It expires in 15 minutes.', 'ok');
+        }
+      } catch (e) {
+        showResult('Network error: ' + e.message, 'err');
+      } finally {
+        btn.disabled = false; btn.textContent = prev;
+      }
+    });
+
+    function showResult(msg, kind) {
+      var el = $('signin-result');
+      el.textContent = msg;
+      el.className = 'mt-4 text-sm acct-msg-' + (kind || 'ok');
+      el.classList.remove('hidden');
+    }
+
+    // ── Logout ──
+    $('logout-btn').addEventListener('click', async function () {
+      await fetch(VERIFIER + '/v1/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.href = '/account';
+    });
+
+    // ── Billing portal (Verifier) ──
+    $('verifier-portal-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true;
+      var prev = btn.textContent;
+      btn.textContent = 'Loading portal…';
+      try {
+        var meRes = await fetch(VERIFIER + '/v1/auth/me', { credentials: 'include' });
+        var me = await meRes.json();
+        var r = await fetch(VERIFIER + '/v1/billing/portal', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ email: me.email }),
+        });
+        var body = await r.json();
+        if (body.portal_url) {
+          window.location.href = body.portal_url;
+        } else {
+          var pr = $('portal-result');
+          pr.textContent = body.detail || body.error || 'Could not load portal.';
+          pr.classList.remove('hidden');
+        }
+      } catch (e) {
+        var pr2 = $('portal-result');
+        pr2.textContent = 'Network error: ' + e.message;
+        pr2.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = prev;
+      }
+    });
+
+    $('signing-portal-btn').addEventListener('click', function () {
+      $('verifier-portal-btn').click();
+    });
+
+    init();
+  </script>
+
+  <script src="/spec-flows.js" defer></script>
+</Base>

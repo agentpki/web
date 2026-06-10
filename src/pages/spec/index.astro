@@ -6,7 +6,7 @@ import ContactModal from '../../components/ContactModal.astro';
 ---
 <Base
   title="AgentPKI Protocol Specifications"
-  description="Open-protocol cryptographic identity for AI agents. v0.1 (stable draft) and v0.2 (active draft) specifications."
+  description="Open-protocol cryptographic identity for AI agents. v0.1 (stable), v0.2 (operational), v0.3-intent (declare-and-audit bot intent against any site) specifications."
 >
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
   <div class="bg-layer bg-grid" aria-hidden="true"></div>
@@ -21,7 +21,7 @@ import ContactModal from '../../components/ContactModal.astro';
         AgentPKI Protocol — published specifications
       </h1>
       <p class="mt-6 text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
-        Two published spec versions: <strong class="text-[color:var(--color-text)]">v0.1</strong> defined the core protocol (passport format, signing, verification, trust tiers); <strong class="text-[color:var(--color-text)]">v0.2</strong> adds the operational layer (KV-backed directory cache, CRL, Mode B replay detection, abuse aggregation). v0.2 is additive — no breaking changes from v0.1.
+        Two product lines. <strong class="text-[color:var(--color-text)]">Core protocol</strong> (v0.1 → v0.3-intent): cryptographic identity for AI agents — passports, signing, verification, trust tiers, intent declarations. <strong class="text-[color:var(--color-text)]">AgentPKI Provenance</strong> (v0.1, new): agent-signed content provenance built on C2PA — text, code, images, audio, video, with HTTP-header and sidecar delivery. All versions additive.
       </p>
     </div>
   </section>
@@ -29,12 +29,41 @@ import ContactModal from '../../components/ContactModal.astro';
   <!-- ─────────── VERSION CARDS ─────────── -->
   <section>
     <div class="max-w-5xl mx-auto px-6 py-16">
-      <div class="grid lg:grid-cols-2 gap-5">
+      <div class="grid lg:grid-cols-3 gap-5">
 
-        <!-- v0.2 — current -->
-        <a href="/spec/v0.2" class="group relative rounded-2xl border-2 border-[color:var(--color-accent)]/60 bg-gradient-to-b from-[color:var(--color-accent)]/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(167,139,250,0.4)] hover:border-[color:var(--color-accent)] transition">
+        <!-- v0.3-intent — draft, latest -->
+        <a href="/spec/v0.3-intent" class="group relative rounded-2xl border-2 border-[color:var(--color-accent)]/60 bg-gradient-to-b from-[color:var(--color-accent)]/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(167,139,250,0.4)] hover:border-[color:var(--color-accent)] transition">
           <div class="absolute -top-3 left-7">
-            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-accent)] text-black text-[10px] font-mono uppercase tracking-widest font-semibold">latest</span>
+            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-accent)] text-black text-[10px] font-mono uppercase tracking-widest font-semibold">draft · new</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-3 mt-2">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)]">draft · active</span>
+          </div>
+          <div class="flex items-baseline gap-3 mb-3">
+            <span class="text-4xl font-semibold tracking-tight">v0.3</span>
+            <span class="text-sm text-[color:var(--color-text-muted)]">intent · 2026-06-08</span>
+          </div>
+          <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+            Declare-and-audit bot intent against any site. Adds an <code class="text-xs">intent</code> claim to the passport, a site-side <code class="text-xs">/.well-known/agentpki-intent-policy.json</code> for accepted/denied/throttled intents, and a hash-chained public audit log. Bots working *for* you or *against* you become cryptographically distinguishable.
+          </p>
+          <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">What's new in v0.3</h3>
+          <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] flex-1">
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Canonical intent vocabulary (<code class="text-xs">purchase</code>, <code class="text-xs">monitor</code>, <code class="text-xs">scrape-bulk</code>, …)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Site policy document at <code class="text-xs">/.well-known/agentpki-intent-policy.json</code></span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Verifier <code class="text-xs">intent_match</code> in <code class="text-xs">/v1/verify</code> response</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-accent)] mt-0.5">+</span><span>Hash-chained public audit log + witness model (RFC 6962-inspired)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[color:var(--color-text-dim)] mt-0.5">·</span><span class="text-[color:var(--color-text-muted)]">Additive over v0.2 — no wire-format changes</span></li>
+          </ul>
+          <span class="mt-6 inline-flex items-center gap-1.5 text-base font-medium text-[color:var(--color-accent)] group-hover:text-[color:var(--color-accent-bright)] transition">
+            Read v0.3-intent draft
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <!-- v0.2 — operational baseline -->
+        <a href="/spec/v0.2" class="group relative rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-7 flex flex-col hover:border-[color:var(--color-accent)]/40 transition">
+          <div class="absolute -top-3 left-7">
+            <span class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-bg-elevated)] border border-[color:var(--color-border-bright)] text-[color:var(--color-text-muted)] text-[10px] font-mono uppercase tracking-widest font-semibold">operational baseline</span>
           </div>
           <div class="flex items-baseline gap-2 mb-3 mt-2">
             <span class="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-bright)]">draft · active</span>
@@ -94,6 +123,49 @@ import ContactModal from '../../components/ContactModal.astro';
 
       </div>
 
+      <!-- ─────────── PROVENANCE PRODUCT LINE ─────────── -->
+      <div class="mt-16">
+        <div class="flex items-baseline justify-between mb-5">
+          <h2 class="text-2xl font-semibold tracking-tight">AgentPKI Provenance <span class="text-sm font-mono uppercase tracking-widest text-[color:var(--color-text-dim)] ml-2">separate product line</span></h2>
+        </div>
+        <p class="text-[color:var(--color-text-muted)] mb-6 max-w-3xl">
+          When an AI agent creates content — an article, an image, a video, a code snippet — there's currently no cryptographic way to prove which agent did it. AgentPKI Provenance extends C2PA (the Adobe/Microsoft/BBC content credentials standard) with an agent-signing layer: the same Ed25519 passport that proves "this bot is who it says" can now also prove "this bot wrote this paragraph."
+        </p>
+        <div class="grid lg:grid-cols-1">
+          <a href="/spec/provenance-v0.1" class="group relative rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-b from-emerald-500/[0.08] to-[color:var(--color-bg-elevated)] p-7 flex flex-col shadow-[0_24px_60px_-24px_rgba(16,185,129,0.4)] hover:border-emerald-400 transition">
+            <div class="absolute -top-3 left-7">
+              <span class="inline-block px-3 py-1 rounded-full bg-emerald-500 text-black text-[10px] font-mono uppercase tracking-widest font-semibold">draft · new today</span>
+            </div>
+            <div class="flex items-baseline gap-2 mb-3 mt-2">
+              <span class="font-mono text-[10px] uppercase tracking-widest text-emerald-400">draft · active · phase 1 of 7</span>
+            </div>
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-4xl font-semibold tracking-tight">Provenance v0.1</span>
+              <span class="text-sm text-[color:var(--color-text-muted)]">published 2026-06-09</span>
+            </div>
+            <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+              Adds an <code class="text-xs">agentpki.declaration</code> C2PA assertion that binds a passport-signed agent identity to a content hash. Specifies signing flow, verification flow, content binding for non-C2PA media (text, code, JSON), and an HTTP <code class="text-xs">Content-Provenance</code> response header for streaming. Bridges to C2PA, Truepic, Adobe Content Credentials, IETF AIP, Vercel AI SDK, MCP.
+            </p>
+            <h3 class="font-mono text-xs uppercase tracking-widest text-[color:var(--color-text-dim)] mb-3">What's specified</h3>
+            <ul class="space-y-2 text-sm text-[color:var(--color-text-muted)] flex-1">
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span><code class="text-xs">agentpki.declaration</code> C2PA assertion — passport, content_hash, transformation vocabulary</span></li>
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span>Producer signing flow + Reader verification flow (7 + 5 steps)</span></li>
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span>Sidecar / inline-comment / JSONL binding for text + code + structured data</span></li>
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span><code class="text-xs">Content-Provenance</code> HTTP header for streaming + dynamic responses</span></li>
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span>Multi-agent provenance chains (generated → edited → reviewed)</span></li>
+              <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">+</span><span>X.509 bridging certificate spec for C2PA interop</span></li>
+            </ul>
+            <span class="mt-6 inline-flex items-center gap-1.5 text-base font-medium text-emerald-400 group-hover:text-emerald-300 transition">
+              Read Provenance v0.1 spec
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none"><path d="M7.5 3.5l5 6.5-5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+        </div>
+        <p class="text-xs text-[color:var(--color-text-muted)] mt-4">
+          Phases 2–7 (reference verifier, SDK, CLI, Provenance Explorer, integration adapters, browser surface) ship Q3–Q4 2026.
+        </p>
+      </div>
+
       <!-- ─────────── License + repo ─────────── -->
       <div class="mt-12 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]/40 p-6">
         <div class="grid sm:grid-cols-3 gap-6 text-sm">
@@ -113,6 +185,60 @@ import ContactModal from '../../components/ContactModal.astro';
             <p class="text-[color:var(--color-text-muted)] text-xs mt-1">v0.1.x supports v0.1; v0.2.x adds v0.2 features.</p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── REFERENCE FLOWS ─────────── -->
+  <section class="border-t border-[color:var(--color-border)]">
+    <div class="max-w-5xl mx-auto px-6 py-16 lg:py-20">
+      <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-dim)] mb-3">reference flows</p>
+      <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">Animated walkthroughs</h2>
+      <p class="text-[color:var(--color-text-muted)] mb-8 max-w-3xl">
+        Six click-by-click walkthroughs of the protocol and the commercial surfaces it sits on. Each one lives where you'd actually use it.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-[color:var(--color-border)]">
+              <th class="text-left font-mono font-semibold text-[color:var(--color-text-dim)] uppercase tracking-widest text-xs py-3 pr-4">Flow</th>
+              <th class="text-left font-mono font-semibold text-[color:var(--color-text-dim)] uppercase tracking-widest text-xs py-3 pr-4">What it shows</th>
+              <th class="text-left font-mono font-semibold text-[color:var(--color-text-dim)] uppercase tracking-widest text-xs py-3">Lives on</th>
+            </tr>
+          </thead>
+          <tbody class="[&_td]:py-3 [&_td]:pr-4 [&_tr]:border-b [&_tr]:border-[color:var(--color-border)]/50">
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Allow</td>
+              <td class="text-[color:var(--color-text-muted)]">Successful mint → verify → <code>allow</code>. The happy-path trust contract.</td>
+              <td><a href="/how-verification-works#verdicts" class="text-[color:var(--color-accent-bright)] hover:underline">/how-verification-works</a></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Tampered</td>
+              <td class="text-[color:var(--color-text-muted)]">Adversary flips signature bytes; verifier returns <code>deny / bad_signature</code>.</td>
+              <td><a href="/how-verification-works#verdicts" class="text-[color:var(--color-accent-bright)] hover:underline">/how-verification-works</a></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Revoked</td>
+              <td class="text-[color:var(--color-text-muted)]">Old signature valid, but CRL says kid was revoked. <code>deny / revoked_key</code>.</td>
+              <td><a href="/how-verification-works#verdicts" class="text-[color:var(--color-accent-bright)] hover:underline">/how-verification-works</a></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Mode B replay</td>
+              <td class="text-[color:var(--color-text-muted)]">Bundled passport + signed request. Durable Object catches the second use.</td>
+              <td><a href="/replay" class="text-[color:var(--color-accent-bright)] hover:underline">/replay</a></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Subscribe + provision</td>
+              <td class="text-[color:var(--color-text-muted)]">Stripe Checkout → webhook → automatic key provisioning → email with API key.</td>
+              <td><a href="/pricing" class="text-[color:var(--color-accent-bright)] hover:underline">/pricing</a></td>
+            </tr>
+            <tr>
+              <td class="font-semibold text-[color:var(--color-text)]">Magic-link sign-in</td>
+              <td class="text-[color:var(--color-text-muted)]">No password. Email → one-time signed token → HttpOnly cookie.</td>
+              <td><a href="/account" class="text-[color:var(--color-accent-bright)] hover:underline">/account</a></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
