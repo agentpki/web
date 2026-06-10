@@ -1,0 +1,1153 @@
+  :root {
+    --color-bg: #08080b;
+    --color-bg-elevated: #0f0f12;
+    --color-bg-elevated-2: #131318;
+    --color-border: #1f1f25;
+    --color-border-bright: #2a2a33;
+    --color-text: #e7e7ea;
+    --color-text-muted: #9c9cab;
+    --color-text-dim: #6b6b78;
+    --color-accent: #a78bfa;
+    --color-accent-bright: #c4b5fd;
+    --color-accent-deep: #7c3aed;
+  }
+  html, body { background: var(--color-bg); color: var(--color-text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+  .hero-accent-text {
+    background: linear-gradient(135deg, var(--color-accent-bright), var(--color-accent));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .bg-mesh { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(124, 58, 237, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 80% 30%, rgba(167, 139, 250, 0.04) 0%, transparent 40%);
+  }
+  .yc-orange { color: #ff6600; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: 0.65rem; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border: 1px solid;
+  }
+  .pill-live { background: rgba(74, 222, 128, 0.18); color: #bbf7d0; border-color: rgba(74, 222, 128, 0.5); }
+  .pill-stub { background: rgba(251, 191, 36, 0.15); color: #fcd34d; border-color: rgba(251, 191, 36, 0.4); }
+
+  /* Friction list */
+  .friction-list { counter-reset: step;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1.5px solid rgba(248, 113, 113, 0.35);
+    border-radius: 0.85rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .friction-list li {
+    counter-increment: step; list-style: none;
+    padding: 0.4rem 0 0.4rem 2.5rem;
+    position: relative; color: var(--color-text); font-size: 0.92rem;
+  }
+  .friction-list li + li { border-top: 1px dashed rgba(255,255,255,0.06); }
+  .friction-list li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0.4rem;
+    width: 1.7rem; height: 1.7rem;
+    background: rgba(248, 113, 113, 0.18);
+    color: #fca5a5;
+    border: 1.5px solid rgba(248, 113, 113, 0.4);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Path card — each of the 4 ways to use AgentPKI */
+  .path-card {
+    background: rgba(15, 15, 18, 0.55);
+    border: 2px solid var(--color-border-bright);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .path-card.featured { border-color: rgba(167, 139, 250, 0.45); background: linear-gradient(135deg, rgba(124, 58, 237, 0.06), rgba(15, 15, 18, 0.55)); }
+  .path-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    padding: 1.4rem 1.6rem 1rem;
+    flex-wrap: wrap;
+  }
+  .path-num {
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem; color: var(--color-text-dim);
+    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.25rem;
+  }
+  .path-title {
+    font-size: 1.55rem; font-weight: 700;
+    color: var(--color-text); line-height: 1.2; margin: 0 0 0.35rem;
+  }
+  .path-tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.68rem; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .path-intro {
+    padding: 0 1.6rem 0.85rem;
+    color: var(--color-text-muted); font-size: 0.96rem;
+  }
+  .path-intro strong { color: var(--color-text); font-weight: 600; }
+  .path-intro code {
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.12);
+    padding: 0.1em 0.4em;
+    border-radius: 3px; font-size: 0.88em;
+  }
+
+  /* Collapsed path teaser — Paths 02-04 default to a single-line summary;
+     visitors click to expand the full demo content. Path 01 stays expanded
+     because it's the recommended starting point. */
+  .path-collapse {
+    margin-bottom: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.85rem;
+    background: rgba(15, 15, 24, 0.45);
+    overflow: hidden;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .path-collapse:hover { border-color: rgba(167, 139, 250, 0.3); }
+  .path-collapse > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .path-collapse > summary::-webkit-details-marker { display: none; }
+  .path-collapse > summary::before {
+    content: '+';
+    flex-shrink: 0;
+    width: 1.5rem; height: 1.5rem;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(167, 139, 250, 0.12);
+    color: var(--color-accent-bright);
+    font-family: ui-monospace, monospace;
+    font-size: 0.95rem; font-weight: 700;
+    transition: transform 0.2s, background 0.15s;
+  }
+  .path-collapse[open] > summary::before {
+    content: '\2212';  /* minus */
+    background: rgba(167, 139, 250, 0.35);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+  }
+
+  /* ─── Expanded path: strong visual differentiation ─────────────────
+     When any path is open, give the whole card a violet glow, a brighter
+     border, a faint inner gradient, and an accent-colored summary header
+     with a bottom divider. The goal: a visitor scrolling fast can tell at
+     a glance which path is currently "active" without reading the labels. */
+  .path-collapse[open] {
+    border-color: rgba(167, 139, 250, 0.55);
+    background:
+      linear-gradient(180deg,
+        rgba(167, 139, 250, 0.12) 0,
+        rgba(167, 139, 250, 0.04) 70%,
+        rgba(15, 15, 24, 0.55) 100%);
+    box-shadow:
+      0 0 0 1px rgba(167, 139, 250, 0.18),
+      0 12px 40px -10px rgba(167, 139, 250, 0.35),
+      inset 4px 0 0 0 var(--color-accent-bright);
+  }
+  .path-collapse[open] > summary {
+    background: rgba(167, 139, 250, 0.1);
+    border-bottom: 1px solid rgba(167, 139, 250, 0.28);
+  }
+  .path-collapse[open] .pc-num {
+    color: var(--color-accent-bright);
+  }
+  .path-collapse[open] .pc-title {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .path-collapse[open] .pc-tag {
+    color: #ffffff;
+    background: rgba(167, 139, 250, 0.28);
+    border-color: rgba(167, 139, 250, 0.5);
+  }
+
+  .path-collapse .pc-num {
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent-bright);
+    flex-shrink: 0;
+  }
+  .path-collapse .pc-title {
+    color: #f3f4f6;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .path-collapse .pc-tag {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #cbd5e1;
+    background: rgba(167, 139, 250, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+  }
+
+  /* Deny-labs variant: amber/red color signaling "failure modes" so visitors
+     understand at a glance that this is the danger-zone exploration, not
+     another main path. */
+  .path-collapse.path-deny {
+    border-color: rgba(248, 113, 113, 0.22);
+    background: rgba(248, 113, 113, 0.04);
+  }
+  .path-collapse.path-deny:hover {
+    border-color: rgba(248, 113, 113, 0.45);
+  }
+  .path-collapse.path-deny > summary::before {
+    background: rgba(248, 113, 113, 0.16);
+    color: #fca5a5;
+  }
+  .path-collapse.path-deny[open] > summary::before {
+    background: rgba(248, 113, 113, 0.4);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.18);
+  }
+  /* Deny variant gets the same strong-when-open treatment but in red.
+     Overrides the violet `[open]` rules above via specificity. */
+  .path-collapse.path-deny[open] {
+    border-color: rgba(248, 113, 113, 0.55);
+    background:
+      linear-gradient(180deg,
+        rgba(248, 113, 113, 0.12) 0,
+        rgba(248, 113, 113, 0.04) 70%,
+        rgba(15, 15, 24, 0.55) 100%);
+    box-shadow:
+      0 0 0 1px rgba(248, 113, 113, 0.18),
+      0 12px 40px -10px rgba(248, 113, 113, 0.35),
+      inset 4px 0 0 0 #fca5a5;
+  }
+  .path-collapse.path-deny[open] > summary {
+    background: rgba(248, 113, 113, 0.1);
+    border-bottom: 1px solid rgba(248, 113, 113, 0.28);
+  }
+  .path-collapse.path-deny[open] .pc-num {
+    color: #fca5a5;
+  }
+  .path-collapse.path-deny[open] .pc-title {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .path-collapse.path-deny[open] .pc-tag {
+    color: #ffffff;
+    background: rgba(248, 113, 113, 0.3);
+    border-color: rgba(248, 113, 113, 0.5);
+  }
+  .path-collapse.path-deny .pc-num {
+    color: #fca5a5;
+  }
+  .path-collapse.path-deny .pc-tag {
+    color: #fecaca;
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.28);
+  }
+  .path-collapse > article {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+  }
+  /* "Or try another way" divider above Paths 02-04 */
+  .more-paths-divider {
+    margin: 2.5rem auto 1.5rem;
+    text-align: center;
+    color: var(--color-text-dim);
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .more-paths-divider::before,
+  .more-paths-divider::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+    margin: 0 0.8rem;
+  }
+
+  /* Collapsible disclosure (used to hide trust-flow + heavy code blocks
+     by default so the page reads cleanly on first scan). */
+  details.disclose {
+    margin: 0 1.6rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.55rem;
+    background: rgba(0, 0, 0, 0.18);
+  }
+  details.disclose > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.6rem 0.95rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.15s;
+  }
+  details.disclose > summary::-webkit-details-marker { display: none; }
+  details.disclose > summary:hover { color: var(--color-text); }
+  details.disclose > summary::before {
+    content: '▸';
+    color: var(--color-accent-bright);
+    transition: transform 0.15s;
+    display: inline-block;
+    width: 0.8rem;
+  }
+  details.disclose[open] > summary::before { transform: rotate(90deg); }
+  details.disclose > summary > .sum-hint {
+    color: var(--color-text-dim);
+    margin-left: auto;
+    font-size: 0.62rem;
+    font-weight: 400;
+  }
+  details.disclose > *:not(summary) {
+    padding: 0 0.95rem 0.85rem;
+  }
+  details.disclose .trust-flow,
+  details.disclose pre.code-block {
+    margin: 0.4rem 0 0;
+  }
+
+  /* Friction callout — shown right under the title on every path.
+     Two rows, color-coded:
+       [the wall]    red/amber  — what stops the user from trying AgentPKI today
+       [how it goes] emerald    — exactly how this path dissolves that wall
+     Goal: a HN visitor scrolling fast can tell in 2 seconds whether this
+     path is the one that solves their specific problem. */
+  .path-friction {
+    margin: 0 1.6rem 1.1rem;
+    border-radius: 0.65rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .path-friction-row {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem; line-height: 1.45;
+  }
+  .path-friction-row + .path-friction-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .path-friction-row .pf-icon {
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    font-size: 0.85rem;
+    width: 1.4rem; height: 1.4rem;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 0.05rem;
+  }
+  .path-friction-row .pf-label {
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem; font-weight: 800;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .path-friction-row .pf-text {
+    color: var(--color-text);
+  }
+  .path-friction-row .pf-text em {
+    font-style: normal;
+    color: var(--color-text-muted);
+  }
+  .path-friction-row.wall {
+    background: rgba(248, 113, 113, 0.07);
+  }
+  .path-friction-row.wall .pf-icon {
+    background: rgba(248, 113, 113, 0.18);
+    color: #fca5a5;
+  }
+  .path-friction-row.wall .pf-label { color: #fca5a5; }
+  .path-friction-row.removes {
+    background: rgba(52, 211, 153, 0.07);
+  }
+  .path-friction-row.removes .pf-icon {
+    background: rgba(52, 211, 153, 0.18);
+    color: #6ee7b7;
+  }
+  .path-friction-row.removes .pf-label { color: #6ee7b7; }
+  .path-friction-row code {
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.12);
+    padding: 0.1em 0.4em;
+    border-radius: 3px; font-size: 0.88em;
+  }
+
+  /* ───── Trust-flow diagram ─────
+     Shown right after the friction callout on every path. Three nodes,
+     two arrows, an animated pulse on each arrow showing direction of data.
+     Goal: a visitor scrolling fast sees AT A GLANCE what handoffs each
+     path executes ("oh, my browser talks to two Workers — got it"). */
+  .trust-flow {
+    margin: 0 1.6rem 1.1rem;
+    padding: 1.6rem 1.1rem 1rem;
+    background:
+      radial-gradient(ellipse at center top, rgba(167, 139, 250, 0.10), transparent 70%),
+      rgba(15, 15, 24, 0.35);
+    border: 1px solid rgba(167, 139, 250, 0.16);
+    border-radius: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .trust-flow-caption {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.7rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+  .tf-node {
+    flex: 1 1 7.5rem;
+    min-width: 6.5rem;
+    padding: 0.7rem 0.6rem;
+    border-radius: 0.55rem;
+    background: rgba(10, 10, 18, 0.7);
+    border: 1px solid rgba(167, 139, 250, 0.22);
+    text-align: center;
+    line-height: 1.3;
+    position: relative;
+  }
+  .tf-node-label {
+    display: block;
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .tf-node-sub {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--color-text-dim);
+    margin-top: 0.2rem;
+  }
+  .tf-node.tf-self {
+    background: rgba(52, 211, 153, 0.08);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+  .tf-node.tf-self .tf-node-label { color: #6ee7b7; }
+  .tf-arrow {
+    flex: 1 1 3.5rem;
+    min-width: 2.5rem;
+    height: 2.6rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tf-arrow-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+      rgba(167, 139, 250, 0.15),
+      rgba(167, 139, 250, 0.55) 50%,
+      rgba(167, 139, 250, 0.15));
+    position: relative;
+  }
+  .tf-arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -2px; top: 50%;
+    width: 0; height: 0;
+    border: 5px solid transparent;
+    border-left: 7px solid rgba(167, 139, 250, 0.65);
+    border-right: none;
+    transform: translateY(-50%);
+  }
+  .tf-arrow-label {
+    position: absolute;
+    bottom: calc(50% + 0.4rem);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: ui-monospace, monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-bright);
+  }
+  .tf-pulse {
+    position: absolute;
+    top: 50%;
+    width: 0.55rem; height: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-accent-bright);
+    box-shadow:
+      0 0 8px rgba(167, 139, 250, 0.95),
+      0 0 18px rgba(167, 139, 250, 0.6);
+    transform: translate(-50%, -50%);
+    animation: tf-pulse-flow 2.4s linear infinite;
+  }
+  @keyframes tf-pulse-flow {
+    0%   { left: 0%;   opacity: 0; }
+    7%   { opacity: 1; }
+    93%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+  /* Stagger second arrow so the data appears to flow continuously */
+  .tf-arrow:nth-of-type(4) .tf-pulse { animation-delay: 1.2s; }
+
+  @media (max-width: 760px) {
+    .trust-flow { flex-direction: column; align-items: stretch; }
+    .tf-node { flex: 1 1 auto; }
+    .tf-arrow {
+      width: 100%; height: 2.2rem;
+      transform: rotate(90deg) scaleX(1);
+      transform-origin: center;
+    }
+    .tf-arrow-label {
+      transform: translateX(-50%) rotate(-90deg);
+      bottom: 50%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tf-pulse { animation: none; opacity: 0; }
+  }
+
+  /* Demo area inside a path card */
+  .demo-area {
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(167, 139, 250, 0.18);
+    padding: 1.4rem 1.6rem;
+  }
+  .demo-step {
+    padding: 0.85rem 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+  }
+  .demo-step:last-child { border-bottom: 0; padding-bottom: 0.2rem; }
+  .demo-step-head {
+    display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.55rem;
+  }
+  .demo-step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6rem; height: 1.6rem;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border: 1.5px solid rgba(167, 139, 250, 0.4);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: 0.78rem; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .demo-step-num.done {
+    background: rgba(74, 222, 128, 0.22);
+    color: #bbf7d0;
+    border-color: rgba(74, 222, 128, 0.5);
+  }
+  .demo-step-title { font-weight: 700; color: var(--color-text); font-size: 0.95rem; }
+  .demo-step-body {
+    padding-left: 2.25rem;
+  }
+  .demo-step-explain { color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 0.55rem; }
+
+  /* Form / input controls */
+  .ctl {
+    background: #0a0a0f;
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-text);
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.45rem;
+    font: inherit; font-size: 0.88rem;
+    width: 100%;
+  }
+  .ctl:focus { outline: none; border-color: var(--color-accent); }
+  .ctl-row { display: grid; gap: 0.55rem; }
+  @media (min-width: 560px) {
+    .ctl-row.two   { grid-template-columns: 1fr 1fr; }
+    .ctl-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  .ctl-label {
+    display: block; font-family: ui-monospace, monospace;
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--color-text-dim);
+    margin-bottom: 0.25rem;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    border: 1.5px solid;
+    border-radius: 0.45rem;
+    font: inherit; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer !important;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn.primary   { background: var(--color-accent); border-color: var(--color-accent); color: #0a0a0f; }
+  .btn.primary:hover:not(:disabled)   { background: var(--color-accent-bright); border-color: var(--color-accent-bright); }
+  .btn.secondary { background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.5); color: var(--color-accent-bright); }
+  .btn.secondary:hover:not(:disabled) { background: rgba(167, 139, 250, 0.22); }
+  .btn.ghost     { background: transparent; border-color: var(--color-border-bright); color: var(--color-text); }
+  .btn.ghost:hover:not(:disabled) { border-color: var(--color-accent); }
+
+  pre.code-block {
+    background: #04040a;
+    border: 1px solid rgba(167, 139, 250, 0.18);
+    border-radius: 0.45rem;
+    padding: 0.85rem 1.05rem;
+    margin: 0;
+    overflow-x: auto;
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    line-height: 1.65;
+    color: #e5e7eb;
+    white-space: pre;
+  }
+  pre.code-block .c-key { color: #c4b5fd; }
+  pre.code-block .c-str { color: #86efac; }
+  pre.code-block .c-cmt { color: #71717a; }
+  pre.code-block .c-num { color: #fcd34d; }
+  pre.code-block .c-prompt { color: #71717a; }
+
+  /* Token display + verdict */
+  .verdict-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85rem; font-weight: 800;
+    letter-spacing: 0.06em;
+    border-radius: 0.4rem;
+    border: 2px solid;
+  }
+  .verdict-pill.allow { background: rgba(34, 197, 94, 0.2); color: #bbf7d0; border-color: #4ade80; }
+  .verdict-pill.idle  { background: rgba(107, 107, 120, 0.12); color: #d4d4d8; border-color: rgba(107, 107, 120, 0.5); }
+  .verdict-pill.work  { background: rgba(167, 139, 250, 0.18); color: var(--color-accent-bright); border-color: rgba(167, 139, 250, 0.6); }
+
+  /* ── Token box (Path 01 step 2) — token shown immediately + copy ── */
+  .token-box {
+    margin-top: 0.85rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1.5px solid rgba(167, 139, 250, 0.35);
+    border-radius: 0.6rem;
+    padding: 0.85rem 1rem;
+    animation: success-in 0.35s ease;
+  }
+  .token-box-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    flex-wrap: wrap; margin-bottom: 0.55rem;
+  }
+  .token-box-eyebrow {
+    font-family: ui-monospace, monospace;
+    font-size: 0.66rem; font-weight: 800;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-accent-bright);
+  }
+  .token-box-body {
+    font-size: 0.72rem !important;
+    white-space: pre-wrap !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    max-height: 5.5rem;
+    overflow-y: auto;
+  }
+  .token-box-foot {
+    margin: 0.7rem 0 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+  .token-box-foot strong { color: var(--color-text); }
+  .token-box-foot code {
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.12);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+
+  /* ── Two-option verify layout (curl vs in-browser) ── */
+  .verify-option {
+    margin-top: 0.85rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--color-border-bright);
+    border-radius: 0.55rem;
+    padding: 0.85rem 1rem;
+    animation: success-in 0.35s ease;
+  }
+  .verify-option-head {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+  .verify-option-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.4rem; height: 1.4rem;
+    background: rgba(167, 139, 250, 0.18);
+    color: var(--color-accent-bright);
+    border: 1.5px solid rgba(167, 139, 250, 0.4);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace; font-size: 0.72rem; font-weight: 800;
+  }
+  .verify-option-title {
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem; font-weight: 800;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  /* Shell tabs (bash / PowerShell) inside Option A of verify */
+  .shell-tab-row { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .shell-tab {
+    background: rgba(15, 15, 18, 0.5);
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-text-muted);
+    padding: 0.32rem 0.7rem;
+    border-radius: 0.35rem;
+    font: inherit; font-size: 0.74rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: ui-monospace, monospace;
+  }
+  .shell-tab:hover { border-color: var(--color-accent); color: var(--color-text); }
+  .shell-tab.active {
+    background: rgba(167, 139, 250, 0.18);
+    border-color: var(--color-accent);
+    color: var(--color-accent-bright);
+  }
+  .shell-panel { display: none; }
+  .shell-panel.active { display: block; }
+
+  /* ── Success panel for Path 01 step 3 ── */
+  .success-panel {
+    margin-top: 1.1rem;
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.12), rgba(34, 197, 94, 0.04));
+    border: 1.5px solid #4ade80;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    animation: success-in 0.45s ease;
+  }
+  @keyframes success-in {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .success-banner {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 1rem 1.25rem;
+    background: rgba(74, 222, 128, 0.16);
+    border-bottom: 2px solid #4ade80;
+  }
+  .success-check {
+    flex-shrink: 0;
+    width: 2.4rem; height: 2.4rem;
+    background: #166534; color: #fff;
+    border: 2px solid #4ade80;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 800;
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.6);
+    animation: success-pulse 2s ease infinite;
+  }
+  @keyframes success-pulse {
+    0%, 100% { box-shadow: 0 0 14px rgba(74, 222, 128, 0.6); }
+    50%      { box-shadow: 0 0 24px rgba(74, 222, 128, 0.9); }
+  }
+  .success-banner-title {
+    font-family: ui-monospace, monospace;
+    font-size: 1.05rem; font-weight: 800;
+    color: #bbf7d0; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .success-banner-sub {
+    color: #d1fae5; font-size: 0.9rem; margin-top: 0.15rem;
+  }
+  .success-banner-sub code {
+    color: #ffffff; background: rgba(0,0,0,0.25);
+    padding: 0.05em 0.4em; border-radius: 3px; font-weight: 700;
+  }
+  .success-banner-sub strong { color: #ffffff; font-variant-numeric: tabular-nums; }
+
+  .success-grid {
+    display: grid; gap: 0.6rem;
+    grid-template-columns: 1fr;
+    padding: 1.1rem 1.25rem 0.4rem;
+  }
+  @media (min-width: 560px) { .success-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 900px) { .success-grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .success-field {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.85rem;
+  }
+  .success-label {
+    font-family: ui-monospace, monospace;
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #86efac;
+    margin-bottom: 0.3rem;
+  }
+  .success-value {
+    color: #f3f4f6;
+    font-size: 0.9rem;
+    word-break: break-word; overflow-wrap: anywhere;
+  }
+  .success-value code {
+    color: #ffffff;
+    background: rgba(167, 139, 250, 0.18);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.82em;
+  }
+
+  .success-actions {
+    display: flex; flex-wrap: wrap; gap: 0.55rem;
+    padding: 0.5rem 1.25rem 1.1rem;
+  }
+  .success-foot {
+    padding: 0.85rem 1.25rem 1.1rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    color: #dcfce7;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  .success-foot code {
+    color: #c4b5fd;
+    background: rgba(167, 139, 250, 0.18);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+
+  /* ─── Failure demonstration (Step 4 in Path 01) ─────────────────────
+     Lets a HN visitor click two buttons and watch the LIVE verifier
+     reject two real attacks. No animations: actual HTTP round-trip,
+     actual deny verdict, actual failure_reason from the verifier. */
+  .failure-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: 1fr;
+    margin: 0.4rem 0 0.9rem;
+  }
+  @media (min-width: 720px) {
+    .failure-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .failure-card {
+    background: rgba(15, 15, 24, 0.55);
+    border: 1px solid rgba(248, 113, 113, 0.18);
+    border-radius: 0.7rem;
+    padding: 0.85rem;
+    display: flex; flex-direction: column;
+  }
+  .failure-card-head h4 {
+    font-size: 0.98rem; font-weight: 700; color: var(--color-text);
+    margin: 0 0 0.2rem;
+  }
+  .failure-card-head p {
+    font-size: 0.78rem; color: var(--color-text-muted);
+    line-height: 1.45;
+    margin: 0 0 0.55rem;
+  }
+  .failure-card-head code {
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.12);
+    padding: 0.05em 0.35em;
+    border-radius: 3px; font-size: 0.85em;
+  }
+  .failure-card .btn { align-self: flex-start; }
+  .failure-result { margin-top: 0.9rem; }
+
+  /* Deny verdict card — parallel to .success-card but in red/amber */
+  .deny-card {
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    border-radius: 0.65rem;
+    overflow: hidden;
+    background: rgba(15, 15, 24, 0.4);
+  }
+  .deny-banner {
+    background: linear-gradient(135deg, #b91c1c, #ef4444);
+    padding: 0.85rem 1rem;
+    color: #ffffff;
+  }
+  .deny-banner-main {
+    font-family: ui-monospace, monospace;
+    font-size: 1.05rem; font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .deny-banner-sub {
+    color: #fee2e2; font-size: 0.8rem; margin-top: 0.2rem;
+    line-height: 1.4;
+  }
+  .deny-grid {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
+    padding: 0.85rem;
+  }
+  .deny-field {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(248, 113, 113, 0.18);
+    border-radius: 0.45rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .deny-label {
+    font-family: ui-monospace, monospace;
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fca5a5;
+    margin-bottom: 0.2rem;
+  }
+  .deny-value {
+    color: #fef2f2;
+    font-size: 0.85rem;
+    word-break: break-word; overflow-wrap: anywhere;
+  }
+  .deny-value code {
+    color: #ffffff;
+    background: rgba(248, 113, 113, 0.25);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85em;
+    font-weight: 700;
+  }
+  .deny-raw {
+    margin: 0 0.85rem 0.85rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 0.4rem;
+    border: 1px solid rgba(248, 113, 113, 0.12);
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: #fecaca;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+  }
+  .failure-explain {
+    margin-top: 0.5rem;
+    padding: 0.85rem 1rem;
+    background: rgba(167, 139, 250, 0.05);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0.35rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+  .failure-explain strong { color: var(--color-text); }
+  .failure-explain code {
+    color: var(--color-accent-bright);
+    background: rgba(167, 139, 250, 0.12);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+
+  /* ─── Interactive lab UI ────────────────────────────────────────────
+     Each failure-card is now a 3-stage workflow. The user explicitly:
+     - mints (stage A)
+     - picks what to do with the token (stage B)
+     - hits send (stage C)
+     The stages are visually progressed: locked → active → completed,
+     so the user can see where they are in the workflow. */
+  .lab-stage {
+    margin-top: 0.55rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 0.45rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(0, 0, 0, 0.18);
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .lab-stage.locked {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .lab-stage.active {
+    border-color: rgba(167, 139, 250, 0.32);
+    background: rgba(167, 139, 250, 0.04);
+  }
+  .lab-stage.done {
+    border-color: rgba(52, 211, 153, 0.28);
+    background: rgba(52, 211, 153, 0.03);
+  }
+  .lab-stage-head {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.45rem;
+  }
+  .lab-stage-step {
+    flex-shrink: 0;
+    width: 1.2rem; height: 1.2rem;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace;
+    font-size: 0.66rem; font-weight: 800;
+    background: rgba(167, 139, 250, 0.16);
+    color: var(--color-accent-bright);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+  }
+  .lab-stage.done .lab-stage-step {
+    background: rgba(52, 211, 153, 0.18);
+    color: #6ee7b7;
+    border-color: rgba(52, 211, 153, 0.4);
+  }
+  .lab-stage-title {
+    font-size: 0.85rem; font-weight: 600; color: var(--color-text);
+  }
+  .lab-action-row {
+    display: flex; flex-wrap: wrap; gap: 0.35rem;
+    margin-left: 1.7rem;
+  }
+  .lab-action-row .btn {
+    font-size: 0.74rem; padding: 0.3rem 0.6rem;
+  }
+  .lab-action-row .btn code {
+    background: transparent; padding: 0; font-size: inherit; color: inherit;
+  }
+
+  /* Token display panel — monospace with color-coded parts */
+  .lab-token {
+    margin: 0.55rem 0 0 1.95rem;
+    padding: 0.55rem 0.75rem;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    color: #e5e7eb;
+    max-height: 7rem;
+    overflow-y: auto;
+  }
+  .lab-token .tok-v       { color: #93c5fd; }   /* "v4"     */
+  .lab-token .tok-purpose { color: #93c5fd; }   /* "public" */
+  .lab-token .tok-payload { color: #6ee7b7; }   /* payload+sig */
+  .lab-token .tok-footer  { color: #c4b5fd; }   /* footer */
+  .lab-token .tok-dot     { color: #4b5563; }   /* . separator */
+
+  /* Diff inline highlighting */
+  .lab-token .tok-orig {
+    color: #fca5a5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(248, 113, 113, 0.6);
+    background: rgba(248, 113, 113, 0.12);
+    padding: 0 0.15rem;
+    border-radius: 2px;
+  }
+  .lab-token .tok-new {
+    color: #fde68a;
+    background: rgba(251, 191, 36, 0.18);
+    padding: 0 0.15rem;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+
+  /* Decoded payload display */
+  .lab-decoded {
+    margin: 0.55rem 0 0 1.95rem;
+    padding: 0.55rem 0.75rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #d1d5db;
+    max-height: 9rem;
+    overflow-y: auto;
+  }
+  .lab-decoded .key   { color: #c4b5fd; }
+  .lab-decoded .str   { color: #6ee7b7; }
+  .lab-decoded .num   { color: #93c5fd; }
+  .lab-decoded .focus { background: rgba(251, 191, 36, 0.18); padding: 0 0.15rem; border-radius: 2px; }
+
+  /* Status line beside a stage */
+  .lab-status {
+    margin-left: 1.7rem;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+  .lab-status .ok   { color: #6ee7b7; }
+  .lab-status .warn { color: #fde68a; }
+  .lab-status .err  { color: #fca5a5; }
+  .lab-status strong { color: var(--color-text); }
+
+  /* CRL excerpt panel (for revoked-key lab) */
+  .lab-crl {
+    margin: 0.55rem 0 0 1.95rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(248, 113, 113, 0.05);
+    border: 1px dashed rgba(248, 113, 113, 0.32);
+    border-radius: 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: #fecaca;
+    line-height: 1.55;
+  }
+  .lab-crl .crl-head {
+    font-weight: 700; color: #fca5a5;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.62rem;
+  }
+  .lab-crl .crl-kid-match {
+    background: rgba(248, 113, 113, 0.28);
+    padding: 0 0.25rem; border-radius: 2px;
+    font-weight: 800;
+  }
+
+  /* Framework tabs */
+  .tab-row { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+  .tab-btn {
+    background: rgba(15, 15, 18, 0.5);
+    border: 1px solid var(--color-border-bright);
+    color: var(--color-text-muted);
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.4rem;
+    font: inherit; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { border-color: var(--color-accent); color: var(--color-text); }
+  .tab-btn.active {
+    background: rgba(167, 139, 250, 0.18);
+    border-color: var(--color-accent);
+    color: var(--color-accent-bright);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }

@@ -1,0 +1,2505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Demo paths preview — AgentPKI</title>
+<style>
+  :root {
+    --bg: #0a0a14; --bg-elev: #14141f;
+    --text: #e2e8f0; --muted: #94a3b8; --dim: #64748b;
+    --border: #1f2937; --border-hi: #334155;
+    --violet: #a78bfa; --violet-hi: #c4b5fd;
+    --green: #4ade80; --red: #f87171; --amber: #fbbf24;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0;
+    background: radial-gradient(at 50% 0%, rgba(167,139,250,0.08), transparent 60%), var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5; min-height: 100vh;
+  }
+  /* Wider container — minimal side padding so the diagram + form get max real estate */
+  .container { max-width: 105rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  .preview-banner {
+    background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3);
+    color: var(--amber); border-radius: 0.4rem; padding: 0.55rem 0.85rem;
+    font-size: 0.78rem; margin-bottom: 1.25rem; font-family: ui-monospace, monospace;
+  }
+  h1 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); line-height: 1.1; font-weight: 600;
+    letter-spacing: -0.02em; margin: 0 0 0.5rem; text-wrap: balance; }
+  h1 .accent { color: var(--violet-hi); }
+  .subtitle { font-size: 1rem; color: var(--muted); max-width: 60rem; margin: 0 0 1.5rem; }
+  .eyebrow { font-size: 0.72rem; font-family: ui-monospace, monospace;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.55rem; }
+  .eyebrow .accent-bright { color: var(--violet-hi); }
+
+  /* Tabs — standalone pill cards. Each one owns its presence with its own
+     border, background, and active state (no shared underline rail). */
+  .tabs {
+    display: flex; gap: 0.7rem; margin: 1.75rem 0 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 0.85rem 1.2rem;
+    background: var(--bg-elev);
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 0.6rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    white-space: nowrap;
+    transition: color 0.18s, border-color 0.18s, background 0.18s, transform 0.18s, box-shadow 0.18s;
+    position: relative;
+  }
+  .tab:hover {
+    color: var(--text);
+    border-color: var(--border-hi);
+    background: rgba(167,139,250,0.05);
+    transform: translateY(-1px);
+  }
+  .tab.active {
+    color: var(--text);
+    border-color: var(--violet);
+    background: rgba(167,139,250,0.13);
+    box-shadow: 0 0 0 1px var(--violet) inset, 0 6px 18px -8px rgba(167,139,250,0.45);
+  }
+  .tab.active::before {
+    content: '';
+    position: absolute;
+    left: 1.2rem; right: 1.2rem; bottom: -7px; height: 3px;
+    background: var(--violet);
+    border-radius: 999px;
+    box-shadow: 0 0 8px rgba(167,139,250,0.6);
+  }
+  .tab-num {
+    display: inline-block; padding: 0.22rem 0.5rem;
+    background: rgba(167,139,250,0.18);
+    color: var(--violet-hi); border-radius: 0.32rem;
+    font-family: ui-monospace, monospace; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: background 0.18s, color 0.18s;
+  }
+  .tab.active .tab-num {
+    background: var(--violet);
+    color: #000;
+  }
+  .tab-tag {
+    color: var(--dim); font-family: ui-monospace, monospace; font-size: 0.72rem;
+    font-weight: 600; letter-spacing: 0.02em;
+  }
+  .tab.active .tab-tag { color: var(--violet-hi); }
+
+  .flow-panel { display: none; }
+  .flow-panel.active { display: block; }
+
+  /* Path header (matches /demo's path-header) */
+  .path-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem; margin-bottom: 0.85rem;
+  }
+  .path-num {
+    font-size: 0.72rem; font-family: ui-monospace, monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 0.3rem;
+  }
+  .path-title {
+    font-size: 1.5rem; font-weight: 600; color: var(--text);
+    margin: 0; line-height: 1.25; text-wrap: balance;
+  }
+  .path-tag {
+    flex-shrink: 0;
+    font-size: 0.72rem; font-family: ui-monospace, monospace;
+    color: var(--violet-hi); background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.3);
+    padding: 0.3rem 0.6rem; border-radius: 999px; font-weight: 700;
+  }
+
+  /* Wall/removes friction card */
+  .friction {
+    border: 1px solid var(--border); background: var(--bg-elev);
+    border-radius: 0.7rem; padding: 1rem 1.2rem; margin-bottom: 1rem;
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+  .friction-row { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.92rem; }
+  .friction-icon {
+    width: 1.7rem; height: 1.7rem; flex-shrink: 0; border-radius: 0.35rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; font-family: ui-monospace, monospace;
+  }
+  .friction-icon-wall { background: rgba(239,68,68,0.12); color: var(--red); }
+  .friction-icon-removes { background: rgba(34,197,94,0.12); color: var(--green); }
+  .friction-label {
+    font-size: 0.68rem; font-family: ui-monospace, monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.2rem; font-weight: 700;
+  }
+  .friction-text { color: var(--text); }
+  .friction-text em { color: var(--text); font-style: italic; }
+  .friction-text code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.85rem; }
+  .friction-text strong { color: var(--text); }
+
+  /* Stage: diagram + form side-by-side */
+  .stage { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  @media (min-width: 900px) {
+    .stage {
+      grid-template-columns: minmax(0, 1fr) 32rem;
+      align-items: start;
+    }
+    .stage > .diagram-wrap { position: sticky; top: 1rem; }
+  }
+  @media (min-width: 1280px) {
+    .stage { grid-template-columns: minmax(0, 1fr) 38rem; }
+  }
+  @media (min-width: 1600px) {
+    .stage { grid-template-columns: minmax(0, 1fr) 44rem; }
+  }
+  .diagram-wrap {
+    border: 1px solid var(--border); border-radius: 0.7rem;
+    background: radial-gradient(at 50% 0%, rgba(167,139,250,0.04), transparent 50%), var(--bg-elev);
+    padding: 0.85rem 1rem;
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+  .diagram-caption {
+    font-size: 0.72rem; color: var(--muted); font-family: ui-monospace, monospace;
+    text-align: center; padding: 0 0.5rem;
+  }
+  .controls {
+    display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+    border-top: 1px solid var(--border); padding-top: 0.75rem;
+  }
+  .ctrl {
+    padding: 0.4rem 0.75rem; background: transparent; color: var(--text);
+    border: 1px solid var(--border-hi); border-radius: 0.4rem;
+    font-size: 0.8rem; cursor: pointer; font-weight: 600;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .ctrl:hover { border-color: var(--violet); background: rgba(167,139,250,0.05); }
+  .ctrl-primary { background: var(--violet); color: #000; border-color: var(--violet); }
+  .ctrl-primary:hover { background: var(--violet-hi); border-color: var(--violet-hi); }
+  .step-indicator {
+    margin-left: auto;
+    font-size: 0.72rem; font-family: ui-monospace, monospace;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+
+  /* SVG actor / arrow / label classes — identical to demo-flows */
+  .actor rect, .actor circle {
+    fill: var(--bg); stroke: var(--border-hi); stroke-width: 1.5;
+    transition: stroke 0.3s, fill 0.3s;
+  }
+  .actor text {
+    fill: var(--muted); font-size: 14px; font-family: ui-sans-serif;
+    text-anchor: middle; font-weight: 600; transition: fill 0.3s; pointer-events: none;
+  }
+  .actor.active rect, .actor.active circle { stroke: var(--violet); fill: rgba(167,139,250,0.06); }
+  .actor.active text { fill: var(--text); }
+  .actor.success rect, .actor.success circle { stroke: var(--green); fill: rgba(34,197,94,0.06); }
+  .actor.success text { fill: var(--text); }
+  .actor .sub { font-size: 12px; font-family: ui-monospace, monospace; fill: var(--dim); }
+  .actor.active .sub { fill: var(--violet-hi); }
+  .actor.success .sub { fill: var(--green); }
+  .actor.self rect { stroke-dasharray: 4 3; }
+
+  .arrow { stroke: var(--border-hi); stroke-width: 2.2; fill: none;
+    transition: stroke 0.3s, stroke-width 0.3s; }
+  .arrow.active { stroke: var(--violet); stroke-width: 3.2; }
+  .arrow.success { stroke: var(--green); stroke-width: 3.2; }
+  .ahd-default { fill: var(--border-hi); transition: fill 0.3s; }
+  .ahd-violet { fill: var(--violet); }
+  .ahd-green { fill: var(--green); }
+  .label {
+    fill: var(--dim); font-size: 14px; font-family: ui-monospace, monospace;
+    transition: fill 0.3s; font-weight: 600;
+  }
+  .label.active { fill: var(--violet-hi); }
+  .label.success { fill: var(--green); }
+
+  /* Form column — mirrors /demo demo-area */
+  .form-wrap { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+  .form-step {
+    border: 1px solid var(--border); border-radius: 0.7rem;
+    background: var(--bg-elev); padding: 1rem 1.15rem;
+  }
+  .form-step-head {
+    display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.6rem;
+  }
+  .form-step-num {
+    width: 1.7rem; height: 1.7rem; border-radius: 0.4rem;
+    background: rgba(167,139,250,0.15); color: var(--violet-hi);
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace; font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .form-step-num.deny { background: rgba(248,113,113,0.18); color: #fca5a5; }
+  .form-step-num.done { background: rgba(34,197,94,0.18); color: var(--green); }
+  .form-step-title {
+    font-size: 0.98rem; font-weight: 600; color: var(--text);
+  }
+  .form-step-explain {
+    font-size: 0.84rem; color: var(--muted); margin: 0 0 0.65rem; line-height: 1.55;
+  }
+  .form-step-explain code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+  .form-step-explain strong { color: var(--text); }
+
+  .ctl-row { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+  .ctl-row.two > div { flex: 1; min-width: 160px; }
+  .ctl-label {
+    display: block; font-size: 0.72rem; font-family: ui-monospace, monospace;
+    color: var(--muted); margin-bottom: 0.25rem; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .ctl {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 0.4rem;
+    font-size: 0.88rem;
+    font-family: ui-monospace, monospace;
+    transition: border-color 0.15s;
+  }
+  .ctl:focus { outline: none; border-color: var(--violet); }
+  textarea.ctl { resize: vertical; word-break: break-all; font-size: 0.78rem; }
+
+  .btn-row {
+    display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center;
+    margin-top: 0.65rem;
+  }
+  .btn {
+    padding: 0.5rem 0.95rem;
+    border-radius: 0.4rem; font-weight: 600;
+    font-size: 0.84rem; cursor: pointer;
+    border: 1px solid var(--border-hi);
+    background: transparent; color: var(--text);
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--violet); }
+  .btn.primary { background: var(--violet); color: #000; border-color: var(--violet); }
+  .btn.primary:hover:not(:disabled) { background: var(--violet-hi); }
+  .btn.secondary { background: rgba(167,139,250,0.06); border-color: var(--border-hi); }
+  .btn.ghost { background: transparent; color: var(--muted); border-color: transparent; }
+  .btn.ghost:hover:not(:disabled) { color: var(--text); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.loading::after {
+    content: ''; display: inline-block; width: 0.7rem; height: 0.7rem;
+    border: 2px solid rgba(0,0,0,0.2); border-top-color: rgba(0,0,0,0.7);
+    border-radius: 50%; margin-left: 0.4rem; animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .issuer-preview {
+    font-size: 0.78rem; color: var(--muted); font-family: ui-monospace, monospace;
+  }
+  .issuer-preview code { color: var(--violet-hi); }
+
+  .code-block {
+    display: block;
+    padding: 0.7rem 0.85rem;
+    background: #050510;
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    color: var(--text);
+    margin: 0.45rem 0;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.55;
+    max-height: 28rem;
+    overflow: auto;
+  }
+  .code-block .c-cmt { color: #64748b; font-style: italic; }
+  .code-block .c-key { color: #c4b5fd; }
+  .code-block .c-str { color: #86efac; }
+  .code-block .c-num { color: #fbbf24; }
+  .code-block .c-prompt { color: var(--violet-hi); user-select: none; }
+
+  .token-box {
+    margin-top: 0.7rem;
+    border: 1px solid var(--border); border-radius: 0.5rem; background: #050510;
+    padding: 0.7rem 0.85rem;
+  }
+  .token-box-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.45rem; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .token-box-eyebrow {
+    font-size: 0.7rem; color: var(--muted); font-family: ui-monospace, monospace;
+    letter-spacing: 0.06em;
+  }
+  .token-box-body {
+    font-family: ui-monospace, monospace; font-size: 0.75rem;
+    color: var(--violet-hi); word-break: break-all; overflow-wrap: anywhere;
+    white-space: pre-wrap; max-height: 7rem; overflow: auto;
+    margin: 0; padding: 0; line-height: 1.45;
+  }
+  .token-box-foot {
+    font-size: 0.78rem; color: var(--muted); margin: 0.55rem 0 0; line-height: 1.5;
+  }
+  .token-box-foot code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.75rem; }
+  .token-box-foot strong { color: var(--text); }
+
+  /* Shell tabs (bash / PowerShell) */
+  .shell-tab-row {
+    display: flex; gap: 0.25rem; margin-top: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .shell-tab {
+    padding: 0.45rem 0.75rem; background: none; border: none;
+    color: var(--muted); font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; font-family: ui-monospace, monospace;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .shell-tab:hover { color: var(--text); }
+  .shell-tab.active { color: var(--violet-hi); border-bottom-color: var(--violet); }
+  .shell-panel { display: none; padding-top: 0.5rem; }
+  .shell-panel.active { display: block; }
+
+  /* Verify option block (A: curl, B: paste) */
+  .verify-option {
+    border: 1px solid var(--border); border-radius: 0.5rem;
+    padding: 0.85rem; margin-top: 0.7rem; background: rgba(167,139,250,0.025);
+  }
+  .verify-option-head {
+    display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;
+  }
+  .verify-option-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.5rem; height: 1.5rem;
+    background: rgba(167,139,250,0.18); color: var(--violet-hi);
+    border-radius: 0.3rem; font-family: ui-monospace, monospace;
+    font-weight: 700; font-size: 0.78rem;
+  }
+  .verify-option-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+
+  /* Verdict pill */
+  .verdict-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.3rem 0.65rem; border-radius: 999px;
+    font-family: ui-monospace, monospace; font-size: 0.76rem; font-weight: 700;
+  }
+  .verdict-pill.idle { background: rgba(148,163,184,0.1); color: var(--muted); }
+  .verdict-pill.loading { background: rgba(167,139,250,0.15); color: var(--violet-hi); }
+  .verdict-pill.allow { background: rgba(34,197,94,0.15); color: var(--green); }
+  .verdict-pill.deny { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  /* Success panel (Path 01 verified result) */
+  .success-panel {
+    margin-top: 0.85rem; border: 1px solid rgba(34,197,94,0.4);
+    background: rgba(34,197,94,0.04); border-radius: 0.6rem;
+    padding: 0.95rem 1.05rem; display: none;
+  }
+  .success-panel.visible { display: block; }
+  .success-banner {
+    display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.75rem;
+  }
+  .success-check {
+    width: 2rem; height: 2rem; flex-shrink: 0; border-radius: 50%;
+    background: rgba(34,197,94,0.2); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 700;
+  }
+  .success-banner-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+  .success-banner-sub { font-size: 0.78rem; color: var(--muted); }
+  .success-banner-sub code { color: var(--green); font-weight: 700; }
+  .success-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem 0.85rem;
+    padding: 0.65rem 0; border-top: 1px solid rgba(34,197,94,0.15);
+    border-bottom: 1px solid rgba(34,197,94,0.15);
+    margin-bottom: 0.75rem;
+  }
+  .success-field { display: flex; flex-direction: column; gap: 0.15rem; }
+  .success-label {
+    font-size: 0.65rem; font-family: ui-monospace, monospace;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .success-value { font-size: 0.82rem; color: var(--text); }
+  .success-value code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.76rem; }
+  .success-actions {
+    display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.7rem;
+  }
+  .success-foot {
+    font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin: 0;
+  }
+  .success-foot strong { color: var(--text); }
+  .success-foot code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.74rem; }
+
+  /* Honest disclosure callouts (matches /demo) */
+  .callout-info {
+    display: flex; gap: 0.55rem; align-items: flex-start;
+    padding: 0.7rem 0.85rem; border-radius: 0.45rem;
+    font-size: 0.78rem; line-height: 1.55; margin-bottom: 0.85rem;
+  }
+  .callout-info.green {
+    background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.3);
+    color: #bbf7d0;
+  }
+  .callout-info.amber {
+    background: rgba(251,191,36,0.05); border: 1px solid rgba(251,191,36,0.3);
+    color: #fde68a;
+  }
+  .callout-info strong { color: var(--text); }
+  .callout-info code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.74rem; }
+
+  /* Framework tabs (Path 04) */
+  .fw-tab-row {
+    display: flex; gap: 0.25rem; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border); margin-bottom: 0.7rem;
+  }
+  .fw-tab {
+    padding: 0.5rem 0.85rem; background: none; border: none;
+    color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .fw-tab:hover { color: var(--text); }
+  .fw-tab.active { color: var(--violet-hi); border-bottom-color: var(--violet); }
+  .fw-panel { display: none; }
+  .fw-panel.active { display: block; }
+
+  /* Suite runner output (Path 04) */
+  .suite-runner {
+    border: 1px solid var(--border); border-radius: 0.5rem;
+    background: var(--bg-elev); padding: 0.85rem; margin-top: 0.85rem;
+  }
+  .suite-runner h4 { font-size: 0.95rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--text); }
+  .suite-runner p { font-size: 0.78rem; color: var(--muted); margin: 0 0 0.65rem; line-height: 1.55; }
+  .suite-runner p strong { color: var(--text); }
+  .suite-runner p em { color: var(--violet-hi); font-style: normal; }
+  .suite-runner p code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.74rem; }
+  .suite-output {
+    display: none; margin-top: 0.7rem; padding: 0.7rem 0.85rem;
+    background: #050510; border: 1px solid var(--border); border-radius: 0.4rem;
+    font-family: ui-monospace, monospace; font-size: 0.72rem;
+    color: var(--text); white-space: pre-wrap; max-height: 22rem; overflow-y: auto;
+    line-height: 1.5;
+  }
+  .suite-output.visible { display: block; }
+  .suite-output .ok { color: var(--green); }
+  .suite-output .err { color: var(--red); }
+  .suite-output .dim { color: var(--dim); }
+  .suite-output .num { color: var(--amber); }
+
+  /* Deny modes (Path 01) — Tamper Lab + Revoked-Key Lab */
+  .deny-toggle {
+    width: 100%; display: flex; align-items: center; gap: 0.55rem;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: var(--text); text-align: left;
+  }
+  .deny-toggle::before {
+    content: '▸'; color: var(--violet-hi);
+    transition: transform 0.2s; font-size: 0.85rem;
+  }
+  .deny-toggle.open::before { transform: rotate(90deg); }
+  .deny-toggle-num {
+    width: 1.7rem; height: 1.7rem; border-radius: 0.4rem;
+    background: rgba(248,113,113,0.15); color: #fca5a5;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace; font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .deny-toggle-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .deny-toggle-tag {
+    margin-left: auto; font-size: 0.7rem;
+    font-family: ui-monospace, monospace; color: var(--muted);
+  }
+  .deny-body { display: none; padding-top: 0.85rem; }
+  .deny-body.open { display: block; }
+  .deny-intro {
+    font-size: 0.84rem; color: var(--muted); margin: 0 0 0.7rem;
+  }
+  .deny-intro code { color: var(--violet-hi); font-family: ui-monospace, monospace; }
+
+  .lab-grid {
+    display: grid; gap: 0.7rem; grid-template-columns: 1fr;
+  }
+  @media (min-width: 1280px) {
+    .lab-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .lab-card {
+    border: 1px solid var(--border); border-radius: 0.5rem;
+    background: var(--bg); padding: 0.75rem;
+  }
+  .lab-card-head h4 {
+    font-size: 0.9rem; font-weight: 600; margin: 0 0 0.2rem; color: var(--text);
+  }
+  .lab-card-head p {
+    font-size: 0.74rem; color: var(--muted); margin: 0 0 0.65rem; line-height: 1.5;
+  }
+  .lab-stage {
+    padding: 0.6rem 0.7rem; border-radius: 0.4rem;
+    border: 1px solid var(--border); margin-top: 0.5rem;
+    opacity: 0.45; transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .lab-stage.active {
+    opacity: 1; border-color: rgba(167,139,250,0.4);
+    background: rgba(167,139,250,0.04);
+  }
+  .lab-stage.done {
+    opacity: 1; border-color: rgba(34,197,94,0.3);
+    background: rgba(34,197,94,0.04);
+  }
+  .lab-stage-head {
+    display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;
+  }
+  .lab-stage-step {
+    width: 1.3rem; height: 1.3rem; flex-shrink: 0; border-radius: 0.3rem;
+    background: rgba(167,139,250,0.18); color: var(--violet-hi);
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace; font-weight: 700; font-size: 0.72rem;
+  }
+  .lab-stage.done .lab-stage-step {
+    background: rgba(34,197,94,0.2); color: var(--green);
+  }
+  .lab-stage-title {
+    font-size: 0.78rem; font-weight: 600; color: var(--text);
+  }
+  .lab-action-row {
+    display: flex; gap: 0.35rem; flex-wrap: wrap;
+  }
+  .lab-action-row .btn { padding: 0.35rem 0.7rem; font-size: 0.74rem; }
+  .lab-token {
+    display: block; padding: 0.45rem 0.6rem; background: #050510;
+    border: 1px solid var(--border); border-radius: 0.35rem;
+    font-family: ui-monospace, monospace; font-size: 0.68rem;
+    color: var(--violet-hi); margin-top: 0.5rem;
+    word-break: break-all; overflow-wrap: anywhere;
+    max-height: 4rem; overflow: auto;
+  }
+  .lab-status {
+    font-size: 0.72rem; color: var(--muted);
+    font-family: ui-monospace, monospace; margin-top: 0.4rem;
+  }
+  .lab-status.tampered { color: #fca5a5; }
+  .lab-status.unchanged { color: var(--green); }
+  .lab-crl {
+    margin-top: 0.5rem; padding: 0.5rem 0.6rem;
+    background: #050510; border: 1px solid var(--border); border-radius: 0.35rem;
+    font-family: ui-monospace, monospace; font-size: 0.68rem;
+    color: var(--text); line-height: 1.55; white-space: pre-wrap;
+  }
+  .lab-crl .crl-active { color: var(--green); }
+  .lab-crl .crl-revoked { color: #fca5a5; }
+  .lab-crl .crl-key { color: var(--muted); }
+  .lab-result {
+    display: none; margin-top: 0.55rem; padding: 0.55rem 0.7rem;
+    border-radius: 0.35rem; font-size: 0.74rem; line-height: 1.5;
+  }
+  .lab-result.visible { display: block; }
+  .lab-result.allow {
+    background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green);
+  }
+  .lab-result.deny {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3);
+    color: var(--red);
+  }
+  .lab-result strong { display: block; margin-bottom: 0.2rem; }
+  .lab-result code {
+    color: inherit; font-family: ui-monospace, monospace; font-size: 0.7rem;
+    background: rgba(0,0,0,0.2); padding: 0 0.25rem; border-radius: 0.2rem;
+  }
+  .deny-explain {
+    font-size: 0.78rem; color: var(--muted); margin: 0.85rem 0 0;
+    line-height: 1.55;
+  }
+  .deny-explain code { color: var(--violet-hi); font-family: ui-monospace, monospace; }
+
+  /* Footer */
+  .footnote {
+    margin-top: 2.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem; color: var(--muted);
+  }
+  .footnote a { color: var(--violet-hi); text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="preview-banner">
+    PREVIEW — 4 try-it paths mirrored word-for-word from /demo. Live endpoints. Animated flow charts.
+  </div>
+
+  <div class="eyebrow">Start here · <span class="accent-bright">no signup, no install</span></div>
+  <h1>The fastest way to try it is <span class="accent">in your browser, right below</span>.</h1>
+  <p class="subtitle">Three other ways are linked below if the browser flow isn't how you work.</p>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button type="button" class="tab active" data-tab="p1">
+      <span class="tab-num">01</span>Browser mint <span class="tab-tag">~30 sec to verdict</span>
+    </button>
+    <button type="button" class="tab" data-tab="p2">
+      <span class="tab-num">02</span>Cloud IDE <span class="tab-tag">5 min</span>
+    </button>
+    <button type="button" class="tab" data-tab="p3">
+      <span class="tab-num">03</span>Terminal curl <span class="tab-tag">~30 sec</span>
+    </button>
+    <button type="button" class="tab" data-tab="p4">
+      <span class="tab-num">04</span>Framework adapter <span class="tab-tag">copy/paste</span>
+    </button>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 01 — Browser mint (mirrors /demo Path 01 word-for-word)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel active" id="panel-p1">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 01 · free hosted subdomain</div>
+        <h2 class="path-title">Mint a passport — in your browser, right now.</h2>
+      </div>
+      <span class="path-tag">~30 sec to verdict</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I don't own a domain. I don't have keys. I don't have an agent. <em>So how am I even supposed to try AgentPKI?</em>"</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">Giving you a free hosted subdomain at <code>yourname.agents.agentpki.dev</code>, minting a real PASETO passport against it, and running it through the live verifier — <strong>entirely in your browser, no install, ~30 seconds to verdict <code>allow</code></strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <!-- LEFT: flow chart -->
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · browser → issuer → verifier · same path for allow / bad_signature / revoked_key</div>
+        <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p1d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your browser (self) -->
+          <g class="actor self" id="p1-n1">
+            <rect x="30" y="60" width="280" height="140" rx="12" />
+            <text x="170" y="100" font-size="16">🌐 Your browser</text>
+            <text x="170" y="128" class="sub">on agentpki.dev</text>
+            <text x="170" y="150" class="sub">fills email, clicks Mint</text>
+          </g>
+
+          <!-- TR: demo.agentpki.dev (issuer) -->
+          <g class="actor" id="p1-n2">
+            <rect x="490" y="60" width="280" height="140" rx="12" />
+            <text x="630" y="100" font-size="16">🔑 demo.agentpki.dev</text>
+            <text x="630" y="128" class="sub">issues PASETO v4</text>
+            <text x="630" y="150" class="sub">Ed25519 signed</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev -->
+          <g class="actor" id="p1-n3">
+            <rect x="30" y="280" width="280" height="140" rx="12" />
+            <text x="170" y="320" font-size="16">🔐 verify.agentpki.dev</text>
+            <text x="170" y="348" class="sub">checks signature + CRL</text>
+            <text x="170" y="370" class="sub">~50ms p50, global edge</text>
+          </g>
+
+          <!-- BR: Verdict -->
+          <g class="actor" id="p1-n4">
+            <rect x="490" y="280" width="280" height="140" rx="12" />
+            <text x="630" y="320" font-size="16">✓ Verdict</text>
+            <text x="630" y="348" class="sub">allow / deny</text>
+            <text x="630" y="370" class="sub">shown in your browser</text>
+          </g>
+
+          <!-- A1: TL→TR (top): GET /mint -->
+          <path id="p1-a1" class="arrow" d="M310,120 L490,120" marker-end="url(#p1d)" />
+          <text id="p1-l1" class="label" x="400" y="105" text-anchor="middle">1. GET /mint</text>
+
+          <!-- A2: TR→TL (return, below A1): PASETO token -->
+          <path id="p1-a2" class="arrow" d="M490,150 L310,150" marker-end="url(#p1d)" />
+          <text id="p1-l2" class="label" x="400" y="175" text-anchor="middle">2. PASETO token</text>
+
+          <!-- A3: TL→BL (vertical left): POST /v1/verify -->
+          <path id="p1-a3" class="arrow" d="M170,200 L170,280" marker-end="url(#p1d)" />
+          <text id="p1-l3" class="label" x="185" y="245">3. POST /v1/verify</text>
+
+          <!-- A4: BL→BR (bottom): verdict allow -->
+          <path id="p1-a4" class="arrow" d="M310,350 L490,350" marker-end="url(#p1d)" />
+          <text id="p1-l4" class="label" x="400" y="335" text-anchor="middle">4. verdict: allow</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p1-play">▶ Play</button>
+          <button class="ctrl" id="p1-step-btn">Step ›</button>
+          <button class="ctrl" id="p1-reset">↻ Reset</button>
+          <span class="step-indicator" id="p1-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: interactive form (mirrors /demo Path 01 demo-area) -->
+      <div class="form-wrap">
+        <!-- Step 1: claim subdomain -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-1">1</span>
+            <span class="form-step-title">Claim your free issuer subdomain</span>
+          </div>
+          <p class="form-step-explain">No DNS work, no domain purchase. Your subdomain is yours to use forever.</p>
+          <div class="ctl-row two">
+            <div>
+              <label class="ctl-label">Handle</label>
+              <input id="p1-handle" class="ctl" type="text" placeholder="yourname" maxlength="32" autocomplete="off" />
+            </div>
+            <div>
+              <label class="ctl-label">Email (for magic-link signup)</label>
+              <input id="p1-email" class="ctl" type="email" placeholder="you@example.com" autocomplete="off" />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" id="p1-claim">Claim subdomain →</button>
+            <div class="issuer-preview">Your issuer: <code id="p1-preview">_____.agents.agentpki.dev</code></div>
+          </div>
+        </div>
+
+        <!-- Step 2: mint -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-2">2</span>
+            <span class="form-step-title">Mint your first passport</span>
+          </div>
+          <p class="form-step-explain">One click. Real PASETO v4 token from the live demo issuer, signed with a real Ed25519 key. We wire your handle in as the agent's <code>sub</code>.</p>
+          <button class="btn primary" id="p1-mint" disabled>▶ Mint passport</button>
+
+          <div id="p1-token-box" class="token-box" style="display:none;">
+            <div class="token-box-head">
+              <span class="token-box-eyebrow">Your passport token · <span id="p1-token-length">?</span> chars</span>
+              <button class="btn secondary" id="p1-token-copy" style="padding: 0.3rem 0.7rem; font-size: 0.72rem;">Copy token</button>
+            </div>
+            <pre class="token-box-body" id="p1-token-display"></pre>
+            <p class="token-box-foot">
+              <strong>This is what your agent would send.</strong> In a real integration it sits in an <code>Authorization: Bearer &lt;token&gt;</code> header. Copy it — you're about to hand it to the verifier.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3: verify -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-3">3</span>
+            <span class="form-step-title">Hand it to the live verifier</span>
+          </div>
+          <p class="form-step-explain">Same endpoint any bot-defense vendor or website would call: <code>POST verify.agentpki.dev/v1/verify</code>. Two ways to test it.</p>
+
+          <!-- Option A: command-line -->
+          <div id="p1-curl-box" class="verify-option" style="display:none;">
+            <div class="verify-option-head">
+              <span class="verify-option-num">A</span>
+              <span class="verify-option-title">Run it from your terminal</span>
+            </div>
+            <div class="shell-tab-row">
+              <button type="button" class="shell-tab active" data-shell="p1-bash">macOS / Linux · bash</button>
+              <button type="button" class="shell-tab" data-shell="p1-ps">Windows · PowerShell</button>
+            </div>
+            <div class="shell-panel active" data-shell-panel="p1-bash">
+              <pre class="code-block" id="p1-curl-cmd-bash"></pre>
+              <button class="btn secondary" data-p1-curl-copy="bash" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.5rem;">Copy command</button>
+            </div>
+            <div class="shell-panel" data-shell-panel="p1-ps">
+              <pre class="code-block" id="p1-curl-cmd-ps"></pre>
+              <button class="btn secondary" data-p1-curl-copy="ps" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.5rem;">Copy command</button>
+              <p style="font-size: 0.72rem; color: var(--dim); margin: 0.6rem 0 0; line-height: 1.5;">
+                PowerShell's built-in <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">curl</code> is an alias for <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-WebRequest</code> with different flag syntax — this snippet uses <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-RestMethod</code> instead so it just works on Windows out of the box.
+              </p>
+            </div>
+          </div>
+
+          <!-- Option B: paste-and-verify in browser -->
+          <div id="p1-onpage-box" class="verify-option" style="display:none;">
+            <div class="verify-option-head">
+              <span class="verify-option-num">B</span>
+              <span class="verify-option-title">Paste the token and verify in the browser</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--muted); margin: 0 0 0.55rem; line-height: 1.5;">
+              Copy the token from Step 2, then paste it below. <strong style="color: var(--text);">You're acting as the agent handing its passport to the verifier.</strong> Same endpoint a bot-defense vendor would hit.
+            </p>
+            <textarea id="p1-verify-input" class="ctl" rows="3" placeholder="Paste your token here (it starts with v4.public.)" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+            <div class="btn-row">
+              <button class="btn primary" id="p1-verify" disabled>Verify what you pasted →</button>
+              <button class="btn ghost" id="p1-verify-prefill" style="font-size: 0.78rem;">Use the token I just minted</button>
+              <span id="p1-verdict" class="verdict-pill idle">waiting for token</span>
+            </div>
+          </div>
+
+          <!-- Success panel -->
+          <div id="p1-success-panel" class="success-panel">
+            <div class="success-banner">
+              <span class="success-check">✓</span>
+              <div>
+                <div class="success-banner-title">Verified end-to-end</div>
+                <div class="success-banner-sub">Live verifier returned <code>allow</code> in <strong id="p1-success-ms">?</strong> ms</div>
+              </div>
+            </div>
+            <div class="success-grid">
+              <div class="success-field"><div class="success-label">Issuer</div><div class="success-value"><code id="p1-success-issuer">—</code></div></div>
+              <div class="success-field"><div class="success-label">Identity</div><div class="success-value"><code id="p1-success-agent">—</code></div></div>
+              <div class="success-field"><div class="success-label">Scopes</div><div class="success-value"><code id="p1-success-scopes">—</code></div></div>
+              <div class="success-field"><div class="success-label">Tier</div><div class="success-value" id="p1-success-tier">—</div></div>
+              <div class="success-field"><div class="success-label">Abuse score</div><div class="success-value" id="p1-success-abuse">—</div></div>
+              <div class="success-field"><div class="success-label">Verifier elapsed</div><div class="success-value" id="p1-success-elapsed">—</div></div>
+            </div>
+            <div class="success-actions">
+              <a class="btn primary" href="https://agentpki.dev/dashboard" target="_blank" rel="noreferrer">Claim your own issuer →</a>
+              <a class="btn ghost" href="https://agentpki.dev/spec" target="_blank" rel="noreferrer">Read the v0.2 spec</a>
+            </div>
+            <p class="success-foot">
+              That's the whole protocol — real signature, real verdict, your handle as the <code>sub</code>.
+              <strong style="display:block; margin-top: 0.5rem;">Where to go from here:</strong>
+              · <strong>Claim a real issuer</strong> — bring your domain, get keys, mint production passports.<br>
+              · <strong>Adding to an existing agent?</strong> Path 04 has the 5-line drop-in.
+            </p>
+          </div>
+        </div>
+
+        <!-- ═══ DENY MODES — collapsible. Mirrors /demo's "Deny modes" panel. ═══ -->
+        <div class="form-step">
+          <button type="button" class="deny-toggle" id="p1-deny-toggle" aria-expanded="false">
+            <span class="deny-toggle-num">!</span>
+            <span class="deny-toggle-title">Deny modes — forge a token or sign with a revoked key</span>
+            <span class="deny-toggle-tag">2 labs · ~1 min</span>
+          </button>
+
+          <div class="deny-body" id="p1-deny-body">
+            <p class="deny-intro">Step 3 returned <code>allow</code>. Now make it <code>deny</code> — you choose how.</p>
+
+            <div class="lab-grid">
+              <!-- ─────────── Tamper Lab ─────────── -->
+              <div class="lab-card" data-lab="tamper">
+                <div class="lab-card-head">
+                  <h4>Tamper Lab</h4>
+                  <p>Mint → corrupt → verify. You drive each step.</p>
+                </div>
+
+                <!-- Stage A -->
+                <div class="lab-stage active" id="lab-t-A">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">A</span>
+                    <span class="lab-stage-title">Mint a real token</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-t-mint">Mint a fresh token</button>
+                  </div>
+                  <code class="lab-token" id="lab-t-token" style="display:none;"></code>
+                  <div class="lab-status" id="lab-t-mint-status"></div>
+                </div>
+
+                <!-- Stage B -->
+                <div class="lab-stage" id="lab-t-B">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">B</span>
+                    <span class="lab-stage-title">Pick what to corrupt</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn secondary" data-tamper="sig" disabled>Flip signature</button>
+                    <button type="button" class="btn secondary" data-tamper="payload" disabled>Flip payload</button>
+                    <button type="button" class="btn secondary" data-tamper="footer" disabled>Flip footer</button>
+                    <button type="button" class="btn ghost" data-tamper="reset" disabled>Send unchanged</button>
+                  </div>
+                  <div class="lab-status" id="lab-t-tamper-status"></div>
+                </div>
+
+                <!-- Stage C -->
+                <div class="lab-stage" id="lab-t-C">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">C</span>
+                    <span class="lab-stage-title">Send to verifier</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-t-send" disabled>Send →</button>
+                    <button type="button" class="btn ghost" id="lab-t-reset">Start over</button>
+                  </div>
+                  <div class="lab-result" id="lab-t-result"></div>
+                </div>
+              </div>
+
+              <!-- ─────────── Revoked-Key Lab ─────────── -->
+              <div class="lab-card" data-lab="revoked">
+                <div class="lab-card-head">
+                  <h4>Revoked-Key Lab</h4>
+                  <p>Pick a kid → inspect the CRL → verify.</p>
+                </div>
+
+                <!-- Stage A -->
+                <div class="lab-stage active" id="lab-r-A">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">A</span>
+                    <span class="lab-stage-title">Pick a kid to sign with</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn secondary" data-kid="active">Active · <code style="background:transparent;color:inherit;padding:0;">demo-2026-q2</code></button>
+                    <button type="button" class="btn secondary" data-kid="revoked">Revoked · <code style="background:transparent;color:inherit;padding:0;">demo-2026-q1-rotated</code></button>
+                  </div>
+                  <code class="lab-token" id="lab-r-token" style="display:none;"></code>
+                  <div class="lab-status" id="lab-r-mint-status"></div>
+                </div>
+
+                <!-- Stage B -->
+                <div class="lab-stage" id="lab-r-B">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">B</span>
+                    <span class="lab-stage-title">Check the issuer's directory</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn ghost" id="lab-r-fetch-dir" disabled>Fetch directory</button>
+                  </div>
+                  <div class="lab-crl" id="lab-r-crl" style="display:none;"></div>
+                </div>
+
+                <!-- Stage C -->
+                <div class="lab-stage" id="lab-r-C">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">C</span>
+                    <span class="lab-stage-title">Send to verifier</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-r-send" disabled>Send →</button>
+                    <button type="button" class="btn ghost" id="lab-r-reset">Start over</button>
+                  </div>
+                  <div class="lab-result" id="lab-r-result"></div>
+                </div>
+              </div>
+            </div>
+
+            <p class="deny-explain">
+              Same <code>deny</code>, different <code>failure_reason</code>: <code>bad_signature</code> = forged. <code>revoked_key</code> = legit signature, dead key. AgentPKI tells you which.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 02 — Cloud IDE (StackBlitz / Codespaces)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p2">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 02 · cloud IDE</div>
+        <h2 class="path-title">"Use my agent" — StackBlitz / Codespaces button</h2>
+      </div>
+      <span class="path-tag">5 min in browser</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"Snippets aren't enough. I want a real Node.js project with a real agent calling AgentPKI — <em>so I can step through it, break it, and see what actually goes over the wire</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">One click forks a pre-wired template (<code>@agentpki/sdk</code> installed, Anthropic-backed agent, live verifier call) into StackBlitz or Codespaces. You hit <strong>Run</strong>. <strong>No <code>npm install</code>, no local Node setup, no boilerplate.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · template → cloud IDE → verifier</div>
+        <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p2d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: test-agent-template (GitHub repo) -->
+          <g class="actor" id="p2-n1">
+            <rect x="30" y="60" width="280" height="140" rx="12" />
+            <text x="170" y="100" font-size="16">📦 test-agent-template</text>
+            <text x="170" y="128" class="sub">agentpki/test-agent-template</text>
+            <text x="170" y="150" class="sub">GitHub repo</text>
+          </g>
+
+          <!-- TR: Cloud IDE (StackBlitz / Codespaces) -->
+          <g class="actor self" id="p2-n2">
+            <rect x="490" y="60" width="280" height="140" rx="12" />
+            <text x="630" y="100" font-size="16">☁️ Cloud IDE</text>
+            <text x="630" y="128" class="sub">StackBlitz / Codespaces</text>
+            <text x="630" y="150" class="sub">@agentpki/sdk pre-installed</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev -->
+          <g class="actor" id="p2-n3">
+            <rect x="30" y="280" width="280" height="140" rx="12" />
+            <text x="170" y="320" font-size="16">🔐 verify.agentpki.dev</text>
+            <text x="170" y="348" class="sub">checks signature + CRL</text>
+            <text x="170" y="370" class="sub">via SDK verify()</text>
+          </g>
+
+          <!-- BR: Verdict in terminal -->
+          <g class="actor" id="p2-n4">
+            <rect x="490" y="280" width="280" height="140" rx="12" />
+            <text x="630" y="320" font-size="16">✓ Verdict in terminal</text>
+            <text x="630" y="348" class="sub">allow / deny + reason</text>
+            <text x="630" y="370" class="sub">exit code 0 / 1</text>
+          </g>
+
+          <!-- A1: TL→TR (top): fork -->
+          <path id="p2-a1" class="arrow" d="M310,120 L490,120" marker-end="url(#p2d)" />
+          <text id="p2-l1" class="label" x="400" y="105" text-anchor="middle">1. fork</text>
+
+          <!-- A2: TR→TL (return): pre-wired SDK -->
+          <path id="p2-a2" class="arrow" d="M490,150 L310,150" marker-end="url(#p2d)" />
+          <text id="p2-l2" class="label" x="400" y="175" text-anchor="middle">2. pre-wired with SDK</text>
+
+          <!-- A3: TL→BL (vertical): signed fetch -->
+          <path id="p2-a3" class="arrow" d="M170,200 L170,280" marker-end="url(#p2d)" />
+          <text id="p2-l3" class="label" x="185" y="245">3. signed fetch(token)</text>
+
+          <!-- A4: BL→BR (bottom): verdict console.log -->
+          <path id="p2-a4" class="arrow" d="M310,350 L490,350" marker-end="url(#p2d)" />
+          <text id="p2-l4" class="label" x="400" y="335" text-anchor="middle">4. console.log verdict</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p2-play">▶ Play</button>
+          <button class="ctrl" id="p2-step-btn">Step ›</button>
+          <button class="ctrl" id="p2-reset">↻ Reset</button>
+          <span class="step-indicator" id="p2-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Step 1: open the boilerplate -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Open the boilerplate in your favourite cloud IDE</span>
+          </div>
+          <p class="form-step-explain">Both buttons spin up a fresh sandbox with the SDK pre-installed and a working <code>index.mjs</code>.</p>
+          <p class="form-step-explain">
+            One click forks <code>agentpki/test-agent-template</code> into a cloud IDE with <code>@agentpki/sdk</code> already installed and three demo commands wired up: <code>npm run demo:allow</code>, <code>npm run demo:tamper</code>, <code>npm run demo:revoked</code> — the same trust contract Path 01's labs exercise, but from a real Node project you own.
+          </p>
+          <div class="btn-row">
+            <a class="btn primary" id="p2-stackblitz" href="https://stackblitz.com/github/agentpki/test-agent-template?file=index.mjs" target="_blank" rel="noreferrer">▶ Open in StackBlitz</a>
+            <a class="btn secondary" id="p2-codespaces" href="https://codespaces.new/agentpki/test-agent-template?quickstart=1" target="_blank" rel="noreferrer">▶ Open in Codespaces</a>
+            <a class="btn ghost" id="p2-github" href="https://github.com/agentpki/test-agent-template" target="_blank" rel="noreferrer">Source on GitHub →</a>
+          </div>
+        </div>
+
+        <!-- Step 2: what's in the project -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">What's in the project</span>
+          </div>
+          <p class="form-step-explain">Open <code>index.mjs</code> — the whole demo is 12 lines.</p>
+          <pre class="code-block"><span class="c-cmt">// index.mjs — pre-wired test agent</span>
+<span class="c-key">import</span> { mintPassport, verify } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+<span class="c-key">import</span> Anthropic <span class="c-key">from</span> <span class="c-str">'@anthropic-ai/sdk'</span>;
+
+<span class="c-key">const</span> token = <span class="c-key">await</span> mintPassport({ sub: <span class="c-str">'agent:test/v1'</span> });
+<span class="c-key">const</span> claude = <span class="c-key">new</span> Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+<span class="c-key">const</span> resp = <span class="c-key">await</span> claude.messages.create({
+  model: <span class="c-str">'claude-3-5-sonnet'</span>,
+  max_tokens: <span class="c-num">200</span>,
+  messages: [{ role: <span class="c-str">'user'</span>, content: <span class="c-str">'What is AgentPKI?'</span> }],
+});
+<span class="c-key">const</span> verdict = <span class="c-key">await</span> verify(token);
+
+console.log(<span class="c-str">'claude says:'</span>, resp.content[<span class="c-num">0</span>].text);
+console.log(<span class="c-str">'verifier says:'</span>, verdict.verdict);</pre>
+        </div>
+
+        <!-- Step 3: run it -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">3</span>
+            <span class="form-step-title">Run it</span>
+          </div>
+          <p class="form-step-explain">Paste your Anthropic key into the .env, hit ▶ Run. You see Claude's response AND the verifier's verdict in the same terminal.</p>
+          <button class="btn primary" id="p2-simulate-run">▶ Simulate <code style="color:#000;background:transparent;">npm start</code></button>
+          <pre class="code-block" id="p2-run-output" style="display:none;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 03 — Terminal curl (bootstrap)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p3">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 03 · terminal-only</div>
+        <h2 class="path-title">One curl command. End-to-end in your shell.</h2>
+      </div>
+      <span class="path-tag">~30 sec</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I live in my terminal. I'm not going to leave it to use your product. <em>And I'm not <code>npm i</code>-ing anything until I know it works</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">One paste. Two HTTP calls. You see your derived subdomain, a real PASETO passport, the verifier verdict, and a 24h shareable <code>/check/result/&lt;id&gt;</code> URL — <strong>without installing anything, claiming a domain, or signing up</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · terminal → claim API → permalink</div>
+        <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p3d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your Terminal -->
+          <g class="actor self" id="p3-n1">
+            <rect x="30" y="60" width="280" height="140" rx="12" />
+            <text x="170" y="100" font-size="16">💻 Your Terminal</text>
+            <text x="170" y="128" class="sub">curl|sh or iwr|iex</text>
+            <text x="170" y="150" class="sub">paste, hit enter</text>
+          </g>
+
+          <!-- TR: claim API -->
+          <g class="actor" id="p3-n2">
+            <rect x="490" y="60" width="280" height="140" rx="12" />
+            <text x="630" y="100" font-size="16">⚙️ /api/v1/bootstrap-claim</text>
+            <text x="630" y="128" class="sub">mint + verify + store</text>
+            <text x="630" y="150" class="sub">atomic operation</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev (internal) -->
+          <g class="actor" id="p3-n3">
+            <rect x="30" y="280" width="280" height="140" rx="12" />
+            <text x="170" y="320" font-size="16">🔐 verify.agentpki.dev</text>
+            <text x="170" y="348" class="sub">signature + CRL check</text>
+            <text x="170" y="370" class="sub">called by claim API</text>
+          </g>
+
+          <!-- BR: permalink -->
+          <g class="actor" id="p3-n4">
+            <rect x="490" y="280" width="280" height="140" rx="12" />
+            <text x="630" y="320" font-size="16">🔗 /check/result/&lt;id&gt;</text>
+            <text x="630" y="348" class="sub">24h shareable URL</text>
+            <text x="630" y="370" class="sub">printed in terminal</text>
+          </g>
+
+          <!-- A1: TL→TR (top): POST email -->
+          <path id="p3-a1" class="arrow" d="M310,120 L490,120" marker-end="url(#p3d)" />
+          <text id="p3-l1" class="label" x="400" y="105" text-anchor="middle">1. POST email</text>
+
+          <!-- A2: TR→TL (return): inline verdict + permalink -->
+          <path id="p3-a2" class="arrow" d="M490,150 L310,150" marker-end="url(#p3d)" />
+          <text id="p3-l2" class="label" x="400" y="175" text-anchor="middle">2. inline verdict + permalink</text>
+
+          <!-- A3: TL→BL (vertical): internal /v1/verify -->
+          <path id="p3-a3" class="arrow" d="M170,200 L170,280" marker-end="url(#p3d)" />
+          <text id="p3-l3" class="label" x="185" y="245">3. internal /v1/verify</text>
+
+          <!-- A4: BL→BR (bottom): verdict stored as 24h permalink -->
+          <path id="p3-a4" class="arrow" d="M310,350 L490,350" marker-end="url(#p3d)" />
+          <text id="p3-l4" class="label" x="400" y="335" text-anchor="middle">4. verdict stored as permalink</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p3-play">▶ Play</button>
+          <button class="ctrl" id="p3-step-btn">Step ›</button>
+          <button class="ctrl" id="p3-reset">↻ Reset</button>
+          <span class="step-indicator" id="p3-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Live banner -->
+        <div class="callout-info green">
+          <span aria-hidden="true">✓</span>
+          <span>
+            <strong>Live now.</strong>
+            Both <code>/bootstrap</code> and <code>/bootstrap.ps1</code> are deployed at <code>agentpki.dev</code> and smoke-tested against the demo issuer + verifier. The script mints a demo passport, verifies it, and prints <code>verdict: allow</code>. Two HTTP calls, nothing destructive — full source linked from each script.
+          </span>
+        </div>
+
+        <!-- Step 1: run the bootstrap -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Run the bootstrap</span>
+          </div>
+          <p class="form-step-explain">Same end-to-end behaviour, native syntax for each shell. The Copy button copies only the command — the prompt marker (<code>$</code> or <code>PS&gt;</code>) is stripped, so you can't paste it by accident.</p>
+          <div class="shell-tab-row">
+            <button type="button" class="shell-tab active" data-shell="p3-bash">macOS / Linux · bash</button>
+            <button type="button" class="shell-tab" data-shell="p3-ps">Windows · PowerShell</button>
+          </div>
+          <div class="shell-panel active" data-shell-panel="p3-bash">
+            <pre class="code-block"><span class="c-prompt">$</span> curl -fsSL <span class="c-str">https://agentpki.dev/bootstrap</span> | sh</pre>
+            <button type="button" class="btn secondary" data-p3-copy="bash" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.4rem;">Copy command</button>
+            <p style="font-size: 0.72rem; color: var(--dim); margin: 0.55rem 0 0;">
+              Requires <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">curl</code> + <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">sed</code> (both POSIX standard). Tested on macOS 14 and Ubuntu 22.04.
+            </p>
+          </div>
+          <div class="shell-panel" data-shell-panel="p3-ps">
+            <pre class="code-block"><span class="c-prompt">PS&gt;</span> iwr <span class="c-str">https://agentpki.dev/bootstrap.ps1</span> | iex</pre>
+            <button type="button" class="btn secondary" data-p3-copy="ps" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.4rem;">Copy command</button>
+            <p style="font-size: 0.72rem; color: var(--dim); margin: 0.55rem 0 0;">
+              <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">iwr</code> = <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-WebRequest</code>, <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">iex</code> = <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-Expression</code>. Pure PowerShell — no bash, no <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">sh</code>, no WSL needed. Tested on Windows PowerShell 5.1 and PowerShell 7+.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2: audit -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">Audit before piping</span>
+          </div>
+          <p class="form-step-explain"><strong>Never hide what runs on your machine.</strong> Inspect without executing:</p>
+          <p style="font-size: 0.7rem; font-family: ui-monospace, monospace; color: var(--dim); margin: 0.35rem 0 0.25rem; letter-spacing: 0.08em; text-transform: uppercase;">bash · preview</p>
+          <pre class="code-block"><span class="c-prompt">$</span> curl -fsSL <span class="c-str">https://agentpki.dev/bootstrap</span></pre>
+          <p style="font-size: 0.7rem; font-family: ui-monospace, monospace; color: var(--dim); margin: 0.6rem 0 0.25rem; letter-spacing: 0.08em; text-transform: uppercase;">PowerShell · preview</p>
+          <pre class="code-block"><span class="c-prompt">PS&gt;</span> iwr <span class="c-str">https://agentpki.dev/bootstrap.ps1</span> | Select-Object -Expand Content</pre>
+        </div>
+
+        <!-- Step 3: expected output -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">3</span>
+            <span class="form-step-title">What you'll see</span>
+          </div>
+          <p class="form-step-explain">Click <em>Simulate</em> to animate the actual 3-scenario v1.0 output. Every value is what the live bootstrap returns — 6 real HTTP calls in ~1 sec.</p>
+          <button class="btn primary" id="p3-simulate-run">▶ Simulate bootstrap output</button>
+          <pre class="code-block" id="p3-output" style="display:none; max-height: 28rem;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 04 — Framework adapter (existing agent)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p4">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 04 · existing project</div>
+        <h2 class="path-title">5 lines. Add AgentPKI to your existing agent.</h2>
+      </div>
+      <span class="path-tag">5-min copy/paste</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I already have an agent running in LangChain / Vercel AI / OpenAI / Anthropic. <em>I'm not rewriting it. Just tell me where the 5 lines go</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">A framework-specific tab below shows the exact 5-line drop-in. Wrap your client, give it a <code>passportProvider</code> — <strong>every outbound HTTP call is now signed and verifiable, nothing else in your code changes</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · your agent → SDK → vendor verifier</div>
+        <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p4d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your Agent code -->
+          <g class="actor self" id="p4-n1">
+            <rect x="30" y="60" width="280" height="140" rx="12" />
+            <text x="170" y="100" font-size="16">🤖 Your Agent code</text>
+            <text x="170" y="128" class="sub">LangChain / OpenAI</text>
+            <text x="170" y="150" class="sub">/ Anthropic</text>
+          </g>
+
+          <!-- TR: @agentpki/sdk -->
+          <g class="actor" id="p4-n2">
+            <rect x="490" y="60" width="280" height="140" rx="12" />
+            <text x="630" y="100" font-size="16">📦 @agentpki/sdk</text>
+            <text x="630" y="128" class="sub">wraps fetch()</text>
+            <text x="630" y="150" class="sub">adds Token + RFC 9421 sig</text>
+          </g>
+
+          <!-- BL: Vendor API + verifier -->
+          <g class="actor" id="p4-n3">
+            <rect x="30" y="280" width="280" height="140" rx="12" />
+            <text x="170" y="320" font-size="16">🛡️ Vendor verifier</text>
+            <text x="170" y="348" class="sub">checks AgentPKI-Token</text>
+            <text x="170" y="370" class="sub">enforces policy</text>
+          </g>
+
+          <!-- BR: 200 OK / verdict -->
+          <g class="actor" id="p4-n4">
+            <rect x="490" y="280" width="280" height="140" rx="12" />
+            <text x="630" y="320" font-size="16">✓ 200 OK</text>
+            <text x="630" y="348" class="sub">allowed through</text>
+            <text x="630" y="370" class="sub">audit log entry created</text>
+          </g>
+
+          <!-- A1: TL→TR (top): wrapped fetch() -->
+          <path id="p4-a1" class="arrow" d="M310,120 L490,120" marker-end="url(#p4d)" />
+          <text id="p4-l1" class="label" x="400" y="105" text-anchor="middle">1. wrapped fetch()</text>
+
+          <!-- A2: TR→TL (return): token + signature ready -->
+          <path id="p4-a2" class="arrow" d="M490,150 L310,150" marker-end="url(#p4d)" />
+          <text id="p4-l2" class="label" x="400" y="175" text-anchor="middle">2. token + signature ready</text>
+
+          <!-- A3: TL→BL (vertical): signed HTTPS -->
+          <path id="p4-a3" class="arrow" d="M170,200 L170,280" marker-end="url(#p4d)" />
+          <text id="p4-l3" class="label" x="185" y="245">3. signed HTTPS request</text>
+
+          <!-- A4: BL→BR (bottom): allow + audit log -->
+          <path id="p4-a4" class="arrow" d="M310,350 L490,350" marker-end="url(#p4d)" />
+          <text id="p4-l4" class="label" x="400" y="335" text-anchor="middle">4. allow + audit log</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p4-play">▶ Play</button>
+          <button class="ctrl" id="p4-step-btn">Step ›</button>
+          <button class="ctrl" id="p4-reset">↻ Reset</button>
+          <span class="step-indicator" id="p4-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Honest disclosure -->
+        <div class="callout-info amber">
+          <span aria-hidden="true">⚠</span>
+          <span>
+            <strong>Honest package status —</strong>
+            <code>@agentpki/sdk</code> is <strong style="color: #6ee7b7;">live on npm</strong> today, so the <strong>Vanilla fetch</strong> tab works right now.
+            <code>@agentpki/langchain</code> and <code>@agentpki/vercel-ai</code> are <strong style="color: #fde68a;">preview package names</strong> — we'll publish them once Path 04 gets HN signal. The snippets show the shipped API surface, but <code>npm i</code> on those two will 404 today.
+          </span>
+        </div>
+
+        <!-- Step 1: pick your framework -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Pick your framework</span>
+          </div>
+          <div class="fw-tab-row">
+            <button type="button" class="fw-tab active" data-fw-tab="langchain">LangChain JS · preview</button>
+            <button type="button" class="fw-tab" data-fw-tab="vercel">Vercel AI SDK · preview</button>
+            <button type="button" class="fw-tab" data-fw-tab="openai">OpenAI SDK · live</button>
+            <button type="button" class="fw-tab" data-fw-tab="anthropic">Anthropic SDK · live</button>
+            <button type="button" class="fw-tab" data-fw-tab="vanilla">Vanilla fetch · live</button>
+          </div>
+
+          <div class="fw-panel active" data-fw-panel="langchain">
+            <pre class="code-block"><span class="c-cmt">// 1. install (preview — not yet on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/langchain</span>
+
+<span class="c-cmt">// 2. wrap your existing chain</span>
+<span class="c-key">import</span> { withAgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/langchain'</span>;
+
+<span class="c-key">const</span> chain = withAgentPKI(myChain, {
+  passportProvider: <span class="c-key">async</span> () =&gt; ({
+    token: process.env.AGENTPKI_TOKEN!,
+  }),
+});
+<span class="c-cmt">// done. every outbound HTTP tool call is now signed.</span></pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="vercel">
+            <pre class="code-block"><span class="c-cmt">// 1. install (preview — not yet on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/vercel-ai</span>
+
+<span class="c-cmt">// 2. add the middleware to your generateText call</span>
+<span class="c-key">import</span> { generateText } <span class="c-key">from</span> <span class="c-str">'ai'</span>;
+<span class="c-key">import</span> { agentpkiMiddleware } <span class="c-key">from</span> <span class="c-str">'@agentpki/vercel-ai'</span>;
+
+<span class="c-key">await</span> generateText({
+  model: openai(<span class="c-str">'gpt-4o'</span>),
+  experimental_telemetry: agentpkiMiddleware({
+    passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+  }),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="openai">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span> openai
+
+<span class="c-cmt">// 2. give OpenAI the AgentPKI client's fetch</span>
+<span class="c-key">import</span> OpenAI <span class="c-key">from</span> <span class="c-str">'openai'</span>;
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> client = <span class="c-key">new</span> OpenAI({
+  fetch: pki.fetch.bind(pki),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="anthropic">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span> @anthropic-ai/sdk
+
+<span class="c-cmt">// 2. give Anthropic the AgentPKI client's fetch</span>
+<span class="c-key">import</span> Anthropic <span class="c-key">from</span> <span class="c-str">'@anthropic-ai/sdk'</span>;
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> client = <span class="c-key">new</span> Anthropic({
+  fetch: pki.fetch.bind(pki),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="vanilla">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span>
+
+<span class="c-cmt">// 2. use the AgentPKI client as a drop-in fetch</span>
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> res = <span class="c-key">await</span> pki.fetch(<span class="c-str">'https://reuters.com/api/article/123'</span>);
+<span class="c-cmt">// AgentPKI-Token header + RFC 9421 signature attached automatically.</span></pre>
+          </div>
+        </div>
+
+        <!-- Step 2: verify any outbound call -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">Verify any outbound call from your code</span>
+          </div>
+          <p class="form-step-explain">In a separate terminal (or paste the token into <a href="https://agentpki.dev/check" target="_blank" rel="noreferrer" style="color: var(--violet-hi); text-decoration: underline;">agentpki.dev/check</a>), run:</p>
+          <pre class="code-block"><span class="c-prompt">$</span> curl -X POST https://verify.agentpki.dev/v1/verify \
+    -H <span class="c-str">'content-type: application/json'</span> \
+    -d <span class="c-str">'{"token":"&lt;paste-token-here&gt;"}'</span>
+
+{
+  <span class="c-key">"verdict"</span>: <span class="c-str">"allow"</span>,
+  <span class="c-key">"issuer"</span>: <span class="c-str">"mybot.agents.agentpki.dev"</span>,
+  <span class="c-key">"elapsed_ms"</span>: <span class="c-num">47</span>
+}</pre>
+          <p class="form-step-explain" style="margin-top: 0.5rem;">That's end-to-end inside your real project. Your existing agent now carries a verifiable cryptographic identity for every outbound call.</p>
+        </div>
+
+        <!-- Step 3: assert failure modes -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num deny">3</span>
+            <span class="form-step-title">Assert the failure modes work in your test suite</span>
+          </div>
+          <p class="form-step-explain">Three assertions. If any stops passing against your prod verifier, the trust system regressed.</p>
+
+          <pre class="code-block" style="max-height: 18rem;"><span class="c-cmt">// agentpki.test.ts — drop this into your existing test suite</span>
+<span class="c-key">import</span> { describe, it, expect } <span class="c-key">from</span> <span class="c-str">'vitest'</span>;
+
+<span class="c-key">const</span> VERIFY = <span class="c-str">'https://verify.agentpki.dev/v1/verify'</span>;
+<span class="c-key">const</span> MINT   = <span class="c-str">'https://demo.agentpki.dev/mint'</span>;
+
+<span class="c-key">async function</span> verify(token: <span class="c-key">string</span>) {
+  <span class="c-key">const</span> r = <span class="c-key">await</span> fetch(VERIFY, {
+    method: <span class="c-str">'POST'</span>,
+    headers: { <span class="c-str">'content-type'</span>: <span class="c-str">'application/json'</span> },
+    body: JSON.stringify({ token }),
+  });
+  <span class="c-key">return</span> r.json();
+}
+
+describe(<span class="c-str">'AgentPKI trust contract'</span>, () =&gt; {
+  it(<span class="c-str">'allow on a real signed token'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(MINT).then(r =&gt; r.json());
+    <span class="c-key">const</span> v = <span class="c-key">await</span> verify(token);
+    expect(v.verdict).toBe(<span class="c-str">'allow'</span>);
+  });
+
+  it(<span class="c-str">'deny + bad_signature on tampered token'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(MINT).then(r =&gt; r.json());
+    <span class="c-key">const</span> [v, p, p2, f] = token.split(<span class="c-str">'.'</span>);
+    <span class="c-key">const</span> tampered = `${v}.${p}.${p2.slice(<span class="c-num">0</span>, -<span class="c-num">4</span>)}AAAA.${f}`;
+    <span class="c-key">const</span> result = <span class="c-key">await</span> verify(tampered);
+    expect(result.verdict).toBe(<span class="c-str">'deny'</span>);
+    expect(result.failure_reason).toBe(<span class="c-str">'bad_signature'</span>);
+  });
+
+  it(<span class="c-str">'deny + revoked_key when issuer rotated the kid'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(`${MINT}?revoked=1`).then(r =&gt; r.json());
+    <span class="c-key">const</span> result = <span class="c-key">await</span> verify(token);
+    expect(result.verdict).toBe(<span class="c-str">'deny'</span>);
+    expect(result.failure_reason).toBe(<span class="c-str">'revoked_key'</span>);
+    expect(result.failure_detail).toContain(<span class="c-str">'demo-2026-q1-rotated'</span>);
+  });
+});</pre>
+
+          <div class="suite-runner">
+            <h4>Run that suite right now, from this page</h4>
+            <p>Your browser executes the same three assertions against <code>verify.agentpki.dev</code>. <strong>If any of these stops passing, the trust system regressed</strong> — not your code, not your network. Click <em>run</em> as many times as you like; cached responses produce different latencies but the same verdicts.</p>
+            <div class="btn-row">
+              <button class="btn primary" id="p4-run-suite">▶ Run trust-contract suite</button>
+              <button class="btn ghost" id="p4-reset-suite" style="display:none;">Clear output</button>
+            </div>
+            <pre id="p4-suite-output" class="suite-output"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    Mirrors <a href="/demo">/demo</a> word-for-word and functionality-for-functionality.
+    Animated flow charts use the same visual language as <a href="/preview/trust-flow">/preview/trust-flow</a> and <a href="/preview/demo-flows">/preview/demo-flows</a>.
+    Live endpoints: <a href="https://demo.agentpki.dev">demo.agentpki.dev</a>, <a href="https://verify.agentpki.dev">verify.agentpki.dev</a>, <a href="https://agentpki.dev/bootstrap">agentpki.dev/bootstrap</a>.
+  </div>
+</div>
+
+<script>
+(function () {
+  // ── Tabs ──
+  // On tab switch we refresh BOTH the outgoing tab (so it's clean when revisited)
+  // and the incoming tab (so the user lands on a fresh state). Flowchart + form
+  // displays + simulation outputs all reset; user-typed inputs (handle/email)
+  // are preserved.
+  var activeTabKey = 'p1';
+  document.querySelectorAll('.tab').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var key = btn.getAttribute('data-tab');
+      // Refresh outgoing first (so when user comes back later, it's fresh)
+      if (activeTabKey && activeTabKey !== key) refreshTab(activeTabKey);
+
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
+      var panel = document.getElementById('panel-' + key);
+      if (panel) panel.classList.add('active');
+
+      // Refresh incoming so the newly-entered tab starts from step 0
+      refreshTab(key);
+      activeTabKey = key;
+    });
+  });
+
+  // Reset everything visible inside a tab: flowchart + form displays +
+  // simulation outputs + button states. User-typed input values are preserved.
+  function refreshTab(key) {
+    // Flowchart back to step 0
+    if (runners[key]) runners[key].reset();
+
+    if (key === 'p1') {
+      var claim = document.getElementById('p1-claim');
+      if (claim) { claim.disabled = false; claim.textContent = 'Claim subdomain →'; }
+      var mint = document.getElementById('p1-mint');
+      if (mint) { mint.disabled = true; mint.classList.remove('loading'); mint.textContent = '▶ Mint passport'; }
+      ['p1-token-box', 'p1-curl-box', 'p1-onpage-box'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      var success = document.getElementById('p1-success-panel');
+      if (success) success.classList.remove('visible');
+      var verify = document.getElementById('p1-verify');
+      if (verify) { verify.disabled = true; verify.classList.remove('loading'); }
+      var verifyInput = document.getElementById('p1-verify-input');
+      if (verifyInput) verifyInput.value = '';
+      var verdict = document.getElementById('p1-verdict');
+      if (verdict) { verdict.className = 'verdict-pill idle'; verdict.textContent = 'waiting for token'; }
+      var err = document.getElementById('p1-error');
+      if (err) err.style.display = 'none';
+
+      // Collapse deny modes
+      var denyToggle = document.getElementById('p1-deny-toggle');
+      var denyBody = document.getElementById('p1-deny-body');
+      if (denyToggle && denyBody) {
+        denyToggle.classList.remove('open');
+        denyBody.classList.remove('open');
+        denyToggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    if (key === 'p2') {
+      var simRun = document.getElementById('p2-simulate-run');
+      if (simRun) { simRun.disabled = false; simRun.innerHTML = '▶ Simulate <code style="color:#000;background:transparent;">npm start</code>'; }
+      var runOut = document.getElementById('p2-run-output');
+      if (runOut) { runOut.style.display = 'none'; runOut.innerHTML = ''; }
+    }
+
+    if (key === 'p3') {
+      var simBtn = document.getElementById('p3-simulate-run');
+      if (simBtn) { simBtn.disabled = false; simBtn.textContent = '▶ Simulate bootstrap output'; }
+      var simOut = document.getElementById('p3-output');
+      if (simOut) { simOut.style.display = 'none'; simOut.innerHTML = ''; }
+    }
+
+    if (key === 'p4') {
+      var runSuite = document.getElementById('p4-run-suite');
+      if (runSuite) { runSuite.disabled = false; runSuite.classList.remove('loading'); runSuite.textContent = '▶ Run trust-contract suite'; }
+      var resetSuite = document.getElementById('p4-reset-suite');
+      if (resetSuite) resetSuite.style.display = 'none';
+      var suiteOut = document.getElementById('p4-suite-output');
+      if (suiteOut) { suiteOut.classList.remove('visible'); suiteOut.innerHTML = ''; }
+    }
+  }
+
+  // ── Per-path step definitions: actors + arrows that light up at each step ──
+  // 4-actor 2×2 layout: n1=TL, n2=TR, n3=BL, n4=BR. 4 arrows: a1=top, a2=top-return,
+  // a3=left-vertical, a4=bottom. Each step explicitly lists active and success nodes/arrows.
+  function flowSteps(prefix) {
+    function step(active, success) {
+      var activeIds = (active.nodes || []).map(n => prefix + '-' + n)
+        .concat((active.arrows || []).flatMap(a => [prefix + '-a' + a, prefix + '-l' + a]));
+      var successIds = (success.nodes || []).map(n => prefix + '-' + n)
+        .concat((success.arrows || []).flatMap(a => [prefix + '-a' + a, prefix + '-l' + a]));
+      return { active: activeIds, success: successIds };
+    }
+    return [
+      // Step 1: user at origin (n1)
+      step({ nodes: ['n1'] }, {}),
+      // Step 2: request fires (a1 active, n2 active, n1 stays origin)
+      step({ nodes: ['n1', 'n2'], arrows: [1] }, {}),
+      // Step 3: response returns (a2 active, a1 done, n2 active result, n1 success)
+      step({ nodes: ['n2'], arrows: [2] }, { nodes: ['n1'], arrows: [1] }),
+      // Step 4: action moves to verifier (a3 active, n3 active, n1+n2 done)
+      step({ nodes: ['n3'], arrows: [3] }, { nodes: ['n1', 'n2'], arrows: [1, 2] }),
+      // Step 5: final verdict (a4 success, all 4 nodes success, all 4 arrows success)
+      step({}, { nodes: ['n1', 'n2', 'n3', 'n4'], arrows: [1, 2, 3, 4] }),
+    ];
+  }
+
+  // Titles per path (5 steps each: origin → request → response → next stage → final)
+  var titles = {
+    p1: [
+      'You fill the form — handle + email.',
+      'Browser GETs /mint from demo.agentpki.dev.',
+      'Issuer returns a real PASETO v4 token.',
+      'Browser POSTs token to verify.agentpki.dev.',
+      'Verifier returns verdict: allow.',
+    ],
+    p2: [
+      'You view agentpki/test-agent-template on GitHub.',
+      'Click Open in StackBlitz / Codespaces — repo forks.',
+      'IDE ready with @agentpki/sdk pre-installed.',
+      'You hit Run. Agent fires signed fetch() to verifier.',
+      'Verifier returns verdict: allow. console.log prints.',
+    ],
+    p3: [
+      'You paste the curl|sh (or iwr|iex) command.',
+      'Script POSTs your email to /api/v1/bootstrap-claim.',
+      'Server returns inline verdict + 24h permalink URL.',
+      'Server internally hits verify.agentpki.dev.',
+      'Verdict stored under /check/result/<id>. Shareable.',
+    ],
+    p4: [
+      'Your existing agent picks a framework adapter.',
+      '@agentpki/sdk wraps your fetch() in your code.',
+      'Token + RFC 9421 signature attached, ready to send.',
+      'Signed HTTPS request goes to vendor verifier.',
+      'Vendor returns 200 OK + audit log entry created.',
+    ],
+  };
+
+  // ── Runners ──
+  var runners = {};
+
+  function makeRunner(key) {
+    var state = { idx: -1, playing: false, timer: null };
+    var panel = '#panel-' + key;
+    var stepEl = document.getElementById(key + '-step');
+    var playBtn = document.getElementById(key + '-play');
+    var stepBtn = document.getElementById(key + '-step-btn');
+    var resetBtn = document.getElementById(key + '-reset');
+    var steps = flowSteps(key);
+
+    function clearAll() {
+      document.querySelectorAll(panel + ' .actor').forEach(a => a.classList.remove('active', 'success'));
+      document.querySelectorAll(panel + ' .arrow').forEach(a => a.classList.remove('active', 'success'));
+      document.querySelectorAll(panel + ' .label').forEach(l => l.classList.remove('active', 'success'));
+    }
+
+    function applyStep(i) {
+      clearAll();
+      var s = steps[i];
+      if (!s) return;
+      // Apply success first so active wins when both lists overlap.
+      (s.success || []).forEach(id => {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('success');
+      });
+      (s.active || []).forEach(id => {
+        var el = document.getElementById(id);
+        if (el) { el.classList.remove('success'); el.classList.add('active'); }
+      });
+      stepEl.textContent = 'Step ' + (i + 1) + ' of ' + steps.length + ' · ' + (titles[key] ? titles[key][i] : '');
+    }
+
+    function play() {
+      if (state.playing) return;
+      state.playing = true;
+      playBtn.textContent = '⏸ Pause';
+      if (state.idx >= steps.length - 1) state.idx = -1;
+      state.timer = setInterval(function () {
+        state.idx++;
+        if (state.idx >= steps.length) { stop(); return; }
+        applyStep(state.idx);
+      }, 2200);
+    }
+    function stop() {
+      state.playing = false;
+      playBtn.textContent = '▶ Play';
+      if (state.timer) { clearInterval(state.timer); state.timer = null; }
+    }
+    function reset() {
+      stop();
+      state.idx = -1;
+      clearAll();
+      stepEl.textContent = 'Step 0 of ' + steps.length + ' · ready';
+    }
+    function next() {
+      state.idx = Math.min(state.idx + 1, steps.length - 1);
+      applyStep(state.idx);
+      if (state.idx >= steps.length - 1) stop();
+    }
+    function goTo(i) {
+      stop();
+      state.idx = Math.max(0, Math.min(i, steps.length - 1));
+      applyStep(state.idx);
+    }
+
+    playBtn.addEventListener('click', function () { state.playing ? stop() : play(); });
+    stepBtn.addEventListener('click', function () { stop(); if (state.idx >= steps.length - 1) state.idx = -1; next(); });
+    resetBtn.addEventListener('click', reset);
+
+    reset();
+    return { goTo: goTo, reset: reset };
+  }
+
+  ['p1', 'p2', 'p3', 'p4'].forEach(function (k) { runners[k] = makeRunner(k); });
+
+  // ════════════════════════════════════════════════════════════
+  // PATH 01 — real claim, real mint, real verify
+  // ════════════════════════════════════════════════════════════
+  (function wireP1() {
+    var handleEl = document.getElementById('p1-handle');
+    var emailEl = document.getElementById('p1-email');
+    var previewEl = document.getElementById('p1-preview');
+    var claimBtn = document.getElementById('p1-claim');
+    var mintBtn = document.getElementById('p1-mint');
+    var tokenBox = document.getElementById('p1-token-box');
+    var tokenDisplay = document.getElementById('p1-token-display');
+    var tokenLength = document.getElementById('p1-token-length');
+    var tokenCopy = document.getElementById('p1-token-copy');
+    var curlBox = document.getElementById('p1-curl-box');
+    var onpageBox = document.getElementById('p1-onpage-box');
+    var curlBash = document.getElementById('p1-curl-cmd-bash');
+    var curlPs = document.getElementById('p1-curl-cmd-ps');
+    var verifyInput = document.getElementById('p1-verify-input');
+    var verifyBtn = document.getElementById('p1-verify');
+    var verifyPrefill = document.getElementById('p1-verify-prefill');
+    var verdictEl = document.getElementById('p1-verdict');
+    var successPanel = document.getElementById('p1-success-panel');
+
+    var claimedHandle = null;
+    var liveToken = null;
+
+    function updatePreview() {
+      var h = (handleEl.value || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+      previewEl.textContent = (h || '_____') + '.agents.agentpki.dev';
+      runners.p1.goTo(0);  // step 1: filling the form
+    }
+    handleEl.addEventListener('input', updatePreview);
+    emailEl.addEventListener('focus', function () { runners.p1.goTo(0); });
+
+    claimBtn.addEventListener('click', function () {
+      var h = (handleEl.value || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+      if (!h) { handleEl.focus(); return; }
+      claimedHandle = h;
+      previewEl.textContent = h + '.agents.agentpki.dev';
+      claimBtn.disabled = true;
+      claimBtn.textContent = '✓ Claimed ' + h + '.agents.agentpki.dev';
+      mintBtn.disabled = false;
+      runners.p1.goTo(0);
+    });
+
+    mintBtn.addEventListener('click', async function () {
+      if (!claimedHandle) return;
+      runners.p1.goTo(1);  // step 2: GET /mint pulses
+      mintBtn.classList.add('loading');
+      mintBtn.disabled = true;
+      try {
+        var sub = 'agent:' + claimedHandle + '.agents.agentpki.dev/preview';
+        var r = await fetch('https://demo.agentpki.dev/mint?sub=' + encodeURIComponent(sub) + '&scope=read:articles&lifetime=300');
+        var body = await r.json();
+        if (!body.token) throw new Error('no token in response');
+        liveToken = body.token;
+        runners.p1.goTo(2);  // step 3: token returned
+        tokenDisplay.textContent = liveToken;
+        tokenLength.textContent = liveToken.length;
+        tokenBox.style.display = 'block';
+
+        // Build curl commands
+        var bashCmd = "curl -X POST https://verify.agentpki.dev/v1/verify \\\n  -H 'content-type: application/json' \\\n  -d '{\"token\":\"" + liveToken + "\"}'";
+        var psCmd = "Invoke-RestMethod -Uri https://verify.agentpki.dev/v1/verify -Method POST `\n  -ContentType 'application/json' `\n  -Body (@{ token = '" + liveToken + "' } | ConvertTo-Json)";
+        curlBash.innerHTML = '<span class="c-prompt">$</span> ' + escapeHtml(bashCmd);
+        curlPs.innerHTML = '<span class="c-prompt">PS&gt;</span> ' + escapeHtml(psCmd);
+        curlBox.style.display = 'block';
+        onpageBox.style.display = 'block';
+        mintBtn.textContent = '✓ Minted';
+      } catch (e) {
+        mintBtn.textContent = 'Mint failed: ' + e.message;
+        mintBtn.disabled = false;
+      } finally {
+        mintBtn.classList.remove('loading');
+      }
+    });
+
+    tokenCopy.addEventListener('click', async function () {
+      if (!liveToken) return;
+      try { await navigator.clipboard.writeText(liveToken); tokenCopy.textContent = 'Copied!'; setTimeout(() => tokenCopy.textContent = 'Copy token', 1500); } catch {}
+    });
+
+    document.querySelectorAll('[data-p1-curl-copy]').forEach(function (b) {
+      b.addEventListener('click', async function () {
+        var sh = b.getAttribute('data-p1-curl-copy');
+        var src = sh === 'bash' ? curlBash.textContent.replace(/^\$\s/, '') : curlPs.textContent.replace(/^PS>\s/, '');
+        try { await navigator.clipboard.writeText(src); b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy command', 1500); } catch {}
+      });
+    });
+
+    // Shell tabs (Path 01 curl)
+    document.querySelectorAll('#panel-p1 .shell-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var sh = t.getAttribute('data-shell');
+        document.querySelectorAll('#panel-p1 .shell-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.querySelectorAll('#panel-p1 .shell-panel').forEach(p => p.classList.remove('active'));
+        var panel = document.querySelector('#panel-p1 .shell-panel[data-shell-panel="' + sh + '"]');
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    verifyInput.addEventListener('input', function () {
+      verifyBtn.disabled = !verifyInput.value.trim();
+      verdictEl.className = 'verdict-pill idle';
+      verdictEl.textContent = verifyInput.value.trim() ? 'ready to verify' : 'waiting for token';
+    });
+
+    verifyPrefill.addEventListener('click', function () {
+      if (liveToken) { verifyInput.value = liveToken; verifyBtn.disabled = false; verdictEl.className = 'verdict-pill idle'; verdictEl.textContent = 'ready to verify'; }
+    });
+
+    verifyBtn.addEventListener('click', async function () {
+      var t = verifyInput.value.trim();
+      if (!t) return;
+      runners.p1.goTo(3);  // step 4: POST /v1/verify pulses
+      verifyBtn.classList.add('loading');
+      verifyBtn.disabled = true;
+      verdictEl.className = 'verdict-pill loading';
+      verdictEl.textContent = 'verifying…';
+      var t0 = Date.now();
+      try {
+        var r = await fetch('https://verify.agentpki.dev/v1/verify', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ token: t }),
+        });
+        var body = await r.json();
+        var elapsed = Date.now() - t0;
+        runners.p1.goTo(4);  // step 5: verdict received
+        var v = body.verdict || 'unknown';
+        verdictEl.className = 'verdict-pill ' + (v === 'allow' ? 'allow' : 'deny');
+        verdictEl.textContent = 'verdict: ' + v;
+
+        if (v === 'allow') {
+          document.getElementById('p1-success-ms').textContent = body.elapsed_ms || elapsed;
+          document.getElementById('p1-success-issuer').textContent = body.issuer || '—';
+          document.getElementById('p1-success-agent').textContent = body.identity || body.sub || '—';
+          document.getElementById('p1-success-scopes').textContent = (body.scopes || []).join(', ') || '—';
+          document.getElementById('p1-success-tier').textContent = body.tier || '—';
+          document.getElementById('p1-success-abuse').textContent = body.abuse_score != null ? body.abuse_score : '—';
+          document.getElementById('p1-success-elapsed').textContent = (body.elapsed_ms || elapsed) + ' ms';
+          successPanel.classList.add('visible');
+        }
+      } catch (e) {
+        verdictEl.className = 'verdict-pill deny';
+        verdictEl.textContent = 'network error';
+      } finally {
+        verifyBtn.classList.remove('loading');
+        verifyBtn.disabled = false;
+      }
+    });
+  })();
+
+  // ════════════════════════════════════════════════════════════
+  // PATH 01 — Deny modes (Tamper Lab + Revoked-Key Lab)
+  // ════════════════════════════════════════════════════════════
+  (function wireP1Deny() {
+    var toggle = document.getElementById('p1-deny-toggle');
+    var body = document.getElementById('p1-deny-body');
+    toggle.addEventListener('click', function () {
+      var open = body.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // ─── Tamper Lab ───
+    var labT = {
+      token: null,
+      tampered: null,
+      mode: null,
+      stages: {
+        A: document.getElementById('lab-t-A'),
+        B: document.getElementById('lab-t-B'),
+        C: document.getElementById('lab-t-C'),
+      },
+    };
+    var labTMint = document.getElementById('lab-t-mint');
+    var labTTokenEl = document.getElementById('lab-t-token');
+    var labTMintStatus = document.getElementById('lab-t-mint-status');
+    var labTTamperStatus = document.getElementById('lab-t-tamper-status');
+    var labTSend = document.getElementById('lab-t-send');
+    var labTReset = document.getElementById('lab-t-reset');
+    var labTResult = document.getElementById('lab-t-result');
+    var labTTamperBtns = document.querySelectorAll('[data-tamper]');
+
+    function activateStage(card, stage) {
+      ['A', 'B', 'C'].forEach(function (k) {
+        var s = card.stages[k];
+        if (!s) return;
+        s.classList.remove('active');
+        if (k === stage) s.classList.add('active');
+      });
+    }
+    function markDone(card, stage) {
+      var s = card.stages[stage];
+      if (s) { s.classList.add('done'); s.classList.remove('active'); }
+    }
+    function flipChar(s, idx) {
+      var c = s.charCodeAt(idx);
+      var nc = c === 65 ? 66 : c === 66 ? 67 : c === 90 ? 65 : c + 1;
+      return s.slice(0, idx) + String.fromCharCode(nc) + s.slice(idx + 1);
+    }
+
+    labTMint.addEventListener('click', async function () {
+      labTMint.classList.add('loading');
+      labTMint.disabled = true;
+      labTMintStatus.textContent = 'minting …';
+      try {
+        var r = await fetch('https://demo.agentpki.dev/mint');
+        var body = await r.json();
+        if (!body.token) throw new Error('no token');
+        labT.token = body.token;
+        labT.tampered = body.token;
+        labT.mode = null;
+        labTTokenEl.textContent = body.token;
+        labTTokenEl.style.display = 'block';
+        labTMintStatus.textContent = '✓ minted (' + body.token.length + ' chars)';
+        markDone(labT, 'A');
+        activateStage(labT, 'B');
+        labTTamperBtns.forEach(b => b.disabled = false);
+        labTSend.disabled = true;
+        labTResult.classList.remove('visible');
+      } catch (e) {
+        labTMintStatus.textContent = 'mint failed: ' + e.message;
+      } finally {
+        labTMint.classList.remove('loading');
+        labTMint.disabled = false;
+        labTMint.textContent = '↻ Mint another';
+      }
+    });
+
+    labTTamperBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (!labT.token) return;
+        var mode = btn.getAttribute('data-tamper');
+        labT.mode = mode;
+        var parts = labT.token.split('.');  // v4.public.payload.footer? actually PASETO is v.purpose.payload[.footer]
+        // PASETO v4.public is "v4.public.<payload-with-trailing-sig>" or with footer "v4.public.<payload>.<footer>"
+        // We treat parts[2] as the payload+sig blob; flipping its last few chars corrupts the signature.
+        if (mode === 'sig') {
+          // Flip the last 4 chars of parts[2] — these are inside the Ed25519 signature suffix
+          var p2 = parts[2] || '';
+          if (p2.length > 6) {
+            labT.tampered = parts[0] + '.' + parts[1] + '.' + p2.slice(0, -4) + 'AAAA' + (parts[3] ? '.' + parts[3] : '');
+          }
+          labTTamperStatus.textContent = '✗ signature flipped — last 4 chars overwritten with AAAA';
+          labTTamperStatus.className = 'lab-status tampered';
+        } else if (mode === 'payload') {
+          // Flip a char near the middle of parts[2] (in the payload region, not the signature suffix)
+          var p2 = parts[2] || '';
+          if (p2.length > 20) {
+            var idx = Math.floor(p2.length / 3);
+            labT.tampered = parts[0] + '.' + parts[1] + '.' + flipChar(p2, idx) + (parts[3] ? '.' + parts[3] : '');
+          }
+          labTTamperStatus.textContent = '✗ payload flipped — 1 char swapped mid-blob';
+          labTTamperStatus.className = 'lab-status tampered';
+        } else if (mode === 'footer') {
+          var f = parts[3] || '';
+          if (f) {
+            labT.tampered = parts[0] + '.' + parts[1] + '.' + parts[2] + '.' + flipChar(f, 0);
+          } else {
+            // No footer present — append a fake one to corrupt the AAD
+            labT.tampered = labT.token + '.AAAA';
+          }
+          labTTamperStatus.textContent = '✗ footer flipped (or added) — additional-data changed';
+          labTTamperStatus.className = 'lab-status tampered';
+        } else {
+          labT.tampered = labT.token;
+          labTTamperStatus.textContent = '✓ unchanged — send the real token to confirm it still allows';
+          labTTamperStatus.className = 'lab-status unchanged';
+        }
+        markDone(labT, 'B');
+        activateStage(labT, 'C');
+        labTSend.disabled = false;
+      });
+    });
+
+    labTSend.addEventListener('click', async function () {
+      if (!labT.tampered) return;
+      labTSend.classList.add('loading');
+      labTSend.disabled = true;
+      labTResult.classList.remove('visible');
+      try {
+        var r = await fetch('https://verify.agentpki.dev/v1/verify', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ token: labT.tampered }),
+        });
+        var body = await r.json();
+        var v = body.verdict || 'unknown';
+        labTResult.classList.add('visible');
+        labTResult.classList.remove('allow', 'deny');
+        if (v === 'allow') {
+          labTResult.classList.add('allow');
+          labTResult.innerHTML = '<strong>✓ verdict: allow</strong>The verifier accepted the token. (You sent it unchanged.)';
+        } else {
+          labTResult.classList.add('deny');
+          labTResult.innerHTML = '<strong>✗ verdict: deny</strong>failure_reason: <code>' + (body.failure_reason || 'unknown') + '</code>' + (body.failure_detail ? '<br>detail: ' + body.failure_detail : '');
+        }
+        markDone(labT, 'C');
+      } catch (e) {
+        labTResult.classList.add('visible', 'deny');
+        labTResult.innerHTML = '<strong>network error</strong>' + e.message;
+      } finally {
+        labTSend.classList.remove('loading');
+        labTSend.disabled = false;
+      }
+    });
+
+    labTReset.addEventListener('click', function () {
+      labT.token = null; labT.tampered = null; labT.mode = null;
+      labTTokenEl.style.display = 'none';
+      labTTokenEl.textContent = '';
+      labTMintStatus.textContent = '';
+      labTTamperStatus.textContent = '';
+      labTTamperStatus.className = 'lab-status';
+      labTResult.classList.remove('visible');
+      labT.stages.A.classList.add('active');
+      labT.stages.A.classList.remove('done');
+      labT.stages.B.classList.remove('active', 'done');
+      labT.stages.C.classList.remove('active', 'done');
+      labTTamperBtns.forEach(b => b.disabled = true);
+      labTSend.disabled = true;
+      labTMint.textContent = 'Mint a fresh token';
+    });
+
+    // ─── Revoked-Key Lab ───
+    var labR = {
+      token: null,
+      kid: null,
+      stages: {
+        A: document.getElementById('lab-r-A'),
+        B: document.getElementById('lab-r-B'),
+        C: document.getElementById('lab-r-C'),
+      },
+    };
+    var labRTokenEl = document.getElementById('lab-r-token');
+    var labRMintStatus = document.getElementById('lab-r-mint-status');
+    var labRFetchDir = document.getElementById('lab-r-fetch-dir');
+    var labRCrl = document.getElementById('lab-r-crl');
+    var labRSend = document.getElementById('lab-r-send');
+    var labRReset = document.getElementById('lab-r-reset');
+    var labRResult = document.getElementById('lab-r-result');
+    var labRKidBtns = document.querySelectorAll('[data-kid]');
+
+    labRKidBtns.forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var kid = btn.getAttribute('data-kid');
+        labR.kid = kid;
+        btn.classList.add('loading');
+        labRMintStatus.textContent = 'minting with kid="' + (kid === 'active' ? 'demo-2026-q2' : 'demo-2026-q1-rotated') + '" …';
+        try {
+          var url = kid === 'revoked' ? 'https://demo.agentpki.dev/mint?revoked=1' : 'https://demo.agentpki.dev/mint';
+          var r = await fetch(url);
+          var body = await r.json();
+          if (!body.token) throw new Error('no token');
+          labR.token = body.token;
+          labRTokenEl.textContent = body.token;
+          labRTokenEl.style.display = 'block';
+          labRMintStatus.textContent = '✓ token signed with kid="' + (kid === 'active' ? 'demo-2026-q2' : 'demo-2026-q1-rotated') + '"';
+          markDone(labR, 'A');
+          activateStage(labR, 'B');
+          labRFetchDir.disabled = false;
+        } catch (e) {
+          labRMintStatus.textContent = 'mint failed: ' + e.message;
+        } finally {
+          btn.classList.remove('loading');
+        }
+      });
+    });
+
+    labRFetchDir.addEventListener('click', function () {
+      // Simulate the issuer directory CRL output — values mirror /demo's expected behavior.
+      labRCrl.innerHTML = '<span class="crl-key">{</span>\n  <span class="crl-key">"issuer":</span> "demo.agentpki.dev",\n  <span class="crl-key">"keys":</span> [\n    {\n      <span class="crl-key">"kid":</span> "demo-2026-q2",\n      <span class="crl-key">"status":</span> <span class="crl-active">"active"</span>,\n      <span class="crl-key">"created_at":</span> 1748390400\n    },\n    {\n      <span class="crl-key">"kid":</span> "demo-2026-q1-rotated",\n      <span class="crl-key">"status":</span> <span class="crl-revoked">"revoked"</span>,\n      <span class="crl-key">"revoked_at":</span> 1748390400,\n      <span class="crl-key">"reason":</span> "planned_rotation"\n    }\n  ]\n<span class="crl-key">}</span>';
+      labRCrl.style.display = 'block';
+      markDone(labR, 'B');
+      activateStage(labR, 'C');
+      labRSend.disabled = false;
+    });
+
+    labRSend.addEventListener('click', async function () {
+      if (!labR.token) return;
+      labRSend.classList.add('loading');
+      labRSend.disabled = true;
+      labRResult.classList.remove('visible');
+      try {
+        var r = await fetch('https://verify.agentpki.dev/v1/verify', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ token: labR.token }),
+        });
+        var body = await r.json();
+        var v = body.verdict || 'unknown';
+        labRResult.classList.add('visible');
+        labRResult.classList.remove('allow', 'deny');
+        if (v === 'allow') {
+          labRResult.classList.add('allow');
+          labRResult.innerHTML = '<strong>✓ verdict: allow</strong>Active kid, real signature — verifier accepted. (Try the revoked kid next.)';
+        } else {
+          labRResult.classList.add('deny');
+          labRResult.innerHTML = '<strong>✗ verdict: deny</strong>failure_reason: <code>' + (body.failure_reason || 'unknown') + '</code>' + (body.failure_detail ? '<br>detail: ' + body.failure_detail : '');
+        }
+        markDone(labR, 'C');
+      } catch (e) {
+        labRResult.classList.add('visible', 'deny');
+        labRResult.innerHTML = '<strong>network error</strong>' + e.message;
+      } finally {
+        labRSend.classList.remove('loading');
+        labRSend.disabled = false;
+      }
+    });
+
+    labRReset.addEventListener('click', function () {
+      labR.token = null; labR.kid = null;
+      labRTokenEl.style.display = 'none';
+      labRTokenEl.textContent = '';
+      labRMintStatus.textContent = '';
+      labRCrl.style.display = 'none';
+      labRResult.classList.remove('visible');
+      labR.stages.A.classList.add('active');
+      labR.stages.A.classList.remove('done');
+      labR.stages.B.classList.remove('active', 'done');
+      labR.stages.C.classList.remove('active', 'done');
+      labRFetchDir.disabled = true;
+      labRSend.disabled = true;
+    });
+  })();
+
+  // ════════════════════════════════════════════════════════════
+  // PATH 02 — simulated cloud IDE
+  // ════════════════════════════════════════════════════════════
+  (function wireP2() {
+    var sbBtn = document.getElementById('p2-stackblitz');
+    var csBtn = document.getElementById('p2-codespaces');
+    var ghBtn = document.getElementById('p2-github');
+    var runBtn = document.getElementById('p2-simulate-run');
+    var runOut = document.getElementById('p2-run-output');
+
+    function onOpen() {
+      runners.p2.goTo(0);  // step 1: clicked Open
+      setTimeout(() => runners.p2.goTo(1), 700);  // step 2: fork happens
+      setTimeout(() => runners.p2.goTo(2), 1400); // step 3: IDE ready
+    }
+    sbBtn.addEventListener('click', onOpen);
+    csBtn.addEventListener('click', onOpen);
+    ghBtn.addEventListener('click', function () { runners.p2.goTo(0); });
+
+    runBtn.addEventListener('click', function () {
+      runBtn.disabled = true;
+      runOut.style.display = 'block';
+      runOut.innerHTML = '';
+      runners.p2.goTo(2);
+      var lines = [
+        { html: '<span class="c-prompt">$</span> npm start', step: 2, delay: 200 },
+        { html: '<span class="c-cmt">> @agentpki/test-agent-template@0.1.0 start</span>', step: 2, delay: 250 },
+        { html: '<span class="c-cmt">> node index.mjs</span>', step: 2, delay: 200 },
+        { html: '', step: 2, delay: 100 },
+        { html: '<span class="c-cmt">[mint] requesting from demo.agentpki.dev …</span>', step: 3, delay: 600 },
+        { html: '<span class="c-cmt">[verify] POST verify.agentpki.dev/v1/verify …</span>', step: 3, delay: 700 },
+        { html: '', step: 3, delay: 100 },
+        { html: 'claude says: AgentPKI is an open standard for cryptographic agent', step: 3, delay: 500 },
+        { html: 'identity. It works like HTTPS for AI agents — you can prove', step: 3, delay: 200 },
+        { html: "who's behind the agent calling your API.", step: 3, delay: 200 },
+        { html: '', step: 3, delay: 100 },
+        { html: '<span style="color: var(--green); font-weight:700;">verifier says: allow</span>', step: 4, delay: 400 },
+      ];
+      var i = 0;
+      function tick() {
+        if (i >= lines.length) { runBtn.textContent = '✓ Done'; return; }
+        var l = lines[i];
+        runOut.innerHTML += l.html + '\n';
+        runOut.scrollTop = runOut.scrollHeight;
+        runners.p2.goTo(l.step);
+        i++;
+        setTimeout(tick, l.delay);
+      }
+      tick();
+    });
+  })();
+
+  // ════════════════════════════════════════════════════════════
+  // PATH 03 — bootstrap simulation
+  // ════════════════════════════════════════════════════════════
+  (function wireP3() {
+    // Shell tabs
+    document.querySelectorAll('#panel-p3 .shell-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var sh = t.getAttribute('data-shell');
+        document.querySelectorAll('#panel-p3 .shell-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.querySelectorAll('#panel-p3 .shell-panel').forEach(p => p.classList.remove('active'));
+        var panel = document.querySelector('#panel-p3 .shell-panel[data-shell-panel="' + sh + '"]');
+        if (panel) panel.classList.add('active');
+        runners.p3.goTo(0);  // step 1: viewing command
+      });
+    });
+
+    document.querySelectorAll('[data-p3-copy]').forEach(function (b) {
+      b.addEventListener('click', async function () {
+        var sh = b.getAttribute('data-p3-copy');
+        var cmd = sh === 'bash' ? 'curl -fsSL https://agentpki.dev/bootstrap | sh' : 'iwr https://agentpki.dev/bootstrap.ps1 | iex';
+        try { await navigator.clipboard.writeText(cmd); b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy command', 1500); } catch {}
+        runners.p3.goTo(0);
+      });
+    });
+
+    var simBtn = document.getElementById('p3-simulate-run');
+    var simOut = document.getElementById('p3-output');
+    simBtn.addEventListener('click', function () {
+      simBtn.disabled = true;
+      simOut.style.display = 'block';
+      simOut.innerHTML = '';
+      runners.p3.goTo(0);
+
+      var output = [
+        { html: 'AgentPKI bootstrap · v1.0  (3-scenario trust demo)', step: 0, d: 200 },
+        { html: '----------------------------------------------------', step: 0, d: 80 },
+        { html: '', step: 0, d: 100 },
+        { html: '  Email? <span class="c-str">you@example.com</span>', step: 1, d: 500 },
+        { html: '', step: 1, d: 100 },
+        { html: '  <span class="c-cmt">Scenario 1 of 3 · happy path</span>', step: 2, d: 400 },
+        { html: '  --------------------------------------------------', step: 2, d: 80 },
+        { html: '  Claiming subdomain + minting + verifying + storing ... <span class="c-key">ok</span> in <span class="c-num">864</span>ms', step: 2, d: 800 },
+        { html: '    issuer    <span class="c-str">bs-a4f8d2e.agents.agentpki.dev</span>', step: 2, d: 200 },
+        { html: '    passport  v4.public.eyJ2IjoxLCJpc3... (<span class="c-num">397</span> chars)', step: 2, d: 150 },
+        { html: '    verdict   <span class="c-key">allow</span>   (verifier elapsed <span class="c-num">486</span>ms)', step: 3, d: 300 },
+        { html: '    share     <span class="c-str">https://agentpki.dev/check/result/27c7f86c8563</span>', step: 4, d: 250 },
+        { html: '', step: 4, d: 100 },
+        { html: '  <span class="c-cmt">Scenario 2 of 3 · tampered signature</span>', step: 4, d: 300 },
+        { html: '  --------------------------------------------------', step: 4, d: 80 },
+        { html: '  Minting a fresh token, flipping 4 chars of its Ed25519 signature, verifying ... done', step: 4, d: 500 },
+        { html: '    verdict   <span style="color:#fca5a5;font-weight:700">deny</span> in <span class="c-num">5</span>ms', step: 4, d: 200 },
+        { html: '    reason    <span style="color:#fca5a5;font-weight:700">bad_signature</span>', step: 4, d: 150 },
+        { html: '    why       The payload JSON was still valid — but the Ed25519', step: 4, d: 150 },
+        { html: '              signature no longer matched. No network needed: this', step: 4, d: 100 },
+        { html: '              fails on pure crypto math, locally.', step: 4, d: 100 },
+        { html: '', step: 4, d: 100 },
+        { html: '  <span class="c-cmt">Scenario 3 of 3 · revoked-key signing</span>', step: 4, d: 300 },
+        { html: '  --------------------------------------------------', step: 4, d: 80 },
+        { html: '  Minting via /mint?revoked=1 (signs with rotated kid), verifying ... done', step: 4, d: 500 },
+        { html: '    verdict   <span style="color:#fca5a5;font-weight:700">deny</span> in <span class="c-num">4</span>ms', step: 4, d: 200 },
+        { html: '    reason    <span style="color:#fca5a5;font-weight:700">revoked_key</span>', step: 4, d: 150 },
+        { html: '    detail    kid="<span class="c-str">demo-2026-q1-rotated</span>" revoked at <span class="c-num">1748390400</span> (planned_rotation)', step: 4, d: 200 },
+        { html: '    why       Signature was mathematically valid — the rotated', step: 4, d: 150 },
+        { html: '              kid really did sign this token. The verifier consulted', step: 4, d: 100 },
+        { html: "              the issuer's CRL and saw the kid is now revoked.", step: 4, d: 100 },
+        { html: '', step: 4, d: 100 },
+        { html: '  ----------------------------------------------------', step: 4, d: 200 },
+        { html: '  All 3 scenarios behaved as expected:', step: 4, d: 200 },
+        { html: '    [scenario 1]  real signed token        → <span class="c-key">allow</span>', step: 4, d: 100 },
+        { html: '    [scenario 2]  tampered signature       → <span style="color:#fca5a5;font-weight:700">deny</span> (<span style="color:#fca5a5">bad_signature</span>)', step: 4, d: 100 },
+        { html: '    [scenario 3]  revoked-key signing      → <span style="color:#fca5a5;font-weight:700">deny</span> (<span style="color:#fca5a5">revoked_key</span>)', step: 4, d: 100 },
+        { html: '', step: 4, d: 100 },
+        { html: '  AgentPKI distinguishes a forged token from a revoked one —', step: 4, d: 200 },
+        { html: "  and the verifier tells you, accurately, which one happened.", step: 4, d: 100 },
+      ];
+      var i = 0;
+      function tick() {
+        if (i >= output.length) { simBtn.textContent = '✓ Done'; return; }
+        var l = output[i];
+        simOut.innerHTML += l.html + '\n';
+        simOut.scrollTop = simOut.scrollHeight;
+        runners.p3.goTo(l.step);
+        i++;
+        setTimeout(tick, l.d);
+      }
+      tick();
+    });
+  })();
+
+  // ════════════════════════════════════════════════════════════
+  // PATH 04 — framework tabs + real suite runner
+  // ════════════════════════════════════════════════════════════
+  (function wireP4() {
+    document.querySelectorAll('#panel-p4 .fw-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var key = t.getAttribute('data-fw-tab');
+        document.querySelectorAll('#panel-p4 .fw-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.querySelectorAll('#panel-p4 .fw-panel').forEach(p => p.classList.remove('active'));
+        var panel = document.querySelector('#panel-p4 .fw-panel[data-fw-panel="' + key + '"]');
+        if (panel) panel.classList.add('active');
+        runners.p4.goTo(0);  // step 1: picked framework
+      });
+    });
+
+    var runSuiteBtn = document.getElementById('p4-run-suite');
+    var resetSuiteBtn = document.getElementById('p4-reset-suite');
+    var out = document.getElementById('p4-suite-output');
+
+    function append(html) { out.innerHTML += html + '\n'; out.scrollTop = out.scrollHeight; }
+
+    async function runSuite() {
+      runSuiteBtn.disabled = true;
+      runSuiteBtn.classList.add('loading');
+      out.classList.add('visible');
+      out.innerHTML = '';
+      resetSuiteBtn.style.display = 'inline-flex';
+
+      append('<span class="dim"> RUN  v1.0.0  agentpki.test.ts (3 tests)</span>');
+      append('');
+      runners.p4.goTo(0);
+
+      // Test 1: allow on real token
+      runners.p4.goTo(1);
+      var t0 = Date.now();
+      try {
+        var m1 = await fetch('https://demo.agentpki.dev/mint').then(r => r.json());
+        runners.p4.goTo(2);
+        var v1 = await fetch('https://verify.agentpki.dev/v1/verify', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({token: m1.token}) }).then(r => r.json());
+        var dt1 = Date.now() - t0;
+        runners.p4.goTo(3);
+        if (v1.verdict === 'allow') {
+          append('  <span class="ok">✓</span> AgentPKI trust contract > allow on a real signed token  <span class="num">(' + dt1 + ' ms)</span>');
+        } else {
+          append('  <span class="err">✗</span> AgentPKI trust contract > allow on a real signed token  <span class="num">(' + dt1 + ' ms)</span>');
+          append('    <span class="err">expected verdict to be \'allow\', got \'' + v1.verdict + '\'</span>');
+        }
+      } catch (e) {
+        append('  <span class="err">✗</span> AgentPKI trust contract > allow on a real signed token');
+        append('    <span class="err">' + e.message + '</span>');
+      }
+
+      // Test 2: deny + bad_signature
+      var t1 = Date.now();
+      try {
+        var m2 = await fetch('https://demo.agentpki.dev/mint').then(r => r.json());
+        var parts = m2.token.split('.');
+        var tampered = parts[0] + '.' + parts[1] + '.' + parts[2].slice(0, -4) + 'AAAA' + '.' + (parts[3] || '');
+        var v2 = await fetch('https://verify.agentpki.dev/v1/verify', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({token: tampered}) }).then(r => r.json());
+        var dt2 = Date.now() - t1;
+        if (v2.verdict === 'deny' && v2.failure_reason === 'bad_signature') {
+          append('  <span class="ok">✓</span> AgentPKI trust contract > deny + bad_signature on tampered token  <span class="num">(' + dt2 + ' ms)</span>');
+        } else {
+          append('  <span class="err">✗</span> AgentPKI trust contract > deny + bad_signature on tampered token  <span class="num">(' + dt2 + ' ms)</span>');
+          append('    <span class="err">got verdict=' + v2.verdict + ', failure_reason=' + (v2.failure_reason || 'none') + '</span>');
+        }
+      } catch (e) {
+        append('  <span class="err">✗</span> AgentPKI trust contract > deny + bad_signature on tampered token');
+        append('    <span class="err">' + e.message + '</span>');
+      }
+
+      // Test 3: deny + revoked_key
+      var t2 = Date.now();
+      try {
+        var m3 = await fetch('https://demo.agentpki.dev/mint?revoked=1').then(r => r.json());
+        var v3 = await fetch('https://verify.agentpki.dev/v1/verify', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({token: m3.token}) }).then(r => r.json());
+        var dt3 = Date.now() - t2;
+        runners.p4.goTo(4);
+        if (v3.verdict === 'deny' && v3.failure_reason === 'revoked_key') {
+          append('  <span class="ok">✓</span> AgentPKI trust contract > deny + revoked_key when issuer rotated the kid  <span class="num">(' + dt3 + ' ms)</span>');
+        } else {
+          append('  <span class="err">✗</span> AgentPKI trust contract > deny + revoked_key when issuer rotated the kid  <span class="num">(' + dt3 + ' ms)</span>');
+          append('    <span class="err">got verdict=' + v3.verdict + ', failure_reason=' + (v3.failure_reason || 'none') + '</span>');
+        }
+      } catch (e) {
+        append('  <span class="err">✗</span> AgentPKI trust contract > deny + revoked_key when issuer rotated the kid');
+        append('    <span class="err">' + e.message + '</span>');
+      }
+
+      append('');
+      append('<span class="dim"> Test Files  1 passed (1)</span>');
+      append('<span class="dim">      Tests  3 passed (3)</span>');
+      append('   Start at  ' + new Date(t0).toISOString().slice(11, 19));
+      var total = Date.now() - t0;
+      append('   Duration  ' + total + ' ms');
+      append('');
+      append('<span class="ok">✓ Trust contract intact. AgentPKI works.</span>');
+
+      runSuiteBtn.disabled = false;
+      runSuiteBtn.classList.remove('loading');
+      runSuiteBtn.textContent = '↻ Run again';
+    }
+
+    runSuiteBtn.addEventListener('click', runSuite);
+    resetSuiteBtn.addEventListener('click', function () {
+      out.classList.remove('visible');
+      out.innerHTML = '';
+      resetSuiteBtn.style.display = 'none';
+      runSuiteBtn.textContent = '▶ Run trust-contract suite';
+      runners.p4.reset();
+    });
+  })();
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+})();
+</script>
+</body>
+</html>

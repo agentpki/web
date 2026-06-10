@@ -1,0 +1,1004 @@
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="relative">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 pt-10 pb-8">
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-[color:var(--color-accent)]/40 bg-[color:var(--color-bg-elevated)]/60 text-xs">
+        <span class="yc-orange font-mono font-bold tracking-widest uppercase">Y</span>
+        <span class="text-[color:var(--color-text-muted)] font-mono">For Hacker News readers</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] mb-6 max-w-5xl">
+        Cryptographic identity for <span class="hero-accent-text">AI agents</span>.
+        <br /><span class="text-[color:var(--color-text-muted)]">Try it in your browser. 30 seconds. No signup.</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-[color:var(--color-text-muted)] leading-relaxed max-w-3xl">
+        Like HTTPS for agents &mdash; every outbound call carries a signed identity any server can verify. Mint a real passport below, hand it to a live verifier, watch <code class="text-violet-300">verdict: allow</code>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ THE 4 PATHS ═══════════════ -->
+  <section id="paths" class="relative">
+    <div class="max-w-none px-2 sm:px-3 lg:px-4 py-12">
+
+      <div class="mb-10">
+        <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Start here &middot; <span class="text-[color:var(--color-accent-bright)]">no signup, no install</span></p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight max-w-4xl">
+          The fastest way to try it is <span class="hero-accent-text">in your browser, right below</span>.
+        </h2>
+        <p class="text-[color:var(--color-text-muted)] mt-3 max-w-3xl">
+          Three other ways are linked below if the browser flow isn&rsquo;t how you work.
+        </p>
+      </div>
+
+      <!-- ════════ 4 PATHS — TAB-BASED (replaces old accordion). Styles in src/styles/demo-paths-tabs.css; JS in public/demo-paths-tabs.js. ════════ -->
+      <div class="hn-paths-tabs">
+  <!-- Tabs -->
+  <div class="tabs">
+    <button type="button" class="tab active" data-tab="p1">
+      <span class="tab-num">01</span>Browser mint <span class="tab-tag">~30 sec to verdict</span>
+    </button>
+    <button type="button" class="tab" data-tab="p2">
+      <span class="tab-num">02</span>Cloud IDE <span class="tab-tag">5 min</span>
+    </button>
+    <button type="button" class="tab" data-tab="p3">
+      <span class="tab-num">03</span>Terminal curl <span class="tab-tag">~30 sec</span>
+    </button>
+    <button type="button" class="tab" data-tab="p4">
+      <span class="tab-num">04</span>Framework adapter <span class="tab-tag">copy/paste</span>
+    </button>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 01 — Browser mint (mirrors /demo Path 01 word-for-word)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel active" id="panel-p1">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 01 · free hosted subdomain</div>
+        <h2 class="path-title">Mint a passport — in your browser, right now.</h2>
+      </div>
+      <span class="path-tag">~30 sec to verdict</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I don't own a domain. I don't have keys. I don't have an agent. <em>So how am I even supposed to try AgentPKI?</em>"</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">Giving you a free hosted subdomain at <code>yourname.agents.agentpki.dev</code>, minting a real PASETO passport against it, and running it through the live verifier — <strong>entirely in your browser, no install, ~30 seconds to verdict <code>allow</code></strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <!-- LEFT: flow chart -->
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · browser → issuer → verifier · same path for allow / bad_signature / revoked_key</div>
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p1d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your browser (self) -->
+          <g class="actor self" id="p1-n1">
+            <rect x="30" y="80" width="320" height="200" rx="14" />
+            <text x="190" y="140" font-size="24">🌐 Your browser</text>
+            <text x="190" y="175" class="sub">on agentpki.dev</text>
+            <text x="190" y="205" class="sub">fills email, clicks Mint</text>
+          </g>
+
+          <!-- TR: demo.agentpki.dev (issuer) -->
+          <g class="actor" id="p1-n2">
+            <rect x="630" y="80" width="320" height="200" rx="14" />
+            <text x="790" y="140" font-size="24">🔑 demo.agentpki.dev</text>
+            <text x="790" y="175" class="sub">issues PASETO v4</text>
+            <text x="790" y="205" class="sub">Ed25519 signed</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev -->
+          <g class="actor" id="p1-n3">
+            <rect x="30" y="380" width="320" height="200" rx="14" />
+            <text x="190" y="440" font-size="24">🔐 verify.agentpki.dev</text>
+            <text x="190" y="475" class="sub">checks signature + CRL</text>
+            <text x="190" y="505" class="sub">~50ms p50, global edge</text>
+          </g>
+
+          <!-- BR: Verdict -->
+          <g class="actor" id="p1-n4">
+            <rect x="630" y="380" width="320" height="200" rx="14" />
+            <text x="790" y="440" font-size="24">✓ Verdict</text>
+            <text x="790" y="475" class="sub">allow / deny</text>
+            <text x="790" y="505" class="sub">shown in your browser</text>
+          </g>
+
+          <!-- A1: TL→TR (top): GET /mint -->
+          <path id="p1-a1" class="arrow" d="M350,160 L630,160" marker-end="url(#p1d)" />
+          <text id="p1-l1" class="label" x="490" y="145" text-anchor="middle">1. GET /mint</text>
+
+          <!-- A2: TR→TL (return, below A1): PASETO token -->
+          <path id="p1-a2" class="arrow" d="M630,200 L350,200" marker-end="url(#p1d)" />
+          <text id="p1-l2" class="label" x="490" y="225" text-anchor="middle">2. PASETO token</text>
+
+          <!-- A3: TL→BL (vertical left): POST /v1/verify -->
+          <path id="p1-a3" class="arrow" d="M190,280 L190,380" marker-end="url(#p1d)" />
+          <text id="p1-l3" class="label" x="210" y="335">3. POST /v1/verify</text>
+
+          <!-- A4: BL→BR (bottom): verdict allow -->
+          <path id="p1-a4" class="arrow" d="M350,460 L630,460" marker-end="url(#p1d)" />
+          <text id="p1-l4" class="label" x="490" y="445" text-anchor="middle">4. verdict: allow</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p1-play">▶ Play</button>
+          <button class="ctrl" id="p1-step-btn">Step ›</button>
+          <button class="ctrl" id="p1-reset">↻ Reset</button>
+          <span class="step-indicator" id="p1-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: interactive form (mirrors /demo Path 01 demo-area) -->
+      <div class="form-wrap">
+        <!-- Step 1: claim subdomain -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-1">1</span>
+            <span class="form-step-title">Claim your free issuer subdomain</span>
+          </div>
+          <p class="form-step-explain">No DNS work, no domain purchase. Your subdomain is yours to use forever.</p>
+          <div class="ctl-row two">
+            <div>
+              <label class="ctl-label">Handle</label>
+              <input id="p1-handle" class="ctl" type="text" placeholder="yourname" maxlength="32" autocomplete="off" />
+            </div>
+            <div>
+              <label class="ctl-label">Email (for magic-link signup)</label>
+              <input id="p1-email" class="ctl" type="email" placeholder="you@example.com" autocomplete="off" />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" id="p1-claim">Claim subdomain →</button>
+            <div class="issuer-preview">Your issuer: <code id="p1-preview">_____.agents.agentpki.dev</code></div>
+          </div>
+        </div>
+
+        <!-- Step 2: mint -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-2">2</span>
+            <span class="form-step-title">Mint your first passport</span>
+          </div>
+          <p class="form-step-explain">One click. Real PASETO v4 token from the live demo issuer, signed with a real Ed25519 key. We wire your handle in as the agent's <code>sub</code>.</p>
+          <button class="btn primary" id="p1-mint" disabled>▶ Mint passport</button>
+
+          <div id="p1-token-box" class="token-box" style="display:none;">
+            <div class="token-box-head">
+              <span class="token-box-eyebrow">Your passport token · <span id="p1-token-length">?</span> chars</span>
+              <button class="btn secondary" id="p1-token-copy" style="padding: 0.3rem 0.7rem; font-size: 0.72rem;">Copy token</button>
+            </div>
+            <pre class="token-box-body" id="p1-token-display"></pre>
+            <p class="token-box-foot">
+              <strong>This is what your agent would send.</strong> In a real integration it sits in an <code>Authorization: Bearer &lt;token&gt;</code> header. Copy it — you're about to hand it to the verifier.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3: verify -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num" id="p1-step-num-3">3</span>
+            <span class="form-step-title">Hand it to the live verifier</span>
+          </div>
+          <p class="form-step-explain">Same endpoint any bot-defense vendor or website would call: <code>POST verify.agentpki.dev/v1/verify</code>. Two ways to test it.</p>
+
+          <!-- Option A: command-line -->
+          <div id="p1-curl-box" class="verify-option" style="display:none;">
+            <div class="verify-option-head">
+              <span class="verify-option-num">A</span>
+              <span class="verify-option-title">Run it from your terminal</span>
+            </div>
+            <div class="shell-tab-row">
+              <button type="button" class="shell-tab active" data-shell="p1-bash">macOS / Linux · bash</button>
+              <button type="button" class="shell-tab" data-shell="p1-ps">Windows · PowerShell</button>
+            </div>
+            <div class="shell-panel active" data-shell-panel="p1-bash">
+              <pre class="code-block" id="p1-curl-cmd-bash"></pre>
+              <button class="btn secondary" data-p1-curl-copy="bash" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.5rem;">Copy command</button>
+            </div>
+            <div class="shell-panel" data-shell-panel="p1-ps">
+              <pre class="code-block" id="p1-curl-cmd-ps"></pre>
+              <button class="btn secondary" data-p1-curl-copy="ps" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.5rem;">Copy command</button>
+              <p style="font-size: 0.72rem; color: var(--dim); margin: 0.6rem 0 0; line-height: 1.5;">
+                PowerShell's built-in <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">curl</code> is an alias for <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-WebRequest</code> with different flag syntax — this snippet uses <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-RestMethod</code> instead so it just works on Windows out of the box.
+              </p>
+            </div>
+          </div>
+
+          <!-- Option B: paste-and-verify in browser -->
+          <div id="p1-onpage-box" class="verify-option" style="display:none;">
+            <div class="verify-option-head">
+              <span class="verify-option-num">B</span>
+              <span class="verify-option-title">Paste the token and verify in the browser</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--muted); margin: 0 0 0.55rem; line-height: 1.5;">
+              Copy the token from Step 2, then paste it below. <strong style="color: var(--text);">You're acting as the agent handing its passport to the verifier.</strong> Same endpoint a bot-defense vendor would hit.
+            </p>
+            <textarea id="p1-verify-input" class="ctl" rows="3" placeholder="Paste your token here (it starts with v4.public.)" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+            <div class="btn-row">
+              <button class="btn primary" id="p1-verify" disabled>Verify what you pasted →</button>
+              <button class="btn ghost" id="p1-verify-prefill" style="font-size: 0.78rem;">Use the token I just minted</button>
+              <span id="p1-verdict" class="verdict-pill idle">waiting for token</span>
+            </div>
+          </div>
+
+          <!-- Success panel -->
+          <div id="p1-success-panel" class="success-panel">
+            <div class="success-banner">
+              <span class="success-check">✓</span>
+              <div>
+                <div class="success-banner-title">Verified end-to-end</div>
+                <div class="success-banner-sub">Live verifier returned <code>allow</code> in <strong id="p1-success-ms">?</strong> ms</div>
+              </div>
+            </div>
+            <div class="success-grid">
+              <div class="success-field"><div class="success-label">Issuer</div><div class="success-value"><code id="p1-success-issuer">—</code></div></div>
+              <div class="success-field"><div class="success-label">Identity</div><div class="success-value"><code id="p1-success-agent">—</code></div></div>
+              <div class="success-field"><div class="success-label">Scopes</div><div class="success-value"><code id="p1-success-scopes">—</code></div></div>
+              <div class="success-field"><div class="success-label">Tier</div><div class="success-value" id="p1-success-tier">—</div></div>
+              <div class="success-field"><div class="success-label">Abuse score</div><div class="success-value" id="p1-success-abuse">—</div></div>
+              <div class="success-field"><div class="success-label">Verifier elapsed</div><div class="success-value" id="p1-success-elapsed">—</div></div>
+            </div>
+            <div class="success-actions">
+              <a class="btn primary" href="https://agentpki.dev/dashboard" target="_blank" rel="noreferrer">Claim your own issuer →</a>
+              <a class="btn ghost" href="https://agentpki.dev/spec" target="_blank" rel="noreferrer">Read the v0.2 spec</a>
+            </div>
+            <p class="success-foot">
+              That's the whole protocol — real signature, real verdict, your handle as the <code>sub</code>.
+              <strong style="display:block; margin-top: 0.5rem;">Where to go from here:</strong>
+              · <strong>Claim a real issuer</strong> — bring your domain, get keys, mint production passports.<br>
+              · <strong>Adding to an existing agent?</strong> Path 04 has the 5-line drop-in.
+            </p>
+          </div>
+        </div>
+
+        <!-- ═══ DENY MODES — collapsible. Mirrors /demo's "Deny modes" panel. ═══ -->
+        <div class="form-step">
+          <button type="button" class="deny-toggle" id="p1-deny-toggle" aria-expanded="false">
+            <span class="deny-toggle-num">!</span>
+            <span class="deny-toggle-title">Deny modes — forge a token or sign with a revoked key</span>
+            <span class="deny-toggle-tag">2 labs · ~1 min</span>
+          </button>
+
+          <div class="deny-body" id="p1-deny-body">
+            <p class="deny-intro">Step 3 returned <code>allow</code>. Now make it <code>deny</code> — you choose how.</p>
+
+            <div class="lab-grid">
+              <!-- ─────────── Tamper Lab ─────────── -->
+              <div class="lab-card" data-lab="tamper">
+                <div class="lab-card-head">
+                  <h4>Tamper Lab</h4>
+                  <p>Mint → corrupt → verify. You drive each step.</p>
+                </div>
+
+                <!-- Stage A -->
+                <div class="lab-stage active" id="lab-t-A">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">A</span>
+                    <span class="lab-stage-title">Mint a real token</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-t-mint">Mint a fresh token</button>
+                  </div>
+                  <code class="lab-token" id="lab-t-token" style="display:none;"></code>
+                  <div class="lab-status" id="lab-t-mint-status"></div>
+                </div>
+
+                <!-- Stage B -->
+                <div class="lab-stage" id="lab-t-B">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">B</span>
+                    <span class="lab-stage-title">Pick what to corrupt</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn secondary" data-tamper="sig" disabled>Flip signature</button>
+                    <button type="button" class="btn secondary" data-tamper="payload" disabled>Flip payload</button>
+                    <button type="button" class="btn secondary" data-tamper="footer" disabled>Flip footer</button>
+                    <button type="button" class="btn ghost" data-tamper="reset" disabled>Send unchanged</button>
+                  </div>
+                  <div class="lab-status" id="lab-t-tamper-status"></div>
+                </div>
+
+                <!-- Stage C -->
+                <div class="lab-stage" id="lab-t-C">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">C</span>
+                    <span class="lab-stage-title">Send to verifier</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-t-send" disabled>Send →</button>
+                    <button type="button" class="btn ghost" id="lab-t-reset">Start over</button>
+                  </div>
+                  <div class="lab-result" id="lab-t-result"></div>
+                </div>
+              </div>
+
+              <!-- ─────────── Revoked-Key Lab ─────────── -->
+              <div class="lab-card" data-lab="revoked">
+                <div class="lab-card-head">
+                  <h4>Revoked-Key Lab</h4>
+                  <p>Pick a kid → inspect the CRL → verify.</p>
+                </div>
+
+                <!-- Stage A -->
+                <div class="lab-stage active" id="lab-r-A">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">A</span>
+                    <span class="lab-stage-title">Pick a kid to sign with</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn secondary" data-kid="active">Active · <code style="background:transparent;color:inherit;padding:0;">demo-2026-q2</code></button>
+                    <button type="button" class="btn secondary" data-kid="revoked">Revoked · <code style="background:transparent;color:inherit;padding:0;">demo-2026-q1-rotated</code></button>
+                  </div>
+                  <code class="lab-token" id="lab-r-token" style="display:none;"></code>
+                  <div class="lab-status" id="lab-r-mint-status"></div>
+                </div>
+
+                <!-- Stage B -->
+                <div class="lab-stage" id="lab-r-B">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">B</span>
+                    <span class="lab-stage-title">Check the issuer's directory</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn ghost" id="lab-r-fetch-dir" disabled>Fetch directory</button>
+                  </div>
+                  <div class="lab-crl" id="lab-r-crl" style="display:none;"></div>
+                </div>
+
+                <!-- Stage C -->
+                <div class="lab-stage" id="lab-r-C">
+                  <div class="lab-stage-head">
+                    <span class="lab-stage-step">C</span>
+                    <span class="lab-stage-title">Send to verifier</span>
+                  </div>
+                  <div class="lab-action-row">
+                    <button type="button" class="btn primary" id="lab-r-send" disabled>Send →</button>
+                    <button type="button" class="btn ghost" id="lab-r-reset">Start over</button>
+                  </div>
+                  <div class="lab-result" id="lab-r-result"></div>
+                </div>
+              </div>
+            </div>
+
+            <p class="deny-explain">
+              Same <code>deny</code>, different <code>failure_reason</code>: <code>bad_signature</code> = forged. <code>revoked_key</code> = legit signature, dead key. AgentPKI tells you which.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 02 — Cloud IDE (StackBlitz / Codespaces)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p2">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 02 · cloud IDE</div>
+        <h2 class="path-title">"Use my agent" — StackBlitz / Codespaces button</h2>
+      </div>
+      <span class="path-tag">5 min in browser</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"Snippets aren't enough. I want a real Node.js project with a real agent calling AgentPKI — <em>so I can step through it, break it, and see what actually goes over the wire</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">One click forks a pre-wired template (<code>@agentpki/sdk</code> installed, Anthropic-backed agent, live verifier call) into StackBlitz or Codespaces. You hit <strong>Run</strong>. <strong>No <code>npm install</code>, no local Node setup, no boilerplate.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · template → cloud IDE → verifier</div>
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p2d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: test-agent-template (GitHub repo) -->
+          <g class="actor" id="p2-n1">
+            <rect x="30" y="80" width="320" height="200" rx="14" />
+            <text x="190" y="140" font-size="24">📦 test-agent-template</text>
+            <text x="190" y="175" class="sub">agentpki/test-agent-template</text>
+            <text x="190" y="205" class="sub">GitHub repo</text>
+          </g>
+
+          <!-- TR: Cloud IDE (StackBlitz / Codespaces) -->
+          <g class="actor self" id="p2-n2">
+            <rect x="630" y="80" width="320" height="200" rx="14" />
+            <text x="790" y="140" font-size="24">☁️ Cloud IDE</text>
+            <text x="790" y="175" class="sub">StackBlitz / Codespaces</text>
+            <text x="790" y="205" class="sub">@agentpki/sdk pre-installed</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev -->
+          <g class="actor" id="p2-n3">
+            <rect x="30" y="380" width="320" height="200" rx="14" />
+            <text x="190" y="440" font-size="24">🔐 verify.agentpki.dev</text>
+            <text x="190" y="475" class="sub">checks signature + CRL</text>
+            <text x="190" y="505" class="sub">via SDK verify()</text>
+          </g>
+
+          <!-- BR: Verdict in terminal -->
+          <g class="actor" id="p2-n4">
+            <rect x="630" y="380" width="320" height="200" rx="14" />
+            <text x="790" y="440" font-size="24">✓ Verdict in terminal</text>
+            <text x="790" y="475" class="sub">allow / deny + reason</text>
+            <text x="790" y="505" class="sub">exit code 0 / 1</text>
+          </g>
+
+          <!-- A1: TL→TR (top): fork -->
+          <path id="p2-a1" class="arrow" d="M350,160 L630,160" marker-end="url(#p2d)" />
+          <text id="p2-l1" class="label" x="490" y="145" text-anchor="middle">1. fork</text>
+
+          <!-- A2: TR→TL (return): pre-wired SDK -->
+          <path id="p2-a2" class="arrow" d="M630,200 L350,200" marker-end="url(#p2d)" />
+          <text id="p2-l2" class="label" x="490" y="225" text-anchor="middle">2. pre-wired with SDK</text>
+
+          <!-- A3: TL→BL (vertical): signed fetch -->
+          <path id="p2-a3" class="arrow" d="M190,280 L190,380" marker-end="url(#p2d)" />
+          <text id="p2-l3" class="label" x="210" y="335">3. signed fetch(token)</text>
+
+          <!-- A4: BL→BR (bottom): verdict console.log -->
+          <path id="p2-a4" class="arrow" d="M350,460 L630,460" marker-end="url(#p2d)" />
+          <text id="p2-l4" class="label" x="490" y="445" text-anchor="middle">4. console.log verdict</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p2-play">▶ Play</button>
+          <button class="ctrl" id="p2-step-btn">Step ›</button>
+          <button class="ctrl" id="p2-reset">↻ Reset</button>
+          <span class="step-indicator" id="p2-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Step 1: open the boilerplate -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Open the boilerplate in your favourite cloud IDE</span>
+          </div>
+          <p class="form-step-explain">Both buttons spin up a fresh sandbox with the SDK pre-installed and a working <code>index.mjs</code>.</p>
+          <p class="form-step-explain">
+            One click forks <code>agentpki/test-agent-template</code> into a cloud IDE with <code>@agentpki/sdk</code> already installed and three demo commands wired up: <code>npm run demo:allow</code>, <code>npm run demo:tamper</code>, <code>npm run demo:revoked</code> — the same trust contract Path 01's labs exercise, but from a real Node project you own.
+          </p>
+          <div class="btn-row">
+            <a class="btn primary" id="p2-stackblitz" href="https://stackblitz.com/github/agentpki/test-agent-template?file=index.mjs" target="_blank" rel="noreferrer">▶ Open in StackBlitz</a>
+            <a class="btn secondary" id="p2-codespaces" href="https://codespaces.new/agentpki/test-agent-template?quickstart=1" target="_blank" rel="noreferrer">▶ Open in Codespaces</a>
+            <a class="btn ghost" id="p2-github" href="https://github.com/agentpki/test-agent-template" target="_blank" rel="noreferrer">Source on GitHub →</a>
+          </div>
+        </div>
+
+        <!-- Step 2: what's in the project -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">What's in the project</span>
+          </div>
+          <p class="form-step-explain">Open <code>index.mjs</code> — the whole demo is 12 lines.</p>
+          <pre class="code-block"><span class="c-cmt">// index.mjs — pre-wired test agent</span>
+<span class="c-key">import</span> { mintPassport, verify } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+<span class="c-key">import</span> Anthropic <span class="c-key">from</span> <span class="c-str">'@anthropic-ai/sdk'</span>;
+
+<span class="c-key">const</span> token = <span class="c-key">await</span> mintPassport({ sub: <span class="c-str">'agent:test/v1'</span> });
+<span class="c-key">const</span> claude = <span class="c-key">new</span> Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+<span class="c-key">const</span> resp = <span class="c-key">await</span> claude.messages.create({
+  model: <span class="c-str">'claude-3-5-sonnet'</span>,
+  max_tokens: <span class="c-num">200</span>,
+  messages: [{ role: <span class="c-str">'user'</span>, content: <span class="c-str">'What is AgentPKI?'</span> }],
+});
+<span class="c-key">const</span> verdict = <span class="c-key">await</span> verify(token);
+
+console.log(<span class="c-str">'claude says:'</span>, resp.content[<span class="c-num">0</span>].text);
+console.log(<span class="c-str">'verifier says:'</span>, verdict.verdict);</pre>
+        </div>
+
+        <!-- Step 3: run it -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">3</span>
+            <span class="form-step-title">Run it</span>
+          </div>
+          <p class="form-step-explain">Paste your Anthropic key into the .env, hit ▶ Run. You see Claude's response AND the verifier's verdict in the same terminal.</p>
+          <button class="btn primary" id="p2-simulate-run">▶ Simulate <code style="color:#000;background:transparent;">npm start</code></button>
+          <pre class="code-block" id="p2-run-output" style="display:none;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 03 — Terminal curl (bootstrap)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p3">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 03 · terminal-only</div>
+        <h2 class="path-title">One curl command. End-to-end in your shell.</h2>
+      </div>
+      <span class="path-tag">~30 sec</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I live in my terminal. I'm not going to leave it to use your product. <em>And I'm not <code>npm i</code>-ing anything until I know it works</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">One paste. Two HTTP calls. You see your derived subdomain, a real PASETO passport, the verifier verdict, and a 24h shareable <code>/check/result/&lt;id&gt;</code> URL — <strong>without installing anything, claiming a domain, or signing up</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · terminal → claim API → permalink</div>
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p3d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your Terminal -->
+          <g class="actor self" id="p3-n1">
+            <rect x="30" y="80" width="320" height="200" rx="14" />
+            <text x="190" y="140" font-size="24">💻 Your Terminal</text>
+            <text x="190" y="175" class="sub">curl|sh or iwr|iex</text>
+            <text x="190" y="205" class="sub">paste, hit enter</text>
+          </g>
+
+          <!-- TR: claim API -->
+          <g class="actor" id="p3-n2">
+            <rect x="630" y="80" width="320" height="200" rx="14" />
+            <text x="790" y="140" font-size="24">⚙️ /api/v1/bootstrap-claim</text>
+            <text x="790" y="175" class="sub">mint + verify + store</text>
+            <text x="790" y="205" class="sub">atomic operation</text>
+          </g>
+
+          <!-- BL: verify.agentpki.dev (internal) -->
+          <g class="actor" id="p3-n3">
+            <rect x="30" y="380" width="320" height="200" rx="14" />
+            <text x="190" y="440" font-size="24">🔐 verify.agentpki.dev</text>
+            <text x="190" y="475" class="sub">signature + CRL check</text>
+            <text x="190" y="505" class="sub">called by claim API</text>
+          </g>
+
+          <!-- BR: permalink -->
+          <g class="actor" id="p3-n4">
+            <rect x="630" y="380" width="320" height="200" rx="14" />
+            <text x="790" y="440" font-size="24">🔗 /check/result/&lt;id&gt;</text>
+            <text x="790" y="475" class="sub">24h shareable URL</text>
+            <text x="790" y="505" class="sub">printed in terminal</text>
+          </g>
+
+          <!-- A1: TL→TR (top): POST email -->
+          <path id="p3-a1" class="arrow" d="M350,160 L630,160" marker-end="url(#p3d)" />
+          <text id="p3-l1" class="label" x="490" y="145" text-anchor="middle">1. POST email</text>
+
+          <!-- A2: TR→TL (return): inline verdict + permalink -->
+          <path id="p3-a2" class="arrow" d="M630,200 L350,200" marker-end="url(#p3d)" />
+          <text id="p3-l2" class="label" x="490" y="225" text-anchor="middle">2. inline verdict + permalink</text>
+
+          <!-- A3: TL→BL (vertical): internal /v1/verify -->
+          <path id="p3-a3" class="arrow" d="M190,280 L190,380" marker-end="url(#p3d)" />
+          <text id="p3-l3" class="label" x="210" y="335">3. internal /v1/verify</text>
+
+          <!-- A4: BL→BR (bottom): verdict stored as 24h permalink -->
+          <path id="p3-a4" class="arrow" d="M350,460 L630,460" marker-end="url(#p3d)" />
+          <text id="p3-l4" class="label" x="490" y="445" text-anchor="middle">4. verdict stored as permalink</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p3-play">▶ Play</button>
+          <button class="ctrl" id="p3-step-btn">Step ›</button>
+          <button class="ctrl" id="p3-reset">↻ Reset</button>
+          <span class="step-indicator" id="p3-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Live banner -->
+        <div class="callout-info green">
+          <span aria-hidden="true">✓</span>
+          <span>
+            <strong>Live now.</strong>
+            Both <code>/bootstrap</code> and <code>/bootstrap.ps1</code> are deployed at <code>agentpki.dev</code> and smoke-tested against the demo issuer + verifier. The script mints a demo passport, verifies it, and prints <code>verdict: allow</code>. Two HTTP calls, nothing destructive — full source linked from each script.
+          </span>
+        </div>
+
+        <!-- Step 1: run the bootstrap -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Run the bootstrap</span>
+          </div>
+          <p class="form-step-explain">Same end-to-end behaviour, native syntax for each shell. The Copy button copies only the command — the prompt marker (<code>$</code> or <code>PS&gt;</code>) is stripped, so you can't paste it by accident.</p>
+          <div class="shell-tab-row">
+            <button type="button" class="shell-tab active" data-shell="p3-bash">macOS / Linux · bash</button>
+            <button type="button" class="shell-tab" data-shell="p3-ps">Windows · PowerShell</button>
+          </div>
+          <div class="shell-panel active" data-shell-panel="p3-bash">
+            <pre class="code-block"><span class="c-prompt">$</span> curl -fsSL <span class="c-str">https://agentpki.dev/bootstrap</span> | sh</pre>
+            <button type="button" class="btn secondary" data-p3-copy="bash" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.4rem;">Copy command</button>
+            <p style="font-size: 0.72rem; color: var(--dim); margin: 0.55rem 0 0;">
+              Requires <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">curl</code> + <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">sed</code> (both POSIX standard). Tested on macOS 14 and Ubuntu 22.04.
+            </p>
+          </div>
+          <div class="shell-panel" data-shell-panel="p3-ps">
+            <pre class="code-block"><span class="c-prompt">PS&gt;</span> iwr <span class="c-str">https://agentpki.dev/bootstrap.ps1</span> | iex</pre>
+            <button type="button" class="btn secondary" data-p3-copy="ps" style="padding: 0.35rem 0.8rem; font-size: 0.74rem; margin-top: 0.4rem;">Copy command</button>
+            <p style="font-size: 0.72rem; color: var(--dim); margin: 0.55rem 0 0;">
+              <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">iwr</code> = <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-WebRequest</code>, <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">iex</code> = <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">Invoke-Expression</code>. Pure PowerShell — no bash, no <code style="color: var(--violet-hi); font-family: ui-monospace, monospace;">sh</code>, no WSL needed. Tested on Windows PowerShell 5.1 and PowerShell 7+.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2: audit -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">Audit before piping</span>
+          </div>
+          <p class="form-step-explain"><strong>Never hide what runs on your machine.</strong> Inspect without executing:</p>
+          <p style="font-size: 0.7rem; font-family: ui-monospace, monospace; color: var(--dim); margin: 0.35rem 0 0.25rem; letter-spacing: 0.08em; text-transform: uppercase;">bash · preview</p>
+          <pre class="code-block"><span class="c-prompt">$</span> curl -fsSL <span class="c-str">https://agentpki.dev/bootstrap</span></pre>
+          <p style="font-size: 0.7rem; font-family: ui-monospace, monospace; color: var(--dim); margin: 0.6rem 0 0.25rem; letter-spacing: 0.08em; text-transform: uppercase;">PowerShell · preview</p>
+          <pre class="code-block"><span class="c-prompt">PS&gt;</span> iwr <span class="c-str">https://agentpki.dev/bootstrap.ps1</span> | Select-Object -Expand Content</pre>
+        </div>
+
+        <!-- Step 3: expected output -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">3</span>
+            <span class="form-step-title">What you'll see</span>
+          </div>
+          <p class="form-step-explain">Click <em>Simulate</em> to animate the actual 3-scenario v1.0 output. Every value is what the live bootstrap returns — 6 real HTTP calls in ~1 sec.</p>
+          <button class="btn primary" id="p3-simulate-run">▶ Simulate bootstrap output</button>
+          <pre class="code-block" id="p3-output" style="display:none; max-height: 28rem;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════
+       PATH 04 — Framework adapter (existing agent)
+       ═════════════════════════════════════════════════════════ -->
+  <div class="flow-panel" id="panel-p4">
+
+    <div class="path-header">
+      <div>
+        <div class="path-num">Path 04 · existing project</div>
+        <h2 class="path-title">5 lines. Add AgentPKI to your existing agent.</h2>
+      </div>
+      <span class="path-tag">5-min copy/paste</span>
+    </div>
+
+    <div class="friction">
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-wall">!</div>
+        <div>
+          <div class="friction-label">The wall</div>
+          <div class="friction-text">"I already have an agent running in LangChain / Vercel AI / OpenAI / Anthropic. <em>I'm not rewriting it. Just tell me where the 5 lines go</em>."</div>
+        </div>
+      </div>
+      <div class="friction-row">
+        <div class="friction-icon friction-icon-removes">✓</div>
+        <div>
+          <div class="friction-label">This path removes it by</div>
+          <div class="friction-text">A framework-specific tab below shows the exact 5-line drop-in. Wrap your client, give it a <code>passportProvider</code> — <strong>every outbound HTTP call is now signed and verifiable, nothing else in your code changes</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="diagram-wrap">
+        <div class="diagram-caption">Data flow · your agent → SDK → vendor verifier</div>
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="p4d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd-default" /></marker>
+          </defs>
+
+          <!-- TL: Your Agent code -->
+          <g class="actor self" id="p4-n1">
+            <rect x="30" y="80" width="320" height="200" rx="14" />
+            <text x="190" y="140" font-size="24">🤖 Your Agent code</text>
+            <text x="190" y="175" class="sub">LangChain / OpenAI</text>
+            <text x="190" y="205" class="sub">/ Anthropic</text>
+          </g>
+
+          <!-- TR: @agentpki/sdk -->
+          <g class="actor" id="p4-n2">
+            <rect x="630" y="80" width="320" height="200" rx="14" />
+            <text x="790" y="140" font-size="24">📦 @agentpki/sdk</text>
+            <text x="790" y="175" class="sub">wraps fetch()</text>
+            <text x="790" y="205" class="sub">adds Token + RFC 9421 sig</text>
+          </g>
+
+          <!-- BL: Vendor API + verifier -->
+          <g class="actor" id="p4-n3">
+            <rect x="30" y="380" width="320" height="200" rx="14" />
+            <text x="190" y="440" font-size="24">🛡️ Vendor verifier</text>
+            <text x="190" y="475" class="sub">checks AgentPKI-Token</text>
+            <text x="190" y="505" class="sub">enforces policy</text>
+          </g>
+
+          <!-- BR: 200 OK / verdict -->
+          <g class="actor" id="p4-n4">
+            <rect x="630" y="380" width="320" height="200" rx="14" />
+            <text x="790" y="440" font-size="24">✓ 200 OK</text>
+            <text x="790" y="475" class="sub">allowed through</text>
+            <text x="790" y="505" class="sub">audit log entry created</text>
+          </g>
+
+          <!-- A1: TL→TR (top): wrapped fetch() -->
+          <path id="p4-a1" class="arrow" d="M350,160 L630,160" marker-end="url(#p4d)" />
+          <text id="p4-l1" class="label" x="490" y="145" text-anchor="middle">1. wrapped fetch()</text>
+
+          <!-- A2: TR→TL (return): token + signature ready -->
+          <path id="p4-a2" class="arrow" d="M630,200 L350,200" marker-end="url(#p4d)" />
+          <text id="p4-l2" class="label" x="490" y="225" text-anchor="middle">2. token + signature ready</text>
+
+          <!-- A3: TL→BL (vertical): signed HTTPS -->
+          <path id="p4-a3" class="arrow" d="M190,280 L190,380" marker-end="url(#p4d)" />
+          <text id="p4-l3" class="label" x="210" y="335">3. signed HTTPS request</text>
+
+          <!-- A4: BL→BR (bottom): allow + audit log -->
+          <path id="p4-a4" class="arrow" d="M350,460 L630,460" marker-end="url(#p4d)" />
+          <text id="p4-l4" class="label" x="490" y="445" text-anchor="middle">4. allow + audit log</text>
+        </svg>
+        <div class="controls">
+          <button class="ctrl ctrl-primary" id="p4-play">▶ Play</button>
+          <button class="ctrl" id="p4-step-btn">Step ›</button>
+          <button class="ctrl" id="p4-reset">↻ Reset</button>
+          <span class="step-indicator" id="p4-step">Step 0 of 5 · ready</span>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <!-- Honest disclosure -->
+        <div class="callout-info amber">
+          <span aria-hidden="true">⚠</span>
+          <span>
+            <strong>Honest package status —</strong>
+            <code>@agentpki/sdk</code> is <strong style="color: #6ee7b7;">live on npm</strong> today, so the <strong>Vanilla fetch</strong> tab works right now.
+            <code>@agentpki/langchain</code> and <code>@agentpki/vercel-ai</code> are <strong style="color: #fde68a;">preview package names</strong> — we'll publish them once Path 04 gets HN signal. The snippets show the shipped API surface, but <code>npm i</code> on those two will 404 today.
+          </span>
+        </div>
+
+        <!-- Step 1: pick your framework -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">1</span>
+            <span class="form-step-title">Pick your framework</span>
+          </div>
+          <div class="fw-tab-row">
+            <button type="button" class="fw-tab active" data-fw-tab="langchain">LangChain JS · preview</button>
+            <button type="button" class="fw-tab" data-fw-tab="vercel">Vercel AI SDK · preview</button>
+            <button type="button" class="fw-tab" data-fw-tab="openai">OpenAI SDK · live</button>
+            <button type="button" class="fw-tab" data-fw-tab="anthropic">Anthropic SDK · live</button>
+            <button type="button" class="fw-tab" data-fw-tab="vanilla">Vanilla fetch · live</button>
+          </div>
+
+          <div class="fw-panel active" data-fw-panel="langchain">
+            <pre class="code-block"><span class="c-cmt">// 1. install (preview — not yet on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/langchain</span>
+
+<span class="c-cmt">// 2. wrap your existing chain</span>
+<span class="c-key">import</span> { withAgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/langchain'</span>;
+
+<span class="c-key">const</span> chain = withAgentPKI(myChain, {
+  passportProvider: <span class="c-key">async</span> () =&gt; ({
+    token: process.env.AGENTPKI_TOKEN!,
+  }),
+});
+<span class="c-cmt">// done. every outbound HTTP tool call is now signed.</span></pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="vercel">
+            <pre class="code-block"><span class="c-cmt">// 1. install (preview — not yet on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/vercel-ai</span>
+
+<span class="c-cmt">// 2. add the middleware to your generateText call</span>
+<span class="c-key">import</span> { generateText } <span class="c-key">from</span> <span class="c-str">'ai'</span>;
+<span class="c-key">import</span> { agentpkiMiddleware } <span class="c-key">from</span> <span class="c-str">'@agentpki/vercel-ai'</span>;
+
+<span class="c-key">await</span> generateText({
+  model: openai(<span class="c-str">'gpt-4o'</span>),
+  experimental_telemetry: agentpkiMiddleware({
+    passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+  }),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="openai">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span> openai
+
+<span class="c-cmt">// 2. give OpenAI the AgentPKI client's fetch</span>
+<span class="c-key">import</span> OpenAI <span class="c-key">from</span> <span class="c-str">'openai'</span>;
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> client = <span class="c-key">new</span> OpenAI({
+  fetch: pki.fetch.bind(pki),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="anthropic">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span> @anthropic-ai/sdk
+
+<span class="c-cmt">// 2. give Anthropic the AgentPKI client's fetch</span>
+<span class="c-key">import</span> Anthropic <span class="c-key">from</span> <span class="c-str">'@anthropic-ai/sdk'</span>;
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> client = <span class="c-key">new</span> Anthropic({
+  fetch: pki.fetch.bind(pki),
+});</pre>
+          </div>
+
+          <div class="fw-panel" data-fw-panel="vanilla">
+            <pre class="code-block"><span class="c-cmt">// 1. install (@agentpki/sdk is live on npm)</span>
+<span class="c-prompt">$</span> npm i <span class="c-str">@agentpki/sdk</span>
+
+<span class="c-cmt">// 2. use the AgentPKI client as a drop-in fetch</span>
+<span class="c-key">import</span> { AgentPKI } <span class="c-key">from</span> <span class="c-str">'@agentpki/sdk'</span>;
+
+<span class="c-key">const</span> pki = <span class="c-key">new</span> AgentPKI({
+  passportProvider: <span class="c-key">async</span> () =&gt; ({ token: process.env.AGENTPKI_TOKEN! }),
+});
+
+<span class="c-key">const</span> res = <span class="c-key">await</span> pki.fetch(<span class="c-str">'https://reuters.com/api/article/123'</span>);
+<span class="c-cmt">// AgentPKI-Token header + RFC 9421 signature attached automatically.</span></pre>
+          </div>
+        </div>
+
+        <!-- Step 2: verify any outbound call -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num">2</span>
+            <span class="form-step-title">Verify any outbound call from your code</span>
+          </div>
+          <p class="form-step-explain">In a separate terminal (or paste the token into <a href="https://agentpki.dev/check" target="_blank" rel="noreferrer" style="color: var(--violet-hi); text-decoration: underline;">agentpki.dev/check</a>), run:</p>
+          <pre class="code-block"><span class="c-prompt">$</span> curl -X POST https://verify.agentpki.dev/v1/verify \
+    -H <span class="c-str">'content-type: application/json'</span> \
+    -d <span class="c-str">'{"token":"&lt;paste-token-here&gt;"}'</span>
+
+{
+  <span class="c-key">"verdict"</span>: <span class="c-str">"allow"</span>,
+  <span class="c-key">"issuer"</span>: <span class="c-str">"mybot.agents.agentpki.dev"</span>,
+  <span class="c-key">"elapsed_ms"</span>: <span class="c-num">47</span>
+}</pre>
+          <p class="form-step-explain" style="margin-top: 0.5rem;">That's end-to-end inside your real project. Your existing agent now carries a verifiable cryptographic identity for every outbound call.</p>
+        </div>
+
+        <!-- Step 3: assert failure modes -->
+        <div class="form-step">
+          <div class="form-step-head">
+            <span class="form-step-num deny">3</span>
+            <span class="form-step-title">Assert the failure modes work in your test suite</span>
+          </div>
+          <p class="form-step-explain">Three assertions. If any stops passing against your prod verifier, the trust system regressed.</p>
+
+          <pre class="code-block" style="max-height: 18rem;"><span class="c-cmt">// agentpki.test.ts — drop this into your existing test suite</span>
+<span class="c-key">import</span> { describe, it, expect } <span class="c-key">from</span> <span class="c-str">'vitest'</span>;
+
+<span class="c-key">const</span> VERIFY = <span class="c-str">'https://verify.agentpki.dev/v1/verify'</span>;
+<span class="c-key">const</span> MINT   = <span class="c-str">'https://demo.agentpki.dev/mint'</span>;
+
+<span class="c-key">async function</span> verify(token: <span class="c-key">string</span>) {
+  <span class="c-key">const</span> r = <span class="c-key">await</span> fetch(VERIFY, {
+    method: <span class="c-str">'POST'</span>,
+    headers: { <span class="c-str">'content-type'</span>: <span class="c-str">'application/json'</span> },
+    body: JSON.stringify({ token }),
+  });
+  <span class="c-key">return</span> r.json();
+}
+
+describe(<span class="c-str">'AgentPKI trust contract'</span>, () =&gt; {
+  it(<span class="c-str">'allow on a real signed token'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(MINT).then(r =&gt; r.json());
+    <span class="c-key">const</span> v = <span class="c-key">await</span> verify(token);
+    expect(v.verdict).toBe(<span class="c-str">'allow'</span>);
+  });
+
+  it(<span class="c-str">'deny + bad_signature on tampered token'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(MINT).then(r =&gt; r.json());
+    <span class="c-key">const</span> [v, p, p2, f] = token.split(<span class="c-str">'.'</span>);
+    <span class="c-key">const</span> tampered = `${v}.${p}.${p2.slice(<span class="c-num">0</span>, -<span class="c-num">4</span>)}AAAA.${f}`;
+    <span class="c-key">const</span> result = <span class="c-key">await</span> verify(tampered);
+    expect(result.verdict).toBe(<span class="c-str">'deny'</span>);
+    expect(result.failure_reason).toBe(<span class="c-str">'bad_signature'</span>);
+  });
+
+  it(<span class="c-str">'deny + revoked_key when issuer rotated the kid'</span>, <span class="c-key">async</span> () =&gt; {
+    <span class="c-key">const</span> { token } = <span class="c-key">await</span> fetch(`${MINT}?revoked=1`).then(r =&gt; r.json());
+    <span class="c-key">const</span> result = <span class="c-key">await</span> verify(token);
+    expect(result.verdict).toBe(<span class="c-str">'deny'</span>);
+    expect(result.failure_reason).toBe(<span class="c-str">'revoked_key'</span>);
+    expect(result.failure_detail).toContain(<span class="c-str">'demo-2026-q1-rotated'</span>);
+  });
+});</pre>
+
+          <div class="suite-runner">
+            <h4>Run that suite right now, from this page</h4>
+            <p>Your browser executes the same three assertions against <code>verify.agentpki.dev</code>. <strong>If any of these stops passing, the trust system regressed</strong> — not your code, not your network. Click <em>run</em> as many times as you like; cached responses produce different latencies but the same verdicts.</p>
+            <div class="btn-row">
+              <button class="btn primary" id="p4-run-suite">▶ Run trust-contract suite</button>
+              <button class="btn ghost" id="p4-reset-suite" style="display:none;">Clear output</button>
+            </div>
+            <pre id="p4-suite-output" class="suite-output"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════ CLOSER ═══════════════
+       One quiet section. The success card already drove conversion;
+       this is just "and if you want to talk to us..." -->
+  <section class="relative">
+    <div class="max-w-3xl mx-auto px-6 py-14 text-center">
+      <p class="text-lg sm:text-xl text-[color:var(--color-text)] mb-2">
+        Got stuck somewhere? Tell us where.
+      </p>
+      <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+        That&rsquo;s our next bug.
+      </p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href="mailto:hello@agentpki.dev?subject=AgentPKI%20%2D%20HN%20feedback" class="btn primary">hello@agentpki.dev</a>
+        <a href="https://github.com/agentpki/web/discussions" class="btn ghost">GitHub Discussions</a>
+      </div>
+      <p class="mt-10 text-xs text-[color:var(--color-text-dim)]">
+        Apache 2.0 &middot; v0.2 live &middot; bootstrapped from San Francisco
+      </p>
+    </div>
+  </section>

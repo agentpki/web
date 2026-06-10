@@ -3,6 +3,16 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+// CSS for the HN-paths section. hn-paths.css holds the page-wide tokens
+// (:root, html/body, .hero-accent-text, .bg-mesh) and the hero/closer styles;
+// demo-paths-tabs.css holds the new tab-based 4-paths section scoped to
+// .hn-paths-tabs via CSS nesting.
+import '../styles/hn-paths.css';
+import '../styles/demo-paths-tabs.css';
+// HTML body for the HN-paths section. Loaded as raw text (?raw) and injected
+// via <Fragment set:html> so Astro's JSX parser doesn't try to interpret the
+// {} characters inside example code blocks as JSX expressions.
+import hnPathsHtml from '../snippets/hn-paths.html?raw';
 ---
 <Base title="Live demo — AgentPKI" description="Mint and verify a real AgentPKI passport in your browser. Runs against our production-deployed Cloudflare Workers.">
   <div class="bg-layer bg-mesh" aria-hidden="true"></div>
@@ -784,124 +794,9 @@ import ContactModal from '../components/ContactModal.astro';
         <div class="watch-arrow" aria-hidden="true">&darr;</div>
       </div>
 
-      <!-- WHO THIS IS FOR — role cards -->
+      <!-- STEP 1: trigger (was Step 3 before the role-cards / pick-agent / edge-sees prelude was dropped) -->
       <section class="demo-section">
-        <h2>Who this is for</h2>
-        <p class="lead">If you operate one of these, the demo below is going to look immediately useful. Click your role to jump to a tailored explanation later in the page.</p>
-        <div class="roles" id="roles">
-          <a class="role" href="#for-vendors" data-role="vendors">
-            <div class="role-label">Bot-defense vendors</div>
-            <div class="role-names">Cloudflare · DataDome · hCaptcha · Arkose · Castle · F5 · Akamai · Kasada</div>
-            <p class="role-pitch">Additive signal in your existing pipeline. <b>Never overrides your score.</b> 30-line middleware drop-in. Verdict comes back in ~21ms at the edge.</p>
-            <div class="role-cta">See how the integration looks &rarr;</div>
-          </a>
-          <a class="role" href="#for-publishers" data-role="publishers">
-            <div class="role-label">Publishers fighting scrapers</div>
-            <div class="role-names">Reuters · NYT · The Verge · Stack Overflow · dev.to · GitHub</div>
-            <p class="role-pitch">Finally distinguish <b>legitimate AI traffic</b> from scrapers wearing agent costumes. Lower CAPTCHA rates for verified agents; higher block confidence for unsigned ones.</p>
-            <div class="role-cta">See the comparison &rarr;</div>
-          </a>
-          <a class="role" href="#for-api" data-role="api">
-            <div class="role-label">Sites with API tiers</div>
-            <div class="role-names">Stripe · Shopify · Reddit · Twilio · Anthropic itself</div>
-            <p class="role-pitch">Apply <b>scope-based rate limits</b> to authenticated agents. "Anthropic's tier-2 research bot" gets different quotas than "unknown agent traffic." Auditable, attributable, revocable.</p>
-            <div class="role-cta">See the passport claim &rarr;</div>
-          </a>
-        </div>
-      </section>
-
-      <!-- STEP 1: pick a scenario -->
-      <section class="demo-section">
-        <h2><span class="step">1</span>Pick an agent</h2>
-        <p class="lead">Each scenario is a real agent that hits a real publisher API (Reuters in the example). Click one to highlight it; the matching button in step 3 will run it.</p>
-        <div class="scenarios" id="scenarios">
-          <div class="scenario success active" data-id="anthropic">
-            <div class="role-tag">Verified AI agent</div>
-            <div class="title">Anthropic — research-bot-v3</div>
-            <p class="desc">Anthropic's research bot, reading Reuters articles on behalf of a Claude user.</p>
-            <div class="expected">Expected: <b>verdict: allow</b> &middot; tier 2</div>
-          </div>
-          <div class="scenario danger" data-id="tampered">
-            <div class="role-tag">Tampered passport</div>
-            <div class="title">Imposter — flipped signature</div>
-            <p class="desc">Same Anthropic claim, but we flip a byte in the signature before sending. Cryptography catches it.</p>
-            <div class="expected">Expected: <b>verdict: not_allowed</b> &middot; signature_invalid</div>
-          </div>
-          <div class="scenario warn" data-id="revoked">
-            <div class="role-tag">Revoked key</div>
-            <div class="title">Compromised — key rotation</div>
-            <p class="desc">A passport from an old, revoked Anthropic key. The CRL says no — even though the signature is mathematically valid.</p>
-            <div class="expected">Expected: <b>verdict: not_allowed</b> &middot; revoked_key</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- STEP 2: comparison -->
-      <section class="demo-section">
-        <h2><span class="step">2</span>What the publisher's edge sees</h2>
-        <p class="lead">Without AgentPKI, bot-defense vendors have to guess. With AgentPKI, the request carries a verifiable claim.</p>
-        <div class="compare">
-          <div class="col bad">
-            <div class="col-label">Without AgentPKI</div>
-            <div class="col-title">Today's reality at reuters.com</div>
-            <div class="field">
-              <div class="k">User-Agent</div>
-              <div class="v">python-requests/2.31.0</div>
-            </div>
-            <div class="field">
-              <div class="k">IP</div>
-              <div class="v muted">3.123.45.67 (rotating residential)</div>
-            </div>
-            <div class="field">
-              <div class="k">Signed identity claim</div>
-              <div class="v muted">none</div>
-            </div>
-            <div class="field">
-              <div class="k">Behavioral fingerprint</div>
-              <div class="v muted">looks scripted</div>
-            </div>
-            <div class="verdict-line">
-              &rarr; Bot-defense vendor: <b>"Could be Anthropic, could be a scraper. risk_score 0.65. Serve CAPTCHA."</b>
-            </div>
-          </div>
-          <div class="col good" id="for-publishers">
-            <div class="col-label">With AgentPKI</div>
-            <div class="col-title">Same request, signed passport attached</div>
-            <div class="claim-statement">
-              <span class="claim-label">&#128220; What the passport actually says:</span>
-              <em>"Anthropic claims this agent is their <b>research-bot-v3</b>, authorized for <b>read-only article access</b>, with <b>tier-2 (KYB-verified)</b> trust. Signed by Anthropic's Ed25519 key. Valid until 12:35 PM."</em>
-            </div>
-            <div class="field">
-              <div class="k">Issuer</div>
-              <div class="v"><code>anthropic.com</code></div>
-            </div>
-            <div class="field">
-              <div class="k">Agent ID</div>
-              <div class="v"><code>agent:anthropic.com/research-bot-v3</code></div>
-            </div>
-            <div class="field">
-              <div class="k">Scope</div>
-              <div class="v"><code>["read:articles"]</code></div>
-            </div>
-            <div class="field">
-              <div class="k">Tier &middot; lifetime</div>
-              <div class="v"><code>2 (KYB-verified) &middot; 300s</code></div>
-            </div>
-            <div class="field">
-              <div class="k">Token</div>
-              <div class="v muted">v4.public.eyJpc3M&hellip; (Ed25519 signed)</div>
-            </div>
-            <div class="verdict-line">
-              &rarr; Bot-defense vendor: <b>"Anthropic, cryptographically. risk_score 0.02. Allow."</b>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- STEP 3: trigger -->
-      <section class="demo-section">
-        <h2><span class="step">3</span>Run the demo</h2>
+        <h2><span class="step">1</span>Run the demo</h2>
         <p class="lead">Each button mints + sends to the production verifier. Verdicts come back in ~150ms. <em>Hover</em> any button to preview the trust flow without firing the API; <em>click</em> to run it for real.</p>
         <div class="btn-row">
           <div>
@@ -1087,9 +982,20 @@ import ContactModal from '../components/ContactModal.astro';
         </div>
       </section>
 
-      <!-- STEP 4: vendor integration -->
+      <!-- ═══════════════ HN PATHS — 4 end-to-end usage paths ═══════════════
+           Tab-based design (replaced the old accordion). hn-paths.html now
+           wraps: HERO → tab-based 4 paths (Path 01-04 with animated 2x2 data
+           flows, real /mint + /verify calls, Tamper Lab, Revoked-Key Lab,
+           CI test runner inside Path 04) → "Got stuck?" closer.
+           Styles: src/styles/hn-paths.css (page tokens + hero + closer) +
+                   src/styles/demo-paths-tabs.css (new tab section, scoped).
+           JS:     public/demo-paths-tabs.js (tabs + runners + form handlers). -->
+      <Fragment set:html={hnPathsHtml} />
+      <script src="/demo-paths-tabs.js" defer></script>
+
+      <!-- STEP 2: vendor integration -->
       <section class="demo-section" id="for-vendors">
-        <h2><span class="step">4</span>How a bot-defense vendor consumes the verdict</h2>
+        <h2><span class="step">2</span>How a bot-defense vendor consumes the verdict</h2>
         <p class="lead">The verdict from &sect;3 isn't the final answer — it's <strong>one signal</strong> that flows into the vendor's existing scoring pipeline. AgentPKI never overrides; it only adds. Same shape as how vendors already consume third-party threat-intel feeds.</p>
 
         <div class="integration">
@@ -1168,7 +1074,7 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
 
       <!-- STEP 5: lifecycle -->
       <section class="demo-section">
-        <h2><span class="step">5</span>What just happened, end-to-end</h2>
+        <h2><span class="step">3</span>What just happened, end-to-end</h2>
         <div class="lifecycle">
           <ol>
             <li><b>Anthropic's research-bot SDK</b> signed a passport with their Ed25519 private key, scoped to <code>read:articles</code>, valid for 5 minutes.</li>
@@ -1184,7 +1090,7 @@ audit.log({ issuer: passport.iss, agent: passport.sub, path: req.path, tier: pas
 
       <!-- STEP 6: under the hood (cards) -->
       <section class="demo-section">
-        <h2><span class="step">6</span>Under the hood</h2>
+        <h2><span class="step">4</span>Under the hood</h2>
         <p class="lead">Three real network calls to two different production-deployed Workers. Click to expand the raw responses.</p>
         <div class="compare">
           <div class="col">
