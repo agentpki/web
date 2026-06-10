@@ -1,36 +1,66 @@
 ---
-// Site-wide footer.
+// Site-wide footer. Highlights the link for the page the visitor is currently
+// viewing — bright violet, semibold, with an underline so it's unambiguous
+// where they are in the site map.
+const pathname = Astro.url.pathname;
+
+// A footer link is "active" when the visitor's current path matches its href
+// exactly, OR is nested under it (e.g. /spec/v0.3-intent activates the /spec
+// link). External links (http/mailto) never highlight.
+const isActive = (href: string) => {
+  if (href.startsWith('http') || href.startsWith('mailto')) return false;
+  if (pathname === href) return true;
+  // Match nested routes: /spec/v0.2 should light up /spec
+  return pathname.startsWith(href + '/');
+};
+
+const links: Array<{ href: string; label: string }> = [
+  { href: '/problem', label: 'Problem / Solution' },
+  { href: '/demo', label: 'Demo' },
+  { href: '/playground', label: 'Playground' },
+  { href: '/widget', label: 'Widget' },
+  { href: '/replay', label: 'Replay' },
+  { href: '/issuer-directory', label: 'Issuers' },
+  { href: '/notifications', label: 'Notifications' },
+  { href: '/policy-builder', label: 'Policy builder' },
+  { href: '/intent-log', label: 'Intent log' },
+  { href: '/provenance', label: 'Provenance' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/keys', label: 'Get API key' },
+  { href: '/account', label: 'Account' },
+  { href: '/spec', label: 'Spec' },
+  { href: '/api-docs', label: 'API docs' },
+  { href: '/stats', label: 'Stats' },
+  { href: '/status', label: 'Status' },
+  { href: '/changelog', label: 'Changelog' },
+  { href: '/check', label: 'Verify check' },
+  { href: '/how-verification-works', label: 'How it works' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: 'https://github.com/agentpki', label: 'GitHub' },
+  { href: 'mailto:hello@agentpki.dev', label: 'hello@agentpki.dev' },
+];
 ---
 <footer class="border-t border-[color:var(--color-border)]">
-  <div class="max-w-none px-2 sm:px-3 lg:px-4 py-10 flex flex-wrap items-center justify-between gap-6 text-sm text-[color:var(--color-text-muted)]">
+  <div class="max-w-5xl mx-auto px-6 py-10 flex flex-wrap items-center justify-between gap-6 text-sm text-[color:var(--color-text-muted)]">
     <div class="flex items-center gap-2">
       <img src="/favicon.svg" alt="" class="w-5 h-5" />
       <span>AgentPKI &middot; v0.2 live &middot; Apache 2.0 &middot; 2026</span>
     </div>
     <div class="flex items-center gap-5 flex-wrap">
-      <a href="/problem" class="hover:text-[color:var(--color-text)] transition">Problem / Solution</a>
-      <a href="/demo" class="hover:text-[color:var(--color-text)] transition">Demo</a>
-      <a href="/playground" class="hover:text-[color:var(--color-text)] transition">Playground</a>
-      <a href="/widget" class="hover:text-[color:var(--color-text)] transition">Widget</a>
-      <a href="/replay" class="hover:text-[color:var(--color-text)] transition">Replay</a>
-      <a href="/issuer-directory" class="hover:text-[color:var(--color-text)] transition">Issuers</a>
-      <a href="/notifications" class="hover:text-[color:var(--color-text)] transition">Notifications</a>
-      <a href="/policy-builder" class="hover:text-[color:var(--color-text)] transition">Policy builder</a>
-      <a href="/intent-log" class="hover:text-[color:var(--color-text)] transition">Intent log</a>
-      <a href="/provenance" class="hover:text-[color:var(--color-text)] transition">Provenance</a>
-      <a href="/pricing" class="hover:text-[color:var(--color-text)] transition">Pricing</a>
-      <a href="/keys" class="hover:text-[color:var(--color-text)] transition">Get API key</a>
-      <a href="/account" class="hover:text-[color:var(--color-text)] transition">Account</a>
-      <a href="/spec" class="hover:text-[color:var(--color-text)] transition">Spec</a>
-      <a href="/api-docs" class="hover:text-[color:var(--color-text)] transition">API docs</a>
-      <a href="/stats" class="hover:text-[color:var(--color-text)] transition">Stats</a>
-      <a href="/status" class="hover:text-[color:var(--color-text)] transition">Status</a>
-      <a href="/changelog" class="hover:text-[color:var(--color-text)] transition">Changelog</a>
-      <a href="/check" class="hover:text-[color:var(--color-text)] transition">Verify check</a>
-      <a href="/how-verification-works" class="hover:text-[color:var(--color-text)] transition">How it works</a>
-      <a href="/privacy" class="hover:text-[color:var(--color-text)] transition">Privacy</a>
-      <a href="https://github.com/agentpki" class="hover:text-[color:var(--color-text)] transition">GitHub</a>
-      <a href="mailto:hello@agentpki.dev" class="hover:text-[color:var(--color-text)] transition">hello@agentpki.dev</a>
+      {links.map(({ href, label }) => {
+        const active = isActive(href);
+        return (
+          <a
+            href={href}
+            aria-current={active ? 'page' : undefined}
+            class={active
+              ? 'text-[color:var(--color-accent-bright)] font-semibold underline underline-offset-4 decoration-2 decoration-[color:var(--color-accent)] transition'
+              : 'hover:text-[color:var(--color-text)] transition'}
+          >
+            {label}
+          </a>
+        );
+      })}
     </div>
   </div>
 </footer>

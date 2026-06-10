@@ -12,7 +12,7 @@ import Footer from '../components/Footer.astro';
   <!-- Swagger UI loaded from CDN. Renders the spec at /openapi.yaml. -->
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
 
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-10 pb-4">
+  <section class="max-w-5xl mx-auto px-6 pt-10 pb-4">
     <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
       OpenAPI 3.1 specification
     </p>
@@ -67,7 +67,7 @@ curl -s -X POST https://verify.agentpki.dev/v1/verify \\
     </div>
   </section>
 
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-12">
+  <section class="max-w-5xl mx-auto px-6 pb-12">
     <!-- Swagger UI mount point. Background is set to match the dark theme. -->
     <div id="swagger-ui" class="rounded-xl overflow-hidden border border-[color:var(--color-border)] bg-white"></div>
   </section>

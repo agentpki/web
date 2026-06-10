@@ -9,7 +9,7 @@ import Footer from '../components/Footer.astro';
 >
   <Nav />
 
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-14 pb-8">
+  <section class="max-w-5xl mx-auto px-6 pt-14 pb-8">
     <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">
       System status &middot; auto-refreshing
     </p>
@@ -32,7 +32,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- Component cards -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+  <section class="max-w-5xl mx-auto px-6 pb-10">
     <div id="components" class="grid sm:grid-cols-2 gap-4">
       <!-- 4 cards injected by JS -->
       <div class="status-card status-card-loading">Loading verifier…</div>
@@ -43,7 +43,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- 7-day verdict ribbon -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+  <section class="max-w-5xl mx-auto px-6 pb-10">
     <h2 class="text-xl font-semibold mb-3">7-day verdict ribbon</h2>
     <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
       Each cell is one day. Green = allow share &gt; 90%. Yellow = 50–90% (mixed). Red = mostly deny (something's off). Hover for raw counts.
@@ -52,7 +52,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- Incident log -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+  <section class="max-w-5xl mx-auto px-6 pb-16">
     <h2 class="text-xl font-semibold mb-3">Incident log</h2>
     <div id="incidents" class="text-sm text-[color:var(--color-text-muted)]">
       No incidents reported. All systems have been operational since launch.

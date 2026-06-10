@@ -9,7 +9,7 @@ import Footer from '../components/Footer.astro';
 >
   <Nav />
 
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pt-12 pb-6">
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-6">
     <p class="text-xs font-mono tracking-widest uppercase text-[color:var(--color-text-muted)] mb-3">Live status &middot; updated on every page load</p>
     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mb-3">
       AgentPKI by the numbers.
@@ -20,7 +20,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- ════════════ REAL VERIFIER COUNTERS (KV-backed) ════════════ -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-8">
+  <section class="max-w-5xl mx-auto px-6 pb-8">
     <div class="rounded-2xl border border-emerald-500/40 bg-emerald-950/15 p-6 relative overflow-hidden">
       <div class="flex items-center gap-3 mb-4">
         <span class="inline-block w-3 h-3 rounded-full bg-emerald-400 animate-pulse" style="box-shadow:0 0 14px currentColor;"></span>
@@ -66,7 +66,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- ════════════ TRUST CONTRACT (live self-test) ════════════ -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+  <section class="max-w-5xl mx-auto px-6 pb-10">
     <div class="rounded-2xl border border-[color:var(--color-border-bright)] bg-[color:var(--color-bg-elevated)]/60 p-6">
       <div class="flex items-center gap-3 mb-5">
         <span id="status-dot" class="inline-block w-3 h-3 rounded-full bg-amber-400 animate-pulse" style="box-shadow:0 0 14px currentColor;"></span>
@@ -124,7 +124,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- ════════════ ISSUER DIRECTORY (live fetch) ════════════ -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+  <section class="max-w-5xl mx-auto px-6 pb-10">
     <h2 class="text-2xl font-semibold mb-3">Demo issuer directory &middot; live</h2>
     <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
       Fetched from <code class="text-violet-300">demo.agentpki.dev/.well-known/agentpki-issuer.json</code> on page load. The verifier consults this same file to decide every <code>allow</code> / <code>deny</code>.
@@ -142,7 +142,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- ════════════ BUILD INVENTORY (static, easy to grep) ════════════ -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-10">
+  <section class="max-w-5xl mx-auto px-6 pb-10">
     <h2 class="text-2xl font-semibold mb-3">Built &amp; shipped</h2>
     <p class="text-sm text-[color:var(--color-text-muted)] mb-4">
       Hand-maintained list. Every entry links to a live URL or a public repo &mdash; nothing here is a roadmap claim.
@@ -192,7 +192,7 @@ import Footer from '../components/Footer.astro';
   </section>
 
   <!-- ════════════ SURFACES LIVE ════════════ -->
-  <section class="max-w-none px-2 sm:px-3 lg:px-4 pb-16">
+  <section class="max-w-5xl mx-auto px-6 pb-16">
     <h2 class="text-2xl font-semibold mb-3">Surfaces currently live in production</h2>
     <p class="text-sm text-[color:var(--color-text-muted)] mb-4">Click any to test. Every one returns real responses from real infrastructure.</p>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 font-mono text-xs">
