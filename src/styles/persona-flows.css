@@ -29,14 +29,10 @@
   .scenario code { color: var(--violet-hi); font-family: ui-monospace, monospace; font-size: 0.85rem; }
   .scenario strong { color: var(--text); }
 
-  /* Stage: diagram (left) + narration (right) */
+  /* Stage: stack vertically so the diagram fills the full section width.
+     Side-by-side made the SVG render at ~60% scale, which crushed text
+     legibility (the viewBox is 1400 wide). Full-width gives ~88% scale. */
   .stage { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.25rem; }
-  @media (min-width: 900px) {
-    .stage { grid-template-columns: minmax(0, 1fr) 22rem; align-items: start; }
-  }
-  @media (min-width: 1280px) {
-    .stage { grid-template-columns: minmax(0, 1fr) 26rem; }
-  }
   .diagram-wrap {
     border: 1px solid var(--border); border-radius: 0.7rem;
     background: radial-gradient(at 50% 0%, rgba(167,139,250,0.04), transparent 50%), var(--bg-elev);
@@ -51,14 +47,14 @@
     transition: stroke 0.3s, fill 0.3s;
   }
   .actor text {
-    fill: var(--muted); font-size: 16px; font-family: ui-sans-serif;
+    fill: var(--muted); font-size: 24px; font-family: ui-sans-serif;
     text-anchor: middle; font-weight: 600; transition: fill 0.3s; pointer-events: none;
   }
   .actor.active rect, .actor.active circle { stroke: var(--violet); fill: rgba(167,139,250,0.07); }
   .actor.active text { fill: var(--text); }
   .actor.success rect, .actor.success circle { stroke: var(--green); fill: rgba(34,197,94,0.07); }
   .actor.success text { fill: var(--text); }
-  .actor .sub { font-size: 12px; font-family: ui-monospace, monospace; fill: var(--dim); }
+  .actor .sub { font-size: 18px; font-family: ui-monospace, monospace; fill: var(--dim); }
   .actor.active .sub { fill: var(--violet-hi); }
   .actor.success .sub { fill: var(--green); }
   .actor.outcome rect { stroke-dasharray: 6 4; }
@@ -69,7 +65,7 @@
   .arrow.success { stroke: var(--green); stroke-width: 3.2; }
   .ahd-default { fill: var(--border-hi); transition: fill 0.3s; }
   .label {
-    fill: var(--dim); font-size: 13px; font-family: ui-monospace, monospace;
+    fill: var(--dim); font-size: 22px; font-family: ui-monospace, monospace;
     transition: fill 0.3s; font-weight: 600;
   }
   .label.active { fill: var(--violet-hi); }
